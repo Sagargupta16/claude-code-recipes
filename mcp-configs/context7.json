@@ -1,0 +1,44 @@
+{
+  "_comment": [
+    "Context7 MCP Server — provides up-to-date documentation and code examples for any library.",
+    "No API keys required. Queries the Context7 API for library documentation.",
+    "Install: Copy the 'context7' key into .mcp.json under mcpServers.",
+    "Docs: https://github.com/upstash/context7"
+  ],
+  "context7": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@upstash/context7-mcp@latest"
+    ],
+    "tools": {
+      "_available": [
+        "resolve-library-id  — Resolve a library name to a Context7-compatible ID",
+        "query-docs           — Query documentation for a specific library by ID"
+      ]
+    },
+    "_notes": {
+      "usage_workflow": [
+        "1. First call resolve-library-id with the library name (e.g., 'react', 'express')",
+        "2. Select the best matching library ID from results",
+        "3. Call query-docs with the library ID and your specific question",
+        "4. Get up-to-date documentation and code examples"
+      ],
+      "example_queries": [
+        "How to set up authentication with JWT in Express.js",
+        "React useEffect cleanup function examples",
+        "Next.js app router data fetching patterns",
+        "Prisma migration workflow",
+        "Tailwind CSS responsive design utilities"
+      ],
+      "supported_libraries": [
+        "Most popular npm packages, Python packages, and frameworks",
+        "React, Next.js, Vue, Svelte, Angular",
+        "Express, Fastify, Hono, NestJS",
+        "Prisma, Drizzle, TypeORM",
+        "Tailwind CSS, Radix UI, shadcn/ui",
+        "And thousands more — try any library name"
+      ]
+    }
+  }
+}

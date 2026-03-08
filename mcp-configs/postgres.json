@@ -1,0 +1,40 @@
+{
+  "_comment": [
+    "PostgreSQL MCP Server — provides tools for database queries and schema inspection.",
+    "Requires: DATABASE_URL environment variable (or individual PG* variables).",
+    "Install: Copy the 'postgres' key into .mcp.json under mcpServers.",
+    "Docs: https://github.com/modelcontextprotocol/servers/tree/main/src/postgres"
+  ],
+  "postgres": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-postgres",
+      "${DATABASE_URL}"
+    ],
+    "env": {
+      "DATABASE_URL": "${DATABASE_URL:-postgresql://localhost:5432/mydb}"
+    },
+    "tools": {
+      "_available": [
+        "query              — Execute a read-only SQL query and return results",
+        "list_tables        — List all tables in the database",
+        "describe_table     — Get column names, types, and constraints for a table",
+        "list_schemas       — List all schemas in the database"
+      ]
+    },
+    "_notes": {
+      "connection_string_formats": [
+        "postgresql://user:password@host:port/database",
+        "postgresql://user:password@host:port/database?sslmode=require",
+        "postgresql://user:password@host:port/database?schema=public"
+      ],
+      "security": [
+        "The server runs queries as READ-ONLY by default.",
+        "Never put credentials directly in this file — use environment variables.",
+        "For production databases, use a read-only database user.",
+        "Consider using connection pooling (PgBouncer) for shared environments."
+      ]
+    }
+  }
+}

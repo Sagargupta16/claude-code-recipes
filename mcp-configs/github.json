@@ -1,0 +1,41 @@
+{
+  "_comment": [
+    "GitHub MCP Server — provides tools for issues, PRs, repos, and code search.",
+    "Requires: GITHUB_PERSONAL_ACCESS_TOKEN environment variable.",
+    "Install: Copy the 'github' key into .mcp.json under mcpServers.",
+    "Docs: https://github.com/modelcontextprotocol/servers/tree/main/src/github"
+  ],
+  "github": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-github"
+    ],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+    },
+    "tools": {
+      "_available": [
+        "create_or_update_file    — Create or update a file in a repository",
+        "search_repositories      — Search GitHub repositories",
+        "create_repository         — Create a new repository",
+        "get_file_contents         — Read file or directory contents",
+        "push_files                — Push multiple files in a single commit",
+        "create_issue              — Create a new issue",
+        "create_pull_request       — Create a new pull request",
+        "fork_repository           — Fork a repository",
+        "create_branch             — Create a new branch",
+        "list_issues               — List issues with filters",
+        "update_issue              — Update an existing issue",
+        "add_issue_comment         — Add a comment to an issue",
+        "search_code               — Search code across repositories",
+        "search_issues             — Search issues and PRs",
+        "list_commits              — List commits on a branch",
+        "get_issue                 — Get details of a specific issue",
+        "get_pull_request          — Get details of a specific PR",
+        "list_pull_requests        — List PRs with filters",
+        "create_pull_request_review — Create a review on a PR"
+      ]
+    }
+  }
+}

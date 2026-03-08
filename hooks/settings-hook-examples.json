@@ -1,0 +1,70 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/settings-schema.json",
+
+  "_comment": [
+    "Complete Claude Code settings.json with all hook configurations.",
+    "Copy this to .claude/settings.json and adjust paths as needed.",
+    "See: https://docs.anthropic.com/en/docs/claude-code/hooks"
+  ],
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "_comment": "Lint staged files before every git commit",
+        "matcher": "git_commit",
+        "command": "bash .claude/hooks/pre-commit-lint.sh"
+      },
+      {
+        "_comment": "Run tests before every git push",
+        "matcher": "git_push",
+        "command": "bash .claude/hooks/pre-push-test.sh"
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "_comment": "Auto-format files after Claude edits them",
+        "matcher": "file_edit|create_file",
+        "command": "bash .claude/hooks/post-edit-format.sh"
+      }
+    ],
+
+    "Notification": [
+      {
+        "_comment": "Send desktop notification when Claude completes a task",
+        "command": "bash .claude/hooks/notification.sh"
+      }
+    ],
+
+    "Stop": [
+      {
+        "_comment": "Run any cleanup when Claude stops working",
+        "command": "echo '[hook] Claude Code session ended.'"
+      }
+    ]
+  },
+
+  "_examples_advanced": {
+    "_comment": "Additional hook patterns you can mix in:",
+
+    "PreToolUse_block_dangerous_commands": {
+      "matcher": "bash",
+      "command": "bash -c 'INPUT=$(cat); if echo \"$INPUT\" | jq -r \".input.command\" | grep -qE \"rm -rf /|DROP TABLE|format c:\"; then echo \"Blocked dangerous command\" >&2; exit 1; fi'"
+    },
+
+    "PreToolUse_require_branch_for_push": {
+      "matcher": "git_push",
+      "command": "bash -c 'BRANCH=$(git branch --show-current); if [[ \"$BRANCH\" == \"main\" || \"$BRANCH\" == \"master\" ]]; then echo \"Direct push to $BRANCH blocked\" >&2; exit 1; fi'"
+    },
+
+    "PostToolUse_stage_formatted_files": {
+      "matcher": "file_edit",
+      "command": "bash -c 'FILE=$(cat | jq -r \".file_path // empty\"); if [[ -n \"$FILE\" ]]; then git add \"$FILE\" 2>/dev/null || true; fi'"
+    },
+
+    "PostToolUse_log_all_edits": {
+      "matcher": "file_edit|create_file|delete_file",
+      "command": "bash -c 'cat >> .claude/edit-log.jsonl'"
+    }
+  }
+}

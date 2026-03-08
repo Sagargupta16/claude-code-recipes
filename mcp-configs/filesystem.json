@@ -1,0 +1,31 @@
+{
+  "_comment": [
+    "Filesystem MCP Server — provides enhanced file operations beyond Claude Code's built-in tools.",
+    "No API keys required. Scoped to allowed directories for security.",
+    "Install: Copy the 'filesystem' key into .mcp.json under mcpServers.",
+    "Docs: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem"
+  ],
+  "filesystem": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-filesystem",
+      "${PROJECT_DIR:-.}"
+    ],
+    "tools": {
+      "_available": [
+        "read_file          — Read complete file contents",
+        "read_multiple_files — Read multiple files at once",
+        "write_file          — Create or overwrite a file",
+        "edit_file           — Make selective edits with pattern matching",
+        "create_directory    — Create a new directory (recursive)",
+        "list_directory      — List files and subdirectories",
+        "directory_tree      — Get recursive tree view of a directory",
+        "move_file           — Move or rename a file",
+        "search_files        — Search for files matching a pattern",
+        "get_file_info       — Get file metadata (size, dates, permissions)",
+        "list_allowed_directories — Show which directories the server can access"
+      ]
+    }
+  }
+}
