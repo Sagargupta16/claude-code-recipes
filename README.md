@@ -1,6 +1,6 @@
 # Claude Code Recipes
 
-> **50+ copy-paste recipes** for Claude Code — commands, subagents, hooks, skills, and MCP configs that work out of the box.
+> **50+ copy-paste recipes** for Claude Code - commands, subagents, hooks, skills, and MCP configs that work out of the box.
 
 Stop configuring from scratch. Drop these recipes into your `.claude/` folder and start building.
 
@@ -16,7 +16,7 @@ Stop configuring from scratch. Drop these recipes into your `.claude/` folder an
    - Skills go in `.claude/skills/`
    - Hooks go in `.claude/settings.json`
    - MCP configs go in `.mcp.json`
-4. Use it immediately — every recipe works out of the box
+4. Use it immediately - every recipe works out of the box
 
 ---
 
@@ -71,7 +71,7 @@ Event-triggered scripts for automation.
 
 ### Skills (5 recipes)
 
-Reusable knowledge modules — drop the folder into `.claude/skills/`.
+Reusable knowledge modules - drop the folder into `.claude/skills/`.
 
 | Recipe | Domain | Link |
 |--------|--------|------|
@@ -99,7 +99,7 @@ End-to-end guides combining multiple recipes.
 
 | Recipe | Scenario | Link |
 |--------|----------|------|
-| New Feature | Plan, implement, test, PR — full cycle | [new-feature.md](workflows/new-feature.md) |
+| New Feature | Plan, implement, test, PR - full cycle | [new-feature.md](workflows/new-feature.md) |
 | Bug Fix | Reproduce, isolate, fix, verify, commit | [bug-fix.md](workflows/bug-fix.md) |
 | Code Migration | Audit, plan, migrate, test, validate | [code-migration.md](workflows/code-migration.md) |
 | PR Review Cycle | Review, request changes, iterate, approve | [pr-review-cycle.md](workflows/pr-review-cycle.md) |
@@ -164,11 +164,11 @@ Ways to contribute:
 
 ## Related
 
-- [claude-cost-optimizer](https://github.com/Sagargupta16/claude-cost-optimizer) — Save 30-60% on Claude Code costs
-- [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) — Best practices documentation
+- [claude-cost-optimizer](https://github.com/Sagargupta16/claude-cost-optimizer) - Save 30-60% on Claude Code costs
+- [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) - Best practices documentation
 
 ---
 
 ## License
 
-[MIT](LICENSE) — use these recipes however you want.
+[MIT](LICENSE) - use these recipes however you want.

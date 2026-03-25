@@ -42,7 +42,7 @@ description: One-line description shown in command list
 
 [System prompt for the command]
 
-$ARGUMENTS — if the command accepts input
+$ARGUMENTS - if the command accepts input
 ```
 
 - Must specify a model (haiku for simple tasks, sonnet for complex, opus for deep analysis)
@@ -89,10 +89,10 @@ description: One-line description
 ## Patterns
 
 ### Pattern Name
-[Example code — good and bad]
+[Example code - good and bad]
 
 ## Anti-patterns
-- Thing to avoid — why
+- Thing to avoid - why
 ```
 
 - Must be domain-specific (one topic per skill)

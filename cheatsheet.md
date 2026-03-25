@@ -1,4 +1,4 @@
-# Claude Code Recipes — Cheatsheet
+# Claude Code Recipes - Cheatsheet
 
 > One-page quick reference. For full docs, see the [README](README.md).
 
@@ -137,7 +137,7 @@ Copy to your project root as `CLAUDE.md`.
 
 ---
 
-## Quick Install — Everything at Once
+## Quick Install - Everything at Once
 
 ```bash
 # Clone the recipes
