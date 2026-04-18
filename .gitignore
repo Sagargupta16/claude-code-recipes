@@ -5,3 +5,9 @@ Thumbs.db
 *~
 .vscode/
 .idea/
+
+# Added for consistency
+.env
+.env.local
+.env.*.local
+*.log
