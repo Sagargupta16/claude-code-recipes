@@ -149,10 +149,12 @@ git clone https://github.com/Sagargupta16/claude-code-recipes.git /tmp/recipes
 # Commands
 mkdir -p .claude/commands
 cp /tmp/recipes/commands/*.md .claude/commands/
+rm -f .claude/commands/README.md
 
 # Subagents
 mkdir -p .claude/agents
 cp /tmp/recipes/subagents/*.md .claude/agents/
+rm -f .claude/agents/README.md
 
 # Skills
 mkdir -p .claude/skills
