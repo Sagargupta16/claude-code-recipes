@@ -60,6 +60,9 @@ allowed-tools: []          # optional — restrict tool access
 | 10 | `/performance-audit` | sonnet | [performance-audit.md](performance-audit.md) | Find performance bottlenecks across the stack |
 | 11 | `/api-gen` | sonnet | [api-gen.md](api-gen.md) | Generate REST API endpoints with validation and tests |
 | 12 | `/component-gen` | sonnet | [component-gen.md](component-gen.md) | Generate React/Vue components with types, a11y, and tests |
+| 13 | `/check-all-prs` | -- | [check-all-prs.md](check-all-prs.md) | Check all your open PRs across GitHub repos |
+| 14 | `/audit-repos` | -- | [audit-repos.md](audit-repos.md) | Audit all repos for health, hygiene, and security issues |
+| 15 | `/update-status` | -- | [update-status.md](update-status.md) | Refresh a STATUS.md dashboard with live GitHub data |
 
 ## Tips
 

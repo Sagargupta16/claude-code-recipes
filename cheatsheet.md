@@ -27,6 +27,9 @@ cp commands/code-review.md .claude/commands/
 | `/performance-audit` | Find performance bottlenecks |
 | `/api-gen` | Generate REST endpoints from a spec |
 | `/component-gen` | Generate React/Vue components |
+| `/check-all-prs` | Check all open PRs across repos |
+| `/audit-repos` | Audit all repos for health and security |
+| `/update-status` | Refresh STATUS.md with live GitHub data |
 
 ---
 

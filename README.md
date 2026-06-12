@@ -1,6 +1,6 @@
 # Claude Code Recipes
 
-> **50+ copy-paste recipes** for Claude Code - commands, subagents, hooks, skills, and MCP configs that work out of the box.
+> **47 copy-paste recipes** for Claude Code - commands, subagents, hooks, skills, and MCP configs that work out of the box.
 
 Stop configuring from scratch. Drop these recipes into your `.claude/` folder and start building.
 
@@ -22,7 +22,7 @@ Stop configuring from scratch. Drop these recipes into your `.claude/` folder an
 
 ## Recipe Catalog
 
-### Commands (12 recipes)
+### Commands (15 recipes)
 
 Drop these into `.claude/commands/` and use them with `/command-name`.
 
@@ -40,6 +40,9 @@ Drop these into `.claude/commands/` and use them with `/command-name`.
 | `/performance-audit` | Find performance bottlenecks | sonnet | [performance-audit.md](commands/performance-audit.md) |
 | `/api-gen` | Generate REST endpoints from a spec | sonnet | [api-gen.md](commands/api-gen.md) |
 | `/component-gen` | Generate React/Vue components from description | sonnet | [component-gen.md](commands/component-gen.md) |
+| `/check-all-prs` | Check all open PRs across your GitHub repos | -- | [check-all-prs.md](commands/check-all-prs.md) |
+| `/audit-repos` | Audit all repos for health, hygiene, and security | -- | [audit-repos.md](commands/audit-repos.md) |
+| `/update-status` | Refresh a STATUS.md dashboard with live GitHub data | -- | [update-status.md](commands/update-status.md) |
 
 ### Subagents (9 recipes)
 
