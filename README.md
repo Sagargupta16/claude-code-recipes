@@ -146,6 +146,7 @@ cp -r claude-code-recipes/skills/react-patterns .claude/skills/
 ```bash
 # Clone and copy everything
 git clone https://github.com/Sagargupta16/claude-code-recipes.git /tmp/recipes
+mkdir -p .claude/commands .claude/agents .claude/skills
 cp /tmp/recipes/commands/*.md .claude/commands/
 rm -f .claude/commands/README.md
 cp /tmp/recipes/subagents/*.md .claude/agents/
