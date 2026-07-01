@@ -151,6 +151,7 @@ rm -f .claude/commands/README.md
 cp /tmp/recipes/subagents/*.md .claude/agents/
 rm -f .claude/agents/README.md
 cp -r /tmp/recipes/skills/* .claude/skills/
+rm -f .claude/skills/README.md
 ```
 
 ---
