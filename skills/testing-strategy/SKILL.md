@@ -1,17 +1,22 @@
+---
+name: testing-strategy
+description: Testing approach covering unit/integration/e2e split, what to test, AAA test structure, mocking strategies, and coverage targets. Use when writing tests, planning test coverage, or reviewing test quality.
+---
+
 # Testing Strategy
 
 > Testing approach: unit/integration/e2e split, what to test, test structure (AAA pattern), mocking strategies, and coverage targets.
 
 ## Testing Pyramid
 
-Follow the testing pyramid — more unit tests, fewer integration tests, even fewer e2e tests:
+Follow the testing pyramid -- more unit tests, fewer integration tests, even fewer e2e tests:
 
 ```
-        /  E2E  \           ~5%   — Critical user journeys
+        /  E2E  \           ~5%   -- Critical user journeys
        /----------\
-      / Integration \       ~20%  — Module boundaries, API contracts
+      / Integration \       ~20%  -- Module boundaries, API contracts
      /----------------\
-    /    Unit Tests     \   ~75%  — Functions, components, utilities
+    /    Unit Tests     \   ~75%  -- Functions, components, utilities
    /____________________\
 ```
 
@@ -43,7 +48,7 @@ Follow the testing pyramid — more unit tests, fewer integration tests, even fe
 - Constants and configuration values
 - CSS styling (use visual regression tools instead)
 
-## Test Structure — AAA Pattern
+## Test Structure -- AAA Pattern
 
 Every test should follow **Arrange, Act, Assert**:
 
@@ -70,17 +75,17 @@ describe("OrderService", () => {
 
 ### Naming Rules
 
-1. **Describe blocks name the unit** — `describe("OrderService")`, `describe("calculateTotal")`
-2. **Test names describe the behavior** — `it("applies percentage discount to subtotal")`
+1. **Describe blocks name the unit** -- `describe("OrderService")`, `describe("calculateTotal")`
+2. **Test names describe the behavior** -- `it("applies percentage discount to subtotal")`
 3. **Use the pattern**: `it("<expected behavior> when <condition>")`
-4. **Don't start with "should"** — `it("returns null for invalid input")` not `it("should return null...")`
+4. **Don't start with "should"** -- `it("returns null for invalid input")` not `it("should return null...")`
 
 ### Structure Rules
 
-1. **One assertion per test** (conceptual, not literal — multiple `expect` calls are fine if testing one behavior)
-2. **No logic in tests** — no `if`, `for`, or `switch` in test code
-3. **No test interdependencies** — each test sets up and tears down its own state
-4. **Use `beforeEach` for shared setup, not `beforeAll`** — isolation matters more than speed
+1. **One assertion per test** (conceptual, not literal -- multiple `expect` calls are fine if testing one behavior)
+2. **No logic in tests** -- no `if`, `for`, or `switch` in test code
+3. **No test interdependencies** -- each test sets up and tears down its own state
+4. **Use `beforeEach` for shared setup, not `beforeAll`** -- isolation matters more than speed
 5. **Group related tests with nested `describe` blocks**
 
 ## Mocking Strategies
@@ -100,26 +105,26 @@ describe("OrderService", () => {
 
 Prefer lighter mocking techniques when possible:
 
-1. **Stubs** — return a fixed value: `jest.fn().mockReturnValue(42)`
-2. **Spies** — observe calls without changing behavior: `jest.spyOn(service, 'save')`
-3. **Fakes** — lightweight in-memory implementation: `new InMemoryUserRepository()`
-4. **Mocks** — full behavior replacement: `jest.mock('./database')`
+1. **Stubs** -- return a fixed value: `jest.fn().mockReturnValue(42)`
+2. **Spies** -- observe calls without changing behavior: `jest.spyOn(service, 'save')`
+3. **Fakes** -- lightweight in-memory implementation: `new InMemoryUserRepository()`
+4. **Mocks** -- full behavior replacement: `jest.mock('./database')`
 
 ### Rules
 
-1. **Mock at the boundary** — mock the database client, not the repository method
-2. **Don't mock what you don't own** — wrap third-party APIs in your own adapter, mock the adapter
-3. **Reset mocks between tests** — use `afterEach(() => jest.restoreAllMocks())`
-4. **Verify interactions sparingly** — prefer asserting on output over asserting mock was called
+1. **Mock at the boundary** -- mock the database client, not the repository method
+2. **Don't mock what you don't own** -- wrap third-party APIs in your own adapter, mock the adapter
+3. **Reset mocks between tests** -- use `afterEach(() => jest.restoreAllMocks())`
+4. **Verify interactions sparingly** -- prefer asserting on output over asserting mock was called
 
 ```typescript
-// Good — mock at the boundary
+// Good -- mock at the boundary
 const mockDb = { query: jest.fn().mockResolvedValue([{ id: 1, name: "Alice" }]) };
 const repo = new UserRepository(mockDb);
 const user = await repo.findById(1);
 expect(user.name).toBe("Alice");
 
-// Bad — mocking the unit under test
+// Bad -- mocking the unit under test
 jest.spyOn(repo, "findById").mockResolvedValue({ id: 1, name: "Alice" });
 ```
 
@@ -152,11 +157,11 @@ afterEach(() => {
 
 ## Integration Tests
 
-1. **Test module boundaries** — service calls repository, repository calls database
-2. **Use a real (test) database** — SQLite in-memory or Docker containers
-3. **Test API endpoints end-to-end** — use supertest or similar
-4. **Seed data in `beforeEach`** — don't rely on database state from other tests
-5. **Test error paths** — connection failures, timeouts, constraint violations
+1. **Test module boundaries** -- service calls repository, repository calls database
+2. **Use a real (test) database** -- SQLite in-memory or Docker containers
+3. **Test API endpoints end-to-end** -- use supertest or similar
+4. **Seed data in `beforeEach`** -- don't rely on database state from other tests
+5. **Test error paths** -- connection failures, timeouts, constraint violations
 
 ```typescript
 describe("POST /api/users", () => {
@@ -186,10 +191,10 @@ describe("POST /api/users", () => {
 
 ## E2E Tests
 
-1. **Test critical user journeys only** — sign up, purchase, core workflow
-2. **Use realistic data** — not "test123" or "foo bar"
-3. **Use data-testid attributes** — `data-testid="submit-button"`, not CSS selectors
-4. **Handle async operations explicitly** — wait for elements, not fixed timeouts
+1. **Test critical user journeys only** -- sign up, purchase, core workflow
+2. **Use realistic data** -- not "test123" or "foo bar"
+3. **Use data-testid attributes** -- `data-testid="submit-button"`, not CSS selectors
+4. **Handle async operations explicitly** -- wait for elements, not fixed timeouts
 5. **Run in CI against a staging environment**
 6. **Keep under 10 minutes total**
 
@@ -204,10 +209,10 @@ describe("POST /api/users", () => {
 
 ### Rules
 
-1. **Coverage is a floor, not a ceiling** — don't write bad tests to hit a number
-2. **Track coverage trends** — it should go up or stay flat, never down
-3. **Enforce in CI** — fail the build if coverage drops below the threshold
-4. **Exclude generated code** — don't count auto-generated files, configs, or type definitions
+1. **Coverage is a floor, not a ceiling** -- don't write bad tests to hit a number
+2. **Track coverage trends** -- it should go up or stay flat, never down
+3. **Enforce in CI** -- fail the build if coverage drops below the threshold
+4. **Exclude generated code** -- don't count auto-generated files, configs, or type definitions
 
 ## Test File Organization
 
@@ -234,9 +239,9 @@ tests/
 
 ## Anti-patterns
 
-- **Testing implementation details** — test behavior, not how it's implemented
-- **Snapshot overuse** — snapshots are brittle; use them for serializable output, not UI
-- **Flaky tests** — fix or delete them; a flaky test is worse than no test
-- **Test setup duplication** — extract to helper functions or fixtures
-- **Ignoring test failures** — a skipped test is a known bug you're choosing to keep
-- **100% coverage obsession** — diminishing returns past 85%; focus on meaningful tests
+- **Testing implementation details** -- test behavior, not how it's implemented
+- **Snapshot overuse** -- snapshots are brittle; use them for serializable output, not UI
+- **Flaky tests** -- fix or delete them; a flaky test is worse than no test
+- **Test setup duplication** -- extract to helper functions or fixtures
+- **Ignoring test failures** -- a skipped test is a known bug you're choosing to keep
+- **100% coverage obsession** -- diminishing returns past 85%; focus on meaningful tests

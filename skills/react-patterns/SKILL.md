@@ -1,14 +1,19 @@
+---
+name: react-patterns
+description: React best practices covering functional components, hooks, state management, performance, and accessibility. Use when writing or reviewing React components, hooks, or state logic.
+---
+
 # React Patterns
 
 > Best practices for React development: functional components, hooks, state management, performance, and accessibility.
 
 ## Component Rules
 
-1. **Always use functional components** — never class components for new code
-2. **One component per file** — name the file the same as the component (PascalCase)
-3. **Export components as named exports** — default exports only for pages/routes
-4. **Colocate related files** — keep `Component.tsx`, `Component.test.tsx`, and `Component.module.css` together
-5. **Props interface above the component** — name it `ComponentNameProps`
+1. **Always use functional components** -- never class components for new code
+2. **One component per file** -- name the file the same as the component (PascalCase)
+3. **Export components as named exports** -- default exports only for pages/routes
+4. **Colocate related files** -- keep `Component.tsx`, `Component.test.tsx`, and `Component.module.css` together
+5. **Props interface above the component** -- name it `ComponentNameProps`
 
 ```tsx
 // Good
@@ -24,7 +29,7 @@ export function UserCard({ user, onSelect, variant = "full" }: UserCardProps) {
 ```
 
 ```tsx
-// Bad — default export, inline props, class component
+// Bad -- default export, inline props, class component
 export default class UserCard extends React.Component<{user: any}> { /* ... */ }
 ```
 
@@ -32,8 +37,8 @@ export default class UserCard extends React.Component<{user: any}> { /* ... */ }
 
 ### Custom Hooks
 
-1. **Prefix with `use`** — `useAuth`, `useDebounce`, `useLocalStorage`
-2. **Extract shared logic into custom hooks** — if two components share stateful logic, extract it
+1. **Prefix with `use`** -- `useAuth`, `useDebounce`, `useLocalStorage`
+2. **Extract shared logic into custom hooks** -- if two components share stateful logic, extract it
 3. **Return tuples for simple hooks, objects for complex ones**
 
 ```tsx
@@ -56,25 +61,25 @@ function useApi<T>(url: string) {
 
 ### Hook Rules
 
-1. **Never call hooks conditionally** — all hooks must run on every render
-2. **Use `useCallback` for functions passed to children** — prevents unnecessary re-renders
-3. **Use `useMemo` only for expensive computations** — don't wrap everything
+1. **Never call hooks conditionally** -- all hooks must run on every render
+2. **Use `useCallback` for functions passed to children** -- prevents unnecessary re-renders
+3. **Use `useMemo` only for expensive computations** -- don't wrap everything
 4. **Prefer `useReducer` over `useState` when state transitions are complex**
 
 ### useEffect Guidelines
 
-1. **Always specify dependencies** — never use `// eslint-disable-next-line`
+1. **Always specify dependencies** -- never use `// eslint-disable-next-line`
 2. **Return a cleanup function for subscriptions, timers, and listeners**
-3. **Avoid setting state in useEffect when you can derive it** — computed values don't need effects
+3. **Avoid setting state in useEffect when you can derive it** -- computed values don't need effects
 
 ```tsx
-// Bad — unnecessary effect
+// Bad -- unnecessary effect
 const [fullName, setFullName] = useState("");
 useEffect(() => {
   setFullName(`${firstName} ${lastName}`);
 }, [firstName, lastName]);
 
-// Good — derived value
+// Good -- derived value
 const fullName = `${firstName} ${lastName}`;
 ```
 
@@ -86,19 +91,19 @@ Use the simplest tier that solves the problem:
 |------|------|-------------|
 | 1. Local state | `useState`, `useReducer` | Single component state |
 | 2. Lifted state | Props, composition | Shared between parent/child |
-| 3. Context | `createContext` + `useContext` | Theme, auth, locale — rarely changes |
+| 3. Context | `createContext` + `useContext` | Theme, auth, locale -- rarely changes |
 | 4. URL state | Search params, path params | Filters, pagination, navigation state |
 | 5. Server state | React Query / SWR | API data, caching, synchronization |
 | 6. Global store | Zustand / Redux Toolkit | Complex client state across many components |
 
 ### Context Guidelines
 
-1. **Split contexts by domain** — `AuthContext`, `ThemeContext`, not `AppContext`
-2. **Keep context values stable** — use `useMemo` on the provider value
-3. **Don't put frequently changing values in context** — it re-renders all consumers
+1. **Split contexts by domain** -- `AuthContext`, `ThemeContext`, not `AppContext`
+2. **Keep context values stable** -- use `useMemo` on the provider value
+3. **Don't put frequently changing values in context** -- it re-renders all consumers
 
 ```tsx
-// Good — stable context value
+// Good -- stable context value
 function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
@@ -111,13 +116,13 @@ function AuthProvider({ children }: { children: ReactNode }) {
 ## Performance
 
 1. **Use React.lazy + Suspense for route-level code splitting**
-2. **Memoize expensive list items with `React.memo`** — include a custom comparator if props are objects
-3. **Virtualize long lists** — use `react-window` or `@tanstack/virtual` for 100+ items
+2. **Memoize expensive list items with `React.memo`** -- include a custom comparator if props are objects
+3. **Virtualize long lists** -- use `react-window` or `@tanstack/virtual` for 100+ items
 4. **Avoid anonymous functions in JSX when passing to memoized children**
-5. **Use `key` correctly** — stable, unique identifiers, never array index for dynamic lists
+5. **Use `key` correctly** -- stable, unique identifiers, never array index for dynamic lists
 
 ```tsx
-// Good — code splitting
+// Good -- code splitting
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 
 function App() {
@@ -133,15 +138,15 @@ function App() {
 
 ## Accessibility
 
-1. **Use semantic HTML** — `<button>` not `<div onClick>`, `<nav>` not `<div className="nav">`
-2. **All images need alt text** — empty `alt=""` for decorative images
-3. **Form inputs need labels** — use `<label htmlFor>` or `aria-label`
-4. **Manage focus on route changes** — focus the main heading after navigation
-5. **Support keyboard navigation** — all interactive elements must be reachable via Tab
-6. **Use ARIA attributes when semantic HTML is insufficient** — `aria-expanded`, `aria-live`, `role`
+1. **Use semantic HTML** -- `<button>` not `<div onClick>`, `<nav>` not `<div className="nav">`
+2. **All images need alt text** -- empty `alt=""` for decorative images
+3. **Form inputs need labels** -- use `<label htmlFor>` or `aria-label`
+4. **Manage focus on route changes** -- focus the main heading after navigation
+5. **Support keyboard navigation** -- all interactive elements must be reachable via Tab
+6. **Use ARIA attributes when semantic HTML is insufficient** -- `aria-expanded`, `aria-live`, `role`
 
 ```tsx
-// Good — accessible modal
+// Good -- accessible modal
 function Modal({ isOpen, onClose, title, children }: ModalProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -166,7 +171,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
 ## Error Boundaries
 
 1. **Wrap route-level components in error boundaries**
-2. **Provide a meaningful fallback UI** — not just "Something went wrong"
+2. **Provide a meaningful fallback UI** -- not just "Something went wrong"
 3. **Log errors to your monitoring service in the boundary**
 
 ```tsx
@@ -190,9 +195,9 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 
 ## Anti-patterns
 
-- **Prop drilling more than 2 levels** — use composition or context instead
-- **Giant useEffect blocks** — split into multiple focused effects
-- **Storing derived state** — compute it during render
-- **Premature optimization** — profile before adding `useMemo`/`useCallback` everywhere
-- **String-based refs** — use `useRef` only
-- **Direct DOM manipulation** — use refs only when React APIs are insufficient
+- **Prop drilling more than 2 levels** -- use composition or context instead
+- **Giant useEffect blocks** -- split into multiple focused effects
+- **Storing derived state** -- compute it during render
+- **Premature optimization** -- profile before adding `useMemo`/`useCallback` everywhere
+- **String-based refs** -- use `useRef` only
+- **Direct DOM manipulation** -- use refs only when React APIs are insufficient

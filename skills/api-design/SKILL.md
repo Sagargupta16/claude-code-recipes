@@ -1,13 +1,18 @@
+---
+name: api-design
+description: REST API conventions covering URL structure, HTTP methods, status codes, pagination, filtering, error responses, and versioning. Use when designing or reviewing REST API endpoints, adding routes, or standardizing API error handling.
+---
+
 # API Design
 
 > REST API conventions: URL structure, HTTP methods, status codes, pagination, filtering, error responses, and versioning.
 
 ## URL Structure
 
-1. **Use nouns, not verbs** — the HTTP method provides the verb
-2. **Use plural resource names** — `/users`, `/orders`, `/products`
-3. **Use kebab-case for multi-word resources** — `/order-items`, not `/orderItems`
-4. **Nest resources to show relationships** — max 2 levels deep
+1. **Use nouns, not verbs** -- the HTTP method provides the verb
+2. **Use plural resource names** -- `/users`, `/orders`, `/products`
+3. **Use kebab-case for multi-word resources** -- `/order-items`, not `/orderItems`
+4. **Nest resources to show relationships** -- max 2 levels deep
 5. **Use query parameters for filtering, not path segments**
 
 ```
@@ -39,10 +44,10 @@ POST   /api/v1/users/123/orders/456/items/789/notes   # too deeply nested
 
 ### Rules
 
-1. **GET requests must be safe** — no side effects, no state changes
-2. **POST for creation** — return the created resource with `Location` header
-3. **Use PATCH over PUT** — partial updates are more practical than full replacement
-4. **DELETE should be idempotent** — deleting a non-existent resource returns 204, not 404
+1. **GET requests must be safe** -- no side effects, no state changes
+2. **POST for creation** -- return the created resource with `Location` header
+3. **Use PATCH over PUT** -- partial updates are more practical than full replacement
+4. **DELETE should be idempotent** -- deleting a non-existent resource returns 204, not 404
 
 ## Status Codes
 
@@ -103,10 +108,10 @@ Use a consistent error format across all endpoints:
 
 ### Rules
 
-1. **Always include a machine-readable error code** — `VALIDATION_ERROR`, `NOT_FOUND`, `RATE_LIMITED`
-2. **Include a human-readable message** — suitable for developer debugging
-3. **Never expose internal errors** — no stack traces, SQL queries, or file paths in production
-4. **Field-level errors in `details` array** — for validation errors, specify which field failed
+1. **Always include a machine-readable error code** -- `VALIDATION_ERROR`, `NOT_FOUND`, `RATE_LIMITED`
+2. **Include a human-readable message** -- suitable for developer debugging
+3. **Never expose internal errors** -- no stack traces, SQL queries, or file paths in production
+4. **Field-level errors in `details` array** -- for validation errors, specify which field failed
 
 ## Pagination
 
@@ -147,9 +152,9 @@ Response:
 
 ### Rules
 
-1. **Default page size: 25, max: 100** — prevent clients from requesting unlimited data
-2. **Always return pagination metadata** — clients need to know if there are more pages
-3. **Use cursor-based for real-time data or large tables** — offset-based breaks with concurrent writes
+1. **Default page size: 25, max: 100** -- prevent clients from requesting unlimited data
+2. **Always return pagination metadata** -- clients need to know if there are more pages
+3. **Use cursor-based for real-time data or large tables** -- offset-based breaks with concurrent writes
 
 ## Filtering and Sorting
 
@@ -174,18 +179,18 @@ GET /api/v1/orders?status=shipped&sort=-created_at&page=1&per_page=25
 ### Rules
 
 1. **Use `snake_case` for query parameter names**
-2. **Support multiple sort fields** — `?sort=-created_at,name`
-3. **Validate all filter parameters** — return 400 for unknown fields
+2. **Support multiple sort fields** -- `?sort=-created_at,name`
+3. **Validate all filter parameters** -- return 400 for unknown fields
 4. **Document allowed filter fields per endpoint**
 
 ## Request and Response Conventions
 
-1. **Use `snake_case` for all JSON keys** — `created_at`, `first_name`, `order_id`
-2. **Use ISO 8601 for dates** — `2025-06-15T14:30:00Z`
-3. **Use UUIDs or opaque strings for IDs** — avoid exposing auto-increment integers
-4. **Wrap collections in a `data` key** — `{ "data": [...] }`, not a bare array
+1. **Use `snake_case` for all JSON keys** -- `created_at`, `first_name`, `order_id`
+2. **Use ISO 8601 for dates** -- `2025-06-15T14:30:00Z`
+3. **Use UUIDs or opaque strings for IDs** -- avoid exposing auto-increment integers
+4. **Wrap collections in a `data` key** -- `{ "data": [...] }`, not a bare array
 5. **Include `created_at` and `updated_at` in all resources**
-6. **Use `null` for absent optional fields** — don't omit them entirely
+6. **Use `null` for absent optional fields** -- don't omit them entirely
 
 ```json
 {
@@ -204,7 +209,7 @@ GET /api/v1/orders?status=shipped&sort=-created_at&page=1&per_page=25
 
 ## Versioning
 
-1. **Use URL path versioning** — `/api/v1/`, `/api/v2/`
+1. **Use URL path versioning** -- `/api/v1/`, `/api/v2/`
 2. **Increment the major version only for breaking changes**
 3. **Support the previous version for at least 6 months after deprecation**
 4. **Return a `Deprecation` header on deprecated endpoints**
@@ -212,16 +217,16 @@ GET /api/v1/orders?status=shipped&sort=-created_at&page=1&per_page=25
 
 ## Authentication
 
-1. **Use Bearer tokens in the `Authorization` header** — `Authorization: Bearer <token>`
-2. **Never pass tokens in query parameters** — they end up in server logs
+1. **Use Bearer tokens in the `Authorization` header** -- `Authorization: Bearer <token>`
+2. **Never pass tokens in query parameters** -- they end up in server logs
 3. **Return 401 for missing/invalid tokens, 403 for insufficient permissions**
-4. **Include rate limit headers** — `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
+4. **Include rate limit headers** -- `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
 
 ## Anti-patterns
 
-- **Verbs in URLs** — use HTTP methods instead
-- **Returning 200 with error body** — use proper status codes
-- **Nested resources deeper than 2 levels** — flatten with query parameters
-- **Inconsistent naming** — pick `snake_case` or `camelCase` and stick with it
-- **Missing pagination on list endpoints** — always paginate collections
-- **Exposing internal IDs** — use prefixed opaque IDs like `usr_`, `ord_`, `prod_`
+- **Verbs in URLs** -- use HTTP methods instead
+- **Returning 200 with error body** -- use proper status codes
+- **Nested resources deeper than 2 levels** -- flatten with query parameters
+- **Inconsistent naming** -- pick `snake_case` or `camelCase` and stick with it
+- **Missing pagination on list endpoints** -- always paginate collections
+- **Exposing internal IDs** -- use prefixed opaque IDs like `usr_`, `ord_`, `prod_`

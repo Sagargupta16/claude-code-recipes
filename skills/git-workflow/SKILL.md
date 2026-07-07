@@ -1,3 +1,8 @@
+---
+name: git-workflow
+description: Git conventions covering branch naming, conventional commits, PR format, squash strategy, and protected branches. Use when committing, branching, opening PRs, or setting up a git workflow for a project.
+---
+
 # Git Workflow
 
 > Git conventions: branch naming, conventional commits, PR format, squash strategy, and protected branches.
@@ -19,7 +24,7 @@ Use the format: `<type>/<ticket>-<short-description>`
 ### Rules
 
 1. **Always branch from `main`** (or `develop` if using Git Flow)
-2. **Use lowercase and hyphens** — no underscores, no camelCase
+2. **Use lowercase and hyphens** -- no underscores, no camelCase
 3. **Include the ticket number** when a tracker exists
 4. **Keep descriptions under 5 words**
 5. **Delete branches after merging**
@@ -57,10 +62,10 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 ### Rules
 
 1. **Subject line under 72 characters**
-2. **Use imperative mood** — "add feature" not "added feature" or "adds feature"
+2. **Use imperative mood** -- "add feature" not "added feature" or "adds feature"
 3. **No period at the end of the subject**
-4. **Scope is optional but encouraged** — use the module or component name
-5. **Body explains *why*, not *what*** — the diff shows what changed
+4. **Scope is optional but encouraged** -- use the module or component name
+5. **Body explains *why*, not *what*** -- the diff shows what changed
 6. **Footer for breaking changes and issue references**
 
 ### Examples
@@ -125,12 +130,12 @@ Closes #123
 
 ### PR Rules
 
-1. **One concern per PR** — don't mix features with refactoring
-2. **Keep PRs under 400 lines** — split larger changes into a stack
-3. **Self-review before requesting review** — check the diff yourself first
-4. **Respond to all review comments** — resolve or explain why not
+1. **One concern per PR** -- don't mix features with refactoring
+2. **Keep PRs under 400 lines** -- split larger changes into a stack
+3. **Self-review before requesting review** -- check the diff yourself first
+4. **Respond to all review comments** -- resolve or explain why not
 5. **Update the PR description if scope changes**
-6. **Add reviewers based on CODEOWNERS** — or at least one domain expert
+6. **Add reviewers based on CODEOWNERS** -- or at least one domain expert
 
 ## Merge Strategy
 
@@ -145,23 +150,23 @@ Use squash merge for feature branches:
 
 ### When to Use Regular Merge
 
-- **Release branches** — preserve the full history
-- **Long-lived branches** — when commit history tells a story
-- **Merge commits from `main` into a feature branch** — to stay up to date
+- **Release branches** -- preserve the full history
+- **Long-lived branches** -- when commit history tells a story
+- **Merge commits from `main` into a feature branch** -- to stay up to date
 
 ### When to Rebase
 
-- **Before opening a PR** — rebase on `main` to get a clean diff
-- **To clean up local commits** — squash fixups before pushing
+- **Before opening a PR** -- rebase on `main` to get a clean diff
+- **To clean up local commits** -- squash fixups before pushing
 
 ## Protected Branches
 
 ### `main` branch rules
 
-1. **No direct pushes** — all changes go through PRs
+1. **No direct pushes** -- all changes go through PRs
 2. **Require at least 1 approval** (2 for critical paths)
-3. **Require passing CI checks** — tests, lint, build
-4. **Require up-to-date branch** — must be rebased on latest `main`
+3. **Require passing CI checks** -- tests, lint, build
+4. **Require up-to-date branch** -- must be rebased on latest `main`
 5. **Require signed commits** (optional but recommended)
 6. **No force pushes**
 
@@ -172,10 +177,10 @@ Use squash merge for feature branches:
 
 ## Tagging and Releases
 
-1. **Use semantic versioning** — `v1.2.3`
-2. **Tag releases on `main`** — after the merge
-3. **Write release notes** — summarize changes since the last release
-4. **Automate with CI** — use GitHub Actions or equivalent to create releases on tag push
+1. **Use semantic versioning** -- `v1.2.3`
+2. **Tag releases on `main`** -- after the merge
+3. **Write release notes** -- summarize changes since the last release
+4. **Automate with CI** -- use GitHub Actions or equivalent to create releases on tag push
 
 ```bash
 # Create a release tag
@@ -198,9 +203,9 @@ git push origin v1.2.3
 
 ## Anti-patterns
 
-- **Committing to `main` directly** — always use a branch and PR
-- **Giant PRs (1000+ lines)** — split into smaller, reviewable chunks
-- **Vague commit messages** — "fix stuff", "updates", "wip"
-- **Long-lived feature branches** — merge frequently or use feature flags
-- **Force pushing shared branches** — only force push your own branches
-- **Merge commits in feature branches** — rebase instead to keep history clean
+- **Committing to `main` directly** -- always use a branch and PR
+- **Giant PRs (1000+ lines)** -- split into smaller, reviewable chunks
+- **Vague commit messages** -- "fix stuff", "updates", "wip"
+- **Long-lived feature branches** -- merge frequently or use feature flags
+- **Force pushing shared branches** -- only force push your own branches
+- **Merge commits in feature branches** -- rebase instead to keep history clean

@@ -1,3 +1,8 @@
+---
+name: typescript-strict
+description: Strict TypeScript conventions covering strict mode config, no-any rules, utility types, discriminated unions, branded types, and error handling patterns. Use when writing TypeScript, tightening types, or migrating code to strict mode.
+---
+
 # TypeScript Strict
 
 > Strict TypeScript conventions: strict mode config, no-any rules, utility types, discriminated unions, branded types, and error handling patterns.
@@ -23,21 +28,21 @@ Always enable strict mode. Use this `tsconfig.json` base:
 
 ### What `strict: true` Enables
 
-- `strictNullChecks` — `null` and `undefined` are their own types
-- `strictFunctionTypes` — function parameter types are checked strictly
-- `strictBindCallApply` — `bind`, `call`, `apply` are typed correctly
-- `strictPropertyInitialization` — class properties must be initialized
-- `noImplicitAny` — no implicit `any` types
-- `noImplicitThis` — `this` must have an explicit type
-- `alwaysStrict` — emit `"use strict"` in every file
+- `strictNullChecks` -- `null` and `undefined` are their own types
+- `strictFunctionTypes` -- function parameter types are checked strictly
+- `strictBindCallApply` -- `bind`, `call`, `apply` are typed correctly
+- `strictPropertyInitialization` -- class properties must be initialized
+- `noImplicitAny` -- no implicit `any` types
+- `noImplicitThis` -- `this` must have an explicit type
+- `alwaysStrict` -- emit `"use strict"` in every file
 
 ## No `any` Rules
 
-1. **Never use `any`** — use `unknown` when the type is truly unknown
-2. **Use `unknown` and narrow** — type guards, `instanceof`, `typeof`
-3. **Use generics for flexible types** — `function parse<T>(input: string): T`
-4. **Use `Record<string, unknown>` over `object`** — more explicit
-5. **Suppress with `// @ts-expect-error` (not `// @ts-ignore`)** — `@ts-expect-error` fails if the error is fixed
+1. **Never use `any`** -- use `unknown` when the type is truly unknown
+2. **Use `unknown` and narrow** -- type guards, `instanceof`, `typeof`
+3. **Use generics for flexible types** -- `function parse<T>(input: string): T`
+4. **Use `Record<string, unknown>` over `object`** -- more explicit
+5. **Suppress with `// @ts-expect-error` (not `// @ts-ignore`)** -- `@ts-expect-error` fails if the error is fixed
 
 ```typescript
 // Bad
@@ -50,7 +55,7 @@ function parse(data: string): unknown {
   return JSON.parse(data);
 }
 
-// Good — with type guard
+// Good -- with type guard
 function isUser(value: unknown): value is User {
   return (
     typeof value === "object" &&
@@ -126,11 +131,11 @@ function renderResult<T>(result: ApiResult<T>) {
 ### Rules
 
 1. **Use a literal `type` or `kind` field as the discriminant**
-2. **Handle all variants** — enable `noFallthroughCasesInSwitch`
-3. **Use exhaustive checks** — add a `never` default case
+2. **Handle all variants** -- enable `noFallthroughCasesInSwitch`
+3. **Use exhaustive checks** -- add a `never` default case
 
 ```typescript
-// Exhaustive switch — compile error if a variant is missed
+// Exhaustive switch -- compile error if a variant is missed
 function assertNever(value: never): never {
   throw new Error(`Unhandled variant: ${JSON.stringify(value)}`);
 }
@@ -192,7 +197,7 @@ function Email(value: string): Email {
   return value as Email;
 }
 
-// Type safety — can't mix them up
+// Type safety -- can't mix them up
 function getUser(id: UserId): Promise<User> { /* ... */ }
 function getOrder(id: OrderId): Promise<Order> { /* ... */ }
 
@@ -200,7 +205,7 @@ const userId = UserId("usr_abc123");
 const orderId = OrderId("ord_xyz789");
 
 getUser(userId);    // OK
-getUser(orderId);   // Compile error — OrderId is not UserId
+getUser(orderId);   // Compile error -- OrderId is not UserId
 ```
 
 ## Error Handling Patterns
@@ -276,10 +281,10 @@ class ValidationError extends AppError {
 
 ### Rules
 
-1. **Use Result types for expected failures** — validation, not-found, business rules
-2. **Throw exceptions for unexpected failures** — programming errors, system failures
-3. **Type your errors** — don't use `catch (e: any)`
-4. **Use `cause` for error chains** — `new Error("Failed to save", { cause: originalError })`
+1. **Use Result types for expected failures** -- validation, not-found, business rules
+2. **Throw exceptions for unexpected failures** -- programming errors, system failures
+3. **Type your errors** -- don't use `catch (e: any)`
+4. **Use `cause` for error chains** -- `new Error("Failed to save", { cause: originalError })`
 
 ## Type Narrowing Techniques
 
@@ -314,10 +319,10 @@ const users = [getUser(1), getUser(2), null].filter(isDefined);
 
 ## Anti-patterns
 
-- **Using `any` to silence type errors** — find the correct type or use `unknown`
-- **Type assertions (`as`) without validation** — narrow with type guards instead
-- **Enums** — prefer union types of string literals for better tree-shaking
-- **`Boolean` constructor as filter** — `.filter(Boolean)` loses type narrowing; use `.filter(isDefined)`
-- **Ignoring `strictNullChecks`** — the single most valuable strict check
-- **Overusing `!` non-null assertion** — it lies to the compiler; handle the null case
-- **Complex conditional types in application code** — keep them in library/utility code
+- **Using `any` to silence type errors** -- find the correct type or use `unknown`
+- **Type assertions (`as`) without validation** -- narrow with type guards instead
+- **Enums** -- prefer union types of string literals for better tree-shaking
+- **`Boolean` constructor as filter** -- `.filter(Boolean)` loses type narrowing; use `.filter(isDefined)`
+- **Ignoring `strictNullChecks`** -- the single most valuable strict check
+- **Overusing `!` non-null assertion** -- it lies to the compiler; handle the null case
+- **Complex conditional types in application code** -- keep them in library/utility code
