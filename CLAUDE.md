@@ -42,7 +42,7 @@ claude-md/         # CLAUDE.md templates for different project types
 - Include examples (good and bad) in skills and commands
 - Keep recipes self-contained - don't require reading other files
 - Use imperative mood in instructions: "Run the tests" not "You should run the tests"
-- No emojis in file content
+- Recipes ship emoji-free; enforce on contributor PRs too
 
 ## Do NOT
 
