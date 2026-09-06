@@ -1,34 +1,66 @@
-# /audit-repos
+---
+model: sonnet
+description: Audit all your GitHub repos for CI health, hygiene, security alerts, and staleness
+allowed-tools:
+  - Bash(gh *)
+---
 
-Audit all repos for health, hygiene, and security issues.
+Audit every repository I own for health, hygiene, and security problems.
 
-## Command File
+Scope: my own non-fork repositories. Include private repos only if `$ARGUMENTS` says so; otherwise stick to public ones.
 
-Save as `.claude/commands/audit-repos.md`:
+## Step 1 -- List the Repos
 
-```markdown
-Audit all my GitHub repos for health issues.
-
-For each repo (use gh repo list):
-1. Check CI status: latest workflow run pass/fail
-2. Check security: Dependabot/security alerts
-3. Check hygiene: README exists, LICENSE exists, .gitignore exists
-4. Check staleness: last commit date, any open Renovate/Dependabot PRs
-
-Report a summary table with:
-- Repo name | Last Commit | CI Status | Security Alerts | Missing Files
-
-Flag critical issues: failing CI, high-severity alerts, missing LICENSE.
+```bash
+gh repo list --no-archived --source --limit 200 \
+  --json name,visibility,pushedAt,isFork,licenseInfo,description
 ```
 
-## Usage
+## Step 2 -- Check Each Repo
+
+For every repo, collect these four signals. Skip a check rather than guessing when the API returns 403 or 404, and say which checks were skipped.
+
+**CI status** -- latest workflow run conclusion:
+
+```bash
+gh run list --repo {owner}/{repo} --limit 1 --json conclusion,name,createdAt
+```
+
+A repo with no workflows is "none", not "failing".
+
+**Security** -- open Dependabot alerts by severity:
+
+```bash
+gh api repos/{owner}/{repo}/dependabot/alerts --jq '[.[] | select(.state=="open") | .security_advisory.severity] | group_by(.) | map({severity: .[0], count: length})'
+```
+
+**Hygiene** -- which of `README.md`, `LICENSE`, `.gitignore` are missing:
+
+```bash
+gh api repos/{owner}/{repo}/contents --jq '[.[].name]'
+```
+
+**Staleness** -- last push date from step 1, plus open bot PRs:
+
+```bash
+gh pr list --repo {owner}/{repo} --author "app/dependabot" --json number,title
+gh pr list --repo {owner}/{repo} --author "app/renovate" --json number,title
+```
+
+## Step 3 -- Report
+
+Output one table sorted worst-first:
 
 ```
-/audit-repos
+| Repo | Last Push | CI | Security | Missing Files | Open Bot PRs |
 ```
 
-## Notes
+Then a **Critical** section listing, with the repo name and the exact next command to run:
 
-- Scans all public repos by default
-- Can take 1-2 minutes for 50+ repos
-- Use `--model haiku` for the subagents to save costs
+- Failing CI on the default branch
+- Any open high or critical severity alert
+- A public repo with no LICENSE
+
+Then a **Warnings** section for missing README or `.gitignore`, and repos with no push in over 6 months.
+
+Read only. Do not open PRs, change settings, or dismiss alerts.

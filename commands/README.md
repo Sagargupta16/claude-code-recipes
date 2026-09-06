@@ -32,17 +32,32 @@ Then open Claude Code in your project. Type `/` and you will see your commands l
 
 ```yaml
 ---
-model: sonnet              # haiku | sonnet | opus
-description: One-liner     # shown in the /command picker
-allowed-tools: []          # optional -- restrict tool access
+model: sonnet                 # haiku | sonnet | opus
+description: One-liner        # shown in the /command picker
+argument-hint: [file-path]    # shown during autocomplete
+allowed-tools:                # pre-approves these for the invoking turn
+  - Bash(git status *)
+  - Read
+disallowed-tools:             # actually removes tools from the pool
+  - WebFetch
 ---
 ```
 
-| Field           | Required | Description                                                                 |
-|-----------------|----------|-----------------------------------------------------------------------------|
-| `model`         | No       | Which Claude model to use. Defaults to your session model if omitted.       |
-| `description`   | Yes      | Short description displayed in the slash-command list.                      |
-| `allowed-tools` | No       | Array of tool names. Omit to allow all tools.                               |
+| Field              | Required | Description                                                                                          |
+|--------------------|----------|------------------------------------------------------------------------------------------------------|
+| `description`      | Yes      | Short description displayed in the slash-command list. Required by this repo; Claude Code falls back to the first paragraph of the body if you omit it. |
+| `model`            | No       | Which Claude model to use. Defaults to your session model if omitted.                                |
+| `argument-hint`    | No       | Autocomplete hint for expected arguments, e.g. `[issue-number]` or `[file] [format]`.                |
+| `arguments`        | No       | Named positional arguments, for `$name` substitution in the body.                                    |
+| `allowed-tools`    | No       | Tools Claude may use **without asking permission** during the turn that invokes the command. This does not restrict anything: every other tool stays callable, and the grant clears on your next message. |
+| `disallowed-tools` | No       | Tools **removed** from Claude's pool while the command is active. This is the field that restricts.   |
+| `effort`           | No       | `low`, `medium`, `high`, `xhigh`, or `max` for this command.                                          |
+| `context`          | No       | Set to `fork` to run the command in a forked subagent context.                                        |
+| `agent`            | No       | Which subagent type to use when `context: fork` is set.                                              |
+
+> The opening `---` must be the file's **first line**. Otherwise Claude Code reads the whole file, `---` markers included, as command content and ignores every field above.
+
+Both tool fields accept a YAML list (as above), or a space- or comma-separated string. Entries can be bare tool names (`Read`, `Grep`) or permission rules that narrow a tool to specific commands: `Bash(git add *)`, `Bash(gh *)`, `Bash(npm run test *)`.
 
 ## Command Recipes
 
@@ -60,13 +75,21 @@ allowed-tools: []          # optional -- restrict tool access
 | 10 | `/performance-audit` | sonnet | [performance-audit.md](performance-audit.md) | Find performance bottlenecks across the stack |
 | 11 | `/api-gen` | sonnet | [api-gen.md](api-gen.md) | Generate REST API endpoints with validation and tests |
 | 12 | `/component-gen` | sonnet | [component-gen.md](component-gen.md) | Generate React/Vue components with types, a11y, and tests |
-| 13 | `/check-all-prs` | -- | [check-all-prs.md](check-all-prs.md) | Check all your open PRs across GitHub repos |
-| 14 | `/audit-repos` | -- | [audit-repos.md](audit-repos.md) | Audit all repos for health, hygiene, and security issues |
-| 15 | `/update-status` | -- | [update-status.md](update-status.md) | Refresh a STATUS.md dashboard with live GitHub data |
+| 13 | `/check-all-prs` | haiku | [check-all-prs.md](check-all-prs.md) | Check all your open PRs across GitHub repos |
+| 14 | `/audit-repos` | sonnet | [audit-repos.md](audit-repos.md) | Audit all repos for health, hygiene, and security issues |
+| 15 | `/update-status` | sonnet | [update-status.md](update-status.md) | Refresh a STATUS.md dashboard with live GitHub data |
+
+### GitHub commands: prerequisites
+
+`/check-all-prs`, `/audit-repos`, and `/update-status` shell out to the `gh` CLI, so they need [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`). All three are read-only against GitHub: they never push, comment, or merge. `/update-status` writes `STATUS.md` in your repo root and leaves the change uncommitted for review.
+
+- `/audit-repos` covers public repos by default; pass an argument to include private ones. Expect it to take a couple of minutes across a large account, since it makes several API calls per repo.
+- `/update-status` is aimed at multi-repo workspaces where a single dashboard file tracks everything. Run it at the start of a session.
 
 ## Tips
 
 - **Start with haiku** for fast, low-cost tasks (commit messages, PR descriptions). Upgrade to sonnet or opus only when reasoning depth is needed.
-- **Use `allowed-tools`** to restrict commands that should not execute code (e.g., a review command that should only read files).
+- **Use `disallowed-tools`, not `allowed-tools`, to restrict** a command that should not execute code. `allowed-tools` only pre-approves tools so Claude stops asking; it never takes a tool away. A review command with `allowed-tools: Read` can still run Bash.
+- **Use `allowed-tools` with narrow rules** to kill permission prompts for the commands you run constantly: `Bash(git diff *)` on a review command, `Bash(gh *)` on a PR command.
 - **Parameterize with `$ARGUMENTS`** -- when a user types `/command some text`, the `some text` part is available as `$ARGUMENTS` in your instructions.
 - **Combine commands with hooks** -- pair a `/commit-message` command with a pre-commit hook for a fully automated workflow.
