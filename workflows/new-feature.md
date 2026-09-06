@@ -8,20 +8,20 @@
 
 | Phase | Mode | Recipes Used | Time |
 |-------|------|-------------|------|
-| 1. Plan | Plan | — | 5-10 min |
-| 2. Scaffold | Code | `/component-gen`, `/api-gen` | 5-15 min |
-| 3. Implement | Code | Subagents (frontend-dev, backend-dev) | 15-60 min |
-| 4. Test | Code | `/test-gen`, test-runner subagent | 10-20 min |
-| 5. Review | Code | `/code-review`, code-reviewer subagent | 5-10 min |
-| 6. Ship | Code | `/pr-description`, `/commit-message` | 5 min |
+| 1. Plan | `plan` | -- | 5-10 min |
+| 2. Scaffold | `default` | `/component-gen`, `/api-gen` | 5-15 min |
+| 3. Implement | `default` | Subagents (frontend-dev, backend-dev) | 15-60 min |
+| 4. Test | `default` | `/test-gen`, test-runner subagent | 10-20 min |
+| 5. Review | `default` | `/code-review`, code-reviewer subagent | 5-10 min |
+| 6. Ship | `default` | `/pr-description`, `/commit-message` | 5 min |
 
 ---
 
 ## Step 1: Plan
 
-**Mode**: Plan (or use `shift+tab` to toggle)
+**Mode**: `plan` (or use `shift+tab` to toggle)
 
-Start by asking Claude to analyze the requirements and propose an implementation plan. Plan mode prevents any code changes — Claude will only think and discuss.
+Start by asking Claude to analyze the requirements and propose an implementation plan. Plan mode prevents any code changes -- Claude will only think and discuss.
 
 **Prompt**:
 ```
@@ -50,9 +50,9 @@ Analyze the existing codebase and propose an implementation plan. Include:
 
 ## Step 2: Scaffold
 
-**Mode**: Code
+**Mode**: `default`
 
-Create the skeleton — empty files, interfaces, type definitions, and API stubs.
+Create the skeleton -- empty files, interfaces, type definitions, and API stubs.
 
 **Prompt**:
 ```
@@ -62,18 +62,18 @@ Let's implement the plan. Start by scaffolding:
 3. Create empty function signatures with TODO comments
 4. Set up the routing/API endpoints (stubs only)
 
-Don't implement business logic yet — just the structure.
+Don't implement business logic yet -- just the structure.
 ```
 
 **Recipes to use**:
-- `/component-gen` — if the feature includes React/Vue components
-- `/api-gen` — if the feature includes REST endpoints
+- `/component-gen` -- if the feature includes React/Vue components
+- `/api-gen` -- if the feature includes REST endpoints
 
 ---
 
 ## Step 3: Implement
 
-**Mode**: Code
+**Mode**: `default`
 
 Now fill in the business logic. For complex features, delegate to specialized subagents.
 
@@ -91,7 +91,7 @@ API design conventions (proper status codes, error responses, validation).
 Start with [specific endpoint].
 ```
 
-**For complex features** — delegate to subagents:
+**For complex features** -- delegate to subagents:
 ```
 Use the frontend-dev subagent to implement the UI components,
 then use the backend-dev subagent for the API layer.
@@ -106,7 +106,7 @@ then use the backend-dev subagent for the API layer.
 
 ## Step 4: Test
 
-**Mode**: Code
+**Mode**: `default`
 
 Generate and run tests for the new feature.
 
@@ -122,8 +122,8 @@ Run the tests and fix any failures.
 ```
 
 **Recipes to use**:
-- `/test-gen` — generate test files
-- Test-runner subagent — run tests and fix failures automatically
+- `/test-gen` -- generate test files
+- Test-runner subagent -- run tests and fix failures automatically
 
 **Coverage check**:
 ```
@@ -134,7 +134,7 @@ Check test coverage for the files we changed. We need at least 80% line coverage
 
 ## Step 5: Review
 
-**Mode**: Code
+**Mode**: `default`
 
 Self-review before opening a PR.
 
@@ -156,7 +156,7 @@ Focus on: bugs, security issues, performance, and adherence to our conventions.
 
 ## Step 6: Ship
 
-**Mode**: Code
+**Mode**: `default`
 
 Create a clean commit and PR.
 

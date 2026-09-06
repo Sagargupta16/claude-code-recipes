@@ -48,8 +48,8 @@ cp claude-code-recipes/claude-md/starter.md CLAUDE.md
 ```
 
 **Placement**:
-- `CLAUDE.md` in the repo root — loaded for every session
-- `some-dir/CLAUDE.md` — loaded when working in that directory
+- `CLAUDE.md` in the repo root -- loaded for every session
+- `some-dir/CLAUDE.md` -- loaded when working in that directory
 
 ---
 
@@ -60,10 +60,10 @@ Commands are reusable prompts you invoke with `/command-name`. Copy the ones rel
 **Prompt**:
 ```
 Set up Claude Code commands for this project. I want:
-- /code-review — review staged changes
-- /test-gen — generate tests for a file
-- /commit-message — generate commit messages
-- /pr-description — generate PR descriptions
+- /code-review -- review staged changes
+- /test-gen -- generate tests for a file
+- /commit-message -- generate commit messages
+- /pr-description -- generate PR descriptions
 
 Copy the command files and verify they work.
 ```
@@ -93,7 +93,7 @@ cp claude-code-recipes/commands/pr-description.md .claude/commands/
 
 ## Step 3: Configure Hooks
 
-Hooks automate quality checks — linting before commits, formatting after edits, testing before pushes.
+Hooks automate quality checks -- linting before commits, formatting after edits, testing before pushes.
 
 **Prompt**:
 ```
@@ -126,34 +126,53 @@ Then add hook configuration to `.claude/settings.json`:
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "git_commit",
-        "command": "bash .claude/hooks/pre-commit-lint.sh"
-      },
-      {
-        "matcher": "git_push",
-        "command": "bash .claude/hooks/pre-push-test.sh"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit *)",
+            "command": "bash .claude/hooks/pre-commit-lint.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git push *)",
+            "command": "bash .claude/hooks/pre-push-test.sh"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "file_edit|create_file",
-        "command": "bash .claude/hooks/post-edit-format.sh"
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-format.sh"
+          }
+        ]
       }
     ],
     "Notification": [
       {
-        "command": "bash .claude/hooks/notification.sh"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/notification.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
 
+The matcher matches the **tool name** (`Bash`, `Edit|Write`), not a git subcommand. The per-handler `if` field narrows a Bash hook to one command with permission-rule syntax.
+
 ---
 
 ## Step 4: Add MCP Servers
 
-MCP servers give Claude access to external tools — GitHub, databases, documentation.
+MCP servers give Claude access to external tools -- GitHub, databases, documentation.
 
 **Prompt**:
 ```
@@ -172,10 +191,10 @@ cat > .mcp.json << 'EOF'
 {
   "mcpServers": {
     "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
     "memory": {
@@ -186,6 +205,8 @@ cat > .mcp.json << 'EOF'
 }
 EOF
 ```
+
+`type` is required on any entry that has a `url`: Claude Code reads a `url` entry with no `type` as a stdio server and skips it.
 
 **Which servers to add**:
 

@@ -1,6 +1,6 @@
 ---
 model: sonnet
-description: Find performance bottlenecks across the stack — queries, rendering, bundle size, memory
+description: Find performance bottlenecks across the stack -- queries, rendering, bundle size, memory
 allowed-tools:
   - Bash
   - Read
@@ -10,17 +10,17 @@ allowed-tools:
 
 You are a performance engineer. Audit this codebase for performance bottlenecks and optimization opportunities.
 
-## Step 1 — Identify the Stack
+## Step 1 -- Identify the Stack
 
 Determine the project type and tech stack to focus on the most relevant checks:
-- **Frontend:** React, Vue, Svelte, Angular — check rendering, bundle size, lazy loading
-- **Backend:** Express, Fastify, Django, Flask, Rails — check queries, caching, async patterns
+- **Frontend:** React, Vue, Svelte, Angular -- check rendering, bundle size, lazy loading
+- **Backend:** Express, Fastify, Django, Flask, Rails -- check queries, caching, async patterns
 - **Full-stack:** Check both sides plus the data transfer layer
 - **CLI/Library:** Check algorithmic complexity, memory usage, startup time
 
 Read `package.json`, `tsconfig.json`, `webpack.config.*`, `vite.config.*`, build configs, and ORM configuration to understand the setup.
 
-## Step 2 — Database and Query Performance
+## Step 2 -- Database and Query Performance
 
 Search for database queries and ORM usage:
 
@@ -44,7 +44,7 @@ Search for database queries and ORM usage:
 - Verify connection pooling is configured (not opening a new connection per request)
 - Check for missing connection cleanup or pool exhaustion risks
 
-## Step 3 — Frontend Performance (if applicable)
+## Step 3 -- Frontend Performance (if applicable)
 
 ### Rendering Efficiency
 - Search for components that re-render unnecessarily: missing `React.memo`, `useMemo`, `useCallback` on expensive computations or callbacks passed as props
@@ -64,7 +64,7 @@ Search for database queries and ORM usage:
 - Verify critical CSS is inlined or prioritized
 - Check for unnecessary synchronous scripts in `<head>`
 
-## Step 4 — Backend Performance (if applicable)
+## Step 4 -- Backend Performance (if applicable)
 
 ### Async and Concurrency
 - Search for blocking operations in async contexts: synchronous file I/O, `sleep`, CPU-heavy computation on the event loop
@@ -88,7 +88,7 @@ Search for database queries and ORM usage:
 - Look for large JSON serialization/deserialization that could use streaming parsers
 - Search for redundant data transformations (serialize -> deserialize -> re-serialize)
 
-## Step 5 — Algorithmic Complexity
+## Step 5 -- Algorithmic Complexity
 
 Search for hot paths and check algorithmic complexity:
 - Nested loops over the same collection (O(n^2) or worse)
@@ -97,7 +97,7 @@ Search for hot paths and check algorithmic complexity:
 - Sorting inside loops when sorting once outside would suffice
 - Recursive functions without memoization that have overlapping subproblems
 
-## Step 6 — Report
+## Step 6 -- Report
 
 ```
 ## Performance Audit Report
@@ -127,7 +127,7 @@ Search for hot paths and check algorithmic complexity:
 - Suggested tools for ongoing monitoring (Lighthouse, profiler, APM)
 
 ### Quick Wins (highest impact-to-effort ratio)
-1. (change) — estimated impact — effort: minutes/hours
+1. (change) -- estimated impact -- effort: minutes/hours
 2. ...
 ```
 

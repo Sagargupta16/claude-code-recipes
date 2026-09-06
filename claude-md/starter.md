@@ -1,4 +1,4 @@
-# CLAUDE.md — Starter Template
+# CLAUDE.md -- Starter Template
 
 > Copy this file to your project root as `CLAUDE.md` and fill in the blanks.
 
@@ -47,13 +47,13 @@ tests/             # [Description]
 
 ## Conventions
 
-- [Convention 1 — e.g., "Use functional components, never class components"]
-- [Convention 2 — e.g., "All API responses use snake_case JSON keys"]
-- [Convention 3 — e.g., "Commit messages follow Conventional Commits"]
-- [Convention 4 — e.g., "Tests go next to the file they test: foo.test.ts"]
+- [Convention 1 -- e.g., "Use functional components, never class components"]
+- [Convention 2 -- e.g., "All API responses use snake_case JSON keys"]
+- [Convention 3 -- e.g., "Commit messages follow Conventional Commits"]
+- [Convention 4 -- e.g., "Tests go next to the file they test: foo.test.ts"]
 
 ## Do NOT
 
-- [Anti-pattern 1 — e.g., "Do not use `any` type in TypeScript"]
-- [Anti-pattern 2 — e.g., "Do not commit directly to main"]
-- [Anti-pattern 3 — e.g., "Do not use console.log for error handling"]
+- [Anti-pattern 1 -- e.g., "Do not use `any` type in TypeScript"]
+- [Anti-pattern 2 -- e.g., "Do not commit directly to main"]
+- [Anti-pattern 3 -- e.g., "Do not use console.log for error handling"]

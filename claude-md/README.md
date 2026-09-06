@@ -2,7 +2,7 @@
 
 > Guide to writing effective CLAUDE.md files and ready-to-use templates for different project types.
 
-`CLAUDE.md` is the single most important file for Claude Code. It gives Claude persistent context about your project — the tech stack, conventions, commands, and how to work effectively in your codebase. A good CLAUDE.md can be the difference between Claude producing generic code and Claude producing code that fits your project perfectly.
+`CLAUDE.md` is the single most important file for Claude Code. It gives Claude persistent context about your project -- the tech stack, conventions, commands, and how to work effectively in your codebase. A good CLAUDE.md can be the difference between Claude producing generic code and Claude producing code that fits your project perfectly.
 
 ---
 
@@ -20,9 +20,9 @@
 
 | Template | Lines | Best For | Link |
 |----------|:-----:|----------|------|
-| Starter | ~40 | Solo projects, quick setup | [starter.md](starter.md) |
-| Team Project | ~100 | Team conventions, CI/CD | [team-project.md](team-project.md) |
-| Monorepo | ~80 | Multi-package workspaces | [monorepo.md](monorepo.md) |
+| Starter | ~60 | Solo projects, quick setup | [starter.md](starter.md) |
+| Team Project | ~180 | Team conventions, CI/CD | [team-project.md](team-project.md) |
+| Monorepo | ~210 | Multi-package workspaces | [monorepo.md](monorepo.md) |
 
 ### How to choose
 
@@ -102,7 +102,7 @@ Do NOT:
 
 - Use headers, bullet points, and code blocks
 - Front-load the most important information
-- Keep it under 150 lines — too long and the signal gets diluted
+- Keep it under 250 lines -- too long and the signal gets diluted. The templates here run 59 to 210 lines, and the two larger ones are meant to be trimmed to the sections you actually need
 
 ---
 
@@ -127,7 +127,7 @@ Claude loads the root file plus any CLAUDE.md files in the current working direc
 
 ## Maintenance
 
-- **Review quarterly** — update when your stack or conventions change
-- **Add pain points** — if Claude keeps making the same mistake, add a rule
-- **Remove stale info** — outdated conventions cause confusion
-- **Version control it** — CLAUDE.md should be committed and reviewed like code
+- **Review quarterly** -- update when your stack or conventions change
+- **Add pain points** -- if Claude keeps making the same mistake, add a rule
+- **Remove stale info** -- outdated conventions cause confusion
+- **Version control it** -- CLAUDE.md should be committed and reviewed like code

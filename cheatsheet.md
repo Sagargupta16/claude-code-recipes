@@ -1,6 +1,6 @@
 # Claude Code Recipes - Cheatsheet
 
-> One-page quick reference. For full docs, see the [README](README.md).
+> One-page quick reference. For full docs, see the [README](README.md). If a recipe installs but does nothing, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ---
 
@@ -134,9 +134,9 @@ Copy to your project root as `CLAUDE.md`.
 
 | Template | Best For |
 |----------|----------|
-| [Starter](claude-md/starter.md) | Solo projects, ~40 lines |
-| [Team Project](claude-md/team-project.md) | Team conventions, ~100 lines |
-| [Monorepo](claude-md/monorepo.md) | Multi-package workspaces, ~80 lines |
+| [Starter](claude-md/starter.md) | Solo projects, ~60 lines |
+| [Team Project](claude-md/team-project.md) | Team conventions, ~180 lines |
+| [Monorepo](claude-md/monorepo.md) | Multi-package workspaces, ~210 lines |
 
 ---
 

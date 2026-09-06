@@ -1,6 +1,6 @@
 ---
 model: haiku
-description: Generate documentation — JSDoc, docstrings, README sections, or API docs
+description: Generate documentation -- JSDoc, docstrings, README sections, or API docs
 allowed-tools:
   - Bash
   - Read
@@ -12,7 +12,7 @@ allowed-tools:
 
 Generate documentation for the code specified in `$ARGUMENTS`. The argument may be a file path, a directory, a function name, or a keyword like "readme" or "api".
 
-## Step 1 — Determine Documentation Type
+## Step 1 -- Determine Documentation Type
 
 Parse `$ARGUMENTS` to figure out what kind of documentation is needed:
 
@@ -25,11 +25,11 @@ Parse `$ARGUMENTS` to figure out what kind of documentation is needed:
 | A function/class name | Find and document that specific symbol |
 | Nothing | Ask the user what they want documented |
 
-## Step 2a — Inline Documentation (JSDoc / Docstrings)
+## Step 2a -- Inline Documentation (JSDoc / Docstrings)
 
 For each exported function, class, method, type, and constant in the target file(s):
 
-**JavaScript/TypeScript — JSDoc:**
+**JavaScript/TypeScript -- JSDoc:**
 ```typescript
 /**
  * Brief one-line description of what this function does.
@@ -46,7 +46,7 @@ For each exported function, class, method, type, and constant in the target file
  */
 ```
 
-**Python — Docstrings (Google style):**
+**Python -- Docstrings (Google style):**
 ```python
 def my_function(name: str) -> str:
     """Brief one-line description.
@@ -73,24 +73,24 @@ Rules:
 - Document **why**, not just **what**, when the purpose is non-obvious.
 - Include at least one `@example` for public API functions.
 - Document thrown errors and edge-case behavior.
-- Preserve existing documentation — only add or improve, never remove unless it is incorrect.
+- Preserve existing documentation -- only add or improve, never remove unless it is incorrect.
 
-## Step 2b — README Generation
+## Step 2b -- README Generation
 
 If generating a README, include these sections:
 
 1. **Project title and badges** (build status, npm version, license if detectable)
-2. **One-paragraph description** — what the project does and who it is for
-3. **Quick start** — install and run in under 5 commands
-4. **Usage** — primary use cases with code examples
-5. **API overview** — table of main exports with one-line descriptions
-6. **Configuration** — environment variables, config files
-7. **Development** — how to set up locally, run tests, and contribute
-8. **License** — detected from LICENSE file or package.json
+2. **One-paragraph description** -- what the project does and who it is for
+3. **Quick start** -- install and run in under 5 commands
+4. **Usage** -- primary use cases with code examples
+5. **API overview** -- table of main exports with one-line descriptions
+6. **Configuration** -- environment variables, config files
+7. **Development** -- how to set up locally, run tests, and contribute
+8. **License** -- detected from LICENSE file or package.json
 
 Detect real values from the codebase (package name, scripts, entry points). Do not invent placeholder values.
 
-## Step 2c — API Reference
+## Step 2c -- API Reference
 
 If generating API documentation:
 
@@ -105,10 +105,10 @@ If generating API documentation:
 
 Format as a Markdown document with a table of contents.
 
-## Step 3 — Write the Documentation
+## Step 3 -- Write the Documentation
 
 Apply the documentation using the Edit tool for inline docs (to preserve surrounding code) or the Write tool for standalone doc files.
 
-## Step 4 — Summary
+## Step 4 -- Summary
 
 List all files modified or created and the number of documentation blocks added. If any functions were skipped (e.g., trivial one-liners or private internals), note them and explain why.

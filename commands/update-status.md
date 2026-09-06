@@ -1,32 +1,79 @@
-# /update-status
+---
+model: sonnet
+description: Refresh a STATUS.md dashboard with live GitHub data on PRs, CI, and security alerts
+allowed-tools:
+  - Bash(gh *)
+  - Read
+  - Edit
+  - Write
+---
 
-Refresh a STATUS.md dashboard with live GitHub data.
+Refresh `STATUS.md` in the repo root with live data from GitHub.
 
-## Command File
+If `STATUS.md` does not exist, create it using the section layout below. If it does exist, read it first and preserve its existing structure, headings, and any hand-written notes. Replace only the data.
 
-Save as `.claude/commands/update-status.md`:
+Repos to cover: the ones already named in `STATUS.md`. If the file is new, use `gh repo list --no-archived --source --limit 200 --json name,pushedAt` and cover the 10 most recently pushed.
 
-```markdown
-Update STATUS.md with live data from GitHub.
+## Step 1 -- Gather
 
-1. Get profile stats: gh api users/{username} (followers, repos, stars)
-2. Get contribution stats: gh api graphql (commits, PRs, reviews, issues)
-3. Check all open PRs: gh search prs "author:{username} is:open"
-4. For each open PR: check CI status, review status, merge readiness
-5. Check CI health: latest workflow run for key repos
-6. Check security alerts: Dependabot alerts on key repos
-7. Update STATUS.md with all findings
-8. Note the current date as "Last updated"
+**Profile stats:**
+
+```bash
+gh api user --jq '{login, followers, public_repos}'
+gh repo list --limit 200 --json stargazerCount --jq '[.[].stargazerCount] | add'
 ```
 
-## Usage
+**Contribution stats for the last year:**
 
+```bash
+gh api graphql -f query='{ viewer { contributionsCollection {
+  totalCommitContributions
+  totalPullRequestContributions
+  totalPullRequestReviewContributions
+  totalIssueContributions
+} } }'
 ```
-/update-status
+
+**Open PRs authored by me:**
+
+```bash
+gh search prs "author:@me is:open" --json repository,title,number,url,createdAt
 ```
 
-## Notes
+For each one, add CI and merge state:
 
-- Designed for multi-repo workspaces
-- Updates a central dashboard file
-- Run at the start of each session
+```bash
+gh pr checks {number} --repo {owner}/{repo}
+gh api repos/{owner}/{repo}/pulls/{number} --jq '{mergeable, mergeable_state, draft}'
+```
+
+**CI health per tracked repo:**
+
+```bash
+gh run list --repo {owner}/{repo} --limit 1 --json conclusion,name,createdAt
+```
+
+**Open security alerts per tracked repo:**
+
+```bash
+gh api repos/{owner}/{repo}/dependabot/alerts --jq '[.[] | select(.state=="open")] | length'
+```
+
+## Step 2 -- Write
+
+Update these sections:
+
+- **Profile** -- followers, public repo count, total stars
+- **Contributions** -- commits, PRs, reviews, issues over the last year
+- **Open PRs** -- table of repo, PR number, title, CI, review state, action needed
+- **CI Health** -- table of repo, latest run conclusion, run date
+- **Security Alerts** -- table of repo and open alert count, or "none open"
+- **Action Items** -- the shortlist that needs a human, ordered by urgency
+- **Last updated** -- today's date in `YYYY-MM-DD` form
+
+Rules for the write:
+
+- Use absolute `YYYY-MM-DD` dates, never "yesterday" or "last week"
+- Do not delete a section you have no data for. Write "no data (check skipped: 403)" instead
+- Do not invent a number. If an API call fails, say which one and leave the previous value with a note
+- Do not commit or push. Leave the change in the working tree for review

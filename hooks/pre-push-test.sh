@@ -2,7 +2,9 @@
 # ============================================================================
 # Pre-push Test Hook
 # Runs the project test suite before git push.
-# Exits 1 to block the push if any tests fail.
+# Exits 2 to block the push if any tests fail. Exit 2 is the only code a
+# PreToolUse hook can block with; any other non-zero code lets the push
+# through and only prints a hook error notice.
 #
 # Supported test runners:
 #   JavaScript/TypeScript: vitest, jest, mocha, npm test
@@ -13,9 +15,15 @@
 #   Elixir: mix test
 #   PHP: phpunit
 #
+# Event: PreToolUse, matcher "Bash" with if: "Bash(git push *)"
 # Install: Copy to .claude/hooks/ and add to .claude/settings.json
 # ============================================================================
 set -euo pipefail
+
+# Send everything this hook and the test runners print to stderr. On PreToolUse
+# the message Claude sees is stderr; stdout only reaches the debug log, so
+# leaving the failures there makes "fix the failing tests" point at nothing.
+exec 1>&2
 
 echo "[test-hook] Running test suite before push..."
 
@@ -33,6 +41,31 @@ has_file() {
   [[ -f "$1" ]]
 }
 
+# --------------------------------------------------------------------------
+# Helper: locate an already-installed node package binary
+# Walks up from the current directory looking for node_modules/.bin/<name>, so
+# a workspace package whose dependencies are hoisted to the repo root still
+# resolves. Prints the path and returns 0, or returns 1 if it is not installed.
+# A push hook must never install anything, so there is no npx fallback: a
+# missing runner is a skip, not a test failure.
+# --------------------------------------------------------------------------
+# Stopping when dirname stops changing the value covers every root without
+# naming any of them. Testing for "/" alone hangs on a UNC path, because Git
+# Bash resolves `dirname //` to `//` -- a fixed point that is neither "/" nor
+# empty, so the walk-up spins forever and `git push` never returns.
+find_node_bin() {
+  local name="$1" dir="$PWD" prev=""
+  while [[ -n "$dir" && "$dir" != "$prev" ]]; do
+    if [[ -f "$dir/node_modules/.bin/$name" ]]; then
+      printf '%s\n' "$dir/node_modules/.bin/$name"
+      return 0
+    fi
+    prev="$dir"
+    dir=$(dirname "$dir")
+  done
+  return 1
+}
+
 TESTS_RAN=false
 ERRORS=0
 
@@ -47,24 +80,26 @@ if has_file "package.json"; then
     echo "[test-hook] Detected Vitest. Running tests..."
     if has_cmd vitest; then
       vitest run || ERRORS=1
-    elif [[ -f node_modules/.bin/vitest ]]; then
-      node_modules/.bin/vitest run || ERRORS=1
+      TESTS_RAN=true
+    elif VITEST_BIN=$(find_node_bin vitest); then
+      "$VITEST_BIN" run || ERRORS=1
+      TESTS_RAN=true
     else
-      npx vitest run || ERRORS=1
+      echo "[test-hook] Vitest is configured but not installed. Skipping (install dependencies first)."
     fi
-    TESTS_RAN=true
 
   elif has_file "jest.config.ts" || has_file "jest.config.js" || has_file "jest.config.mjs" || \
        (has_file "package.json" && jq -e '.jest' package.json &>/dev/null); then
     echo "[test-hook] Detected Jest. Running tests..."
     if has_cmd jest; then
       jest --ci || ERRORS=1
-    elif [[ -f node_modules/.bin/jest ]]; then
-      node_modules/.bin/jest --ci || ERRORS=1
+      TESTS_RAN=true
+    elif JEST_BIN=$(find_node_bin jest); then
+      "$JEST_BIN" --ci || ERRORS=1
+      TESTS_RAN=true
     else
-      npx jest --ci || ERRORS=1
+      echo "[test-hook] Jest is configured but not installed. Skipping (install dependencies first)."
     fi
-    TESTS_RAN=true
 
   elif [[ -n "$TEST_SCRIPT" && "$TEST_SCRIPT" != "echo \"Error: no test specified\" && exit 1" ]]; then
     echo "[test-hook] Running npm test..."
@@ -163,9 +198,10 @@ fi
 
 if [[ $ERRORS -ne 0 ]]; then
   echo ""
-  echo "[test-hook] Tests failed. Push blocked."
-  echo "[test-hook] Fix the failing tests and try again."
-  exit 1
+  echo "[test-hook] Tests failed. Push blocked." >&2
+  echo "[test-hook] Fix the failing tests and try again." >&2
+  # Exit 2 is the blocking code for PreToolUse. Exit 1 would NOT block.
+  exit 2
 fi
 
 echo "[test-hook] All tests passed."

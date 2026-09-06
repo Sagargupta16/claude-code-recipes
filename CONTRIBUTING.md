@@ -38,6 +38,8 @@ Thank you for contributing! This guide explains how to add recipes, improve exis
 ---
 model: [haiku|sonnet|opus]
 description: One-line description shown in command list
+allowed-tools:
+  - Bash(git diff *)
 ---
 
 [System prompt for the command]
@@ -45,16 +47,22 @@ description: One-line description shown in command list
 $ARGUMENTS - if the command accepts input
 ```
 
-- Must specify a model (haiku for simple tasks, sonnet for complex, opus for deep analysis)
+- The opening `---` must be the file's first line, or the frontmatter is read as body text
+- Must specify a model (haiku for simple tasks, sonnet for complex, opus for deep analysis). Claude Code treats `model` as optional, but every recipe here sets one so the index tables can list it, and `scripts/validate-recipes.sh` enforces that
 - Must include `$ARGUMENTS` if the command takes user input
 - Must work without any project-specific setup
+- The body is the prompt itself. Do not wrap it in a nested code fence or add "save this file as ..." instructions: the file *is* the command
+- `allowed-tools` pre-approves tools so Claude stops asking. It does not restrict anything; use `disallowed-tools` for that
 
 #### Subagents (`subagents/*.md`)
 
 ```markdown
 ---
+name: agent-name
 model: [haiku|sonnet|opus]
 description: One-line description
+tools: Read, Glob, Grep
+disallowedTools: Write, Edit
 ---
 
 # Role
@@ -70,6 +78,9 @@ description: One-line description
 [How the agent should format its response]
 ```
 
+- `name` and `description` are required. A file with a `name` and no `description` is skipped, and the reason only shows under `--debug`
+- The allowlist field is `tools`, a **comma-separated string**. It is optional: omit it and the agent inherits every tool available to subagents. There is no `allowed-tools` field for subagents: it is an unrecognized key, so the agent silently inherits every tool including `Edit` and `Write`
+- Add `disallowedTools: Write, Edit` to any agent whose description promises it is read-only
 - Must define a clear role and specialty
 - Must include structured output format
 - Should handle edge cases gracefully
@@ -77,6 +88,11 @@ description: One-line description
 #### Skills (`skills/name/SKILL.md`)
 
 ```markdown
+---
+name: skill-name
+description: What this skill covers and when Claude should apply it
+---
+
 # Skill Name
 
 > One-line description
@@ -95,10 +111,11 @@ description: One-line description
 - Thing to avoid - why
 ```
 
+- Must open with YAML frontmatter on line 1. `description` is what drives auto-triggering, so write it as "what it covers plus when to use it"
 - Must be domain-specific (one topic per skill)
 - Must include concrete examples (good and bad)
 - Must explain *why*, not just *what*
-- Keep under 200 lines
+- Keep under 350 lines
 
 #### Hooks (`hooks/*.sh`)
 
@@ -114,14 +131,15 @@ set -euo pipefail
 - Must use `#!/usr/bin/env bash` shebang
 - Must use `set -euo pipefail`
 - Must auto-detect tools (don't hardcode paths)
-- Must exit 0 on success, 1 on failure
+- Must exit 0 on success and **2** to block. Exit 1 does not block: the action proceeds and the transcript just shows a hook error notice
+- Must read event data from the JSON payload on stdin (`.tool_name`, `.tool_input.file_path`, `.tool_input.command`), not from invented `CLAUDE_*` variables
 - Must handle missing tools gracefully (skip, don't crash)
 
 #### MCP Configs (`mcp-configs/*.json`)
 
 ```json
 {
-  "_comment": ["Description", "Requirements", "Install instructions"],
+  "_comment": ["Description", "Requirements", "Install instructions", "Docs: <url>"],
   "server-name": {
     "command": "npx",
     "args": ["-y", "@scope/package"],
@@ -132,7 +150,10 @@ set -euo pipefail
 
 - Must include `_comment` with description and requirements
 - Must use environment variables for secrets (never hardcode)
-- Must list available tools in `tools._available`
+- Must list what the server exposes under `tools`, in an `_available` key (or `_available_toolsets_*` for a server that groups its tools into toolsets)
+- Remote servers need `"type": "http"` alongside `url`. An entry with a `url` and no `type` is read as a stdio server and skipped
+- Must not install a package npm marks deprecated. Check with `npm view <package> deprecated` before you submit
+- The `Docs:` URL must return 200
 
 #### Workflows (`workflows/*.md`)
 
@@ -145,7 +166,7 @@ set -euo pipefail
 [Table with phases, modes, recipes used, time estimates]
 
 ## Step N: Title
-**Mode**: [Plan/Code]
+**Mode**: [`plan` | `default`]
 [Instructions with example prompts]
 
 ## Checklist
@@ -153,7 +174,7 @@ set -euo pipefail
 ```
 
 - Must include an overview table
-- Must specify which mode (Plan/Code) for each step
+- Must specify a real permission mode for each step (`default`, `plan`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`). "Code mode" is not one of them
 - Must reference specific recipes to use at each step
 - Must end with a verification checklist
 
@@ -166,13 +187,22 @@ Add your recipe to:
 
 ### 4. Test your recipe
 
-Before submitting, verify that:
+Run the validator first. It catches the mechanical mistakes, so review time goes on the content instead:
+
+```bash
+bash scripts/validate-recipes.sh
+```
+
+It checks command, subagent, and skill frontmatter, the hook config schema, JSON validity, banned dash characters, that every link back into this repo points at a file that exists, and that the recipe counts in `README.md` match the files on disk. CI runs the same script plus `shellcheck` and a link check on every pull request.
+
+Then verify by hand that:
 
 - [ ] The recipe works out of the box (no extra setup required)
 - [ ] File names use kebab-case
 - [ ] Markdown renders correctly on GitHub
-- [ ] Shell scripts are executable and pass `shellcheck`
+- [ ] Shell scripts are executable and pass `shellcheck -S style`
 - [ ] JSON files are valid (no trailing commas, proper escaping)
+- [ ] Every URL you added returns 200
 - [ ] The recipe doesn't require paid services or specific API keys
 - [ ] Examples are generic (not tied to a specific project)
 
@@ -200,10 +230,11 @@ docs(skills): add error handling examples to typescript-strict
 
 ### PR description
 
-Include:
+Opening a PR gives you [this template](.github/PULL_REQUEST_TEMPLATE.md) pre-filled. It asks for:
+
 - **What**: Which recipe you're adding or changing
 - **Why**: What problem it solves or what it improves
-- **Testing**: How you verified it works
+- **Testing**: How you verified it works, with the command you ran and what you saw
 
 ### Review process
 

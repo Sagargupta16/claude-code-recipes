@@ -1,6 +1,6 @@
 {
   "_comment": [
-    "Memory MCP Server — persistent knowledge graph for storing and retrieving information across sessions.",
+    "Memory MCP Server -- persistent knowledge graph for storing and retrieving information across sessions.",
     "No API keys required. Data is stored locally in a JSON file.",
     "Install: Copy the 'memory' key into .mcp.json under mcpServers.",
     "Docs: https://github.com/modelcontextprotocol/servers/tree/main/src/memory"
@@ -16,15 +16,15 @@
     },
     "tools": {
       "_available": [
-        "create_entities      — Create new entities in the knowledge graph",
-        "create_relations     — Create relationships between entities",
-        "add_observations     — Add observations/facts to existing entities",
-        "delete_entities      — Remove entities and their relations",
-        "delete_observations  — Remove specific observations from entities",
-        "delete_relations     — Remove relationships between entities",
-        "read_graph           — Read the entire knowledge graph",
-        "search_nodes         — Search for entities by name, type, or content",
-        "open_nodes           — Retrieve specific entities by name"
+        "create_entities      -- Create new entities in the knowledge graph",
+        "create_relations     -- Create relationships between entities",
+        "add_observations     -- Add observations/facts to existing entities",
+        "delete_entities      -- Remove entities and their relations",
+        "delete_observations  -- Remove specific observations from entities",
+        "delete_relations     -- Remove relationships between entities",
+        "read_graph           -- Read the entire knowledge graph",
+        "search_nodes         -- Search for entities by name, type, or content",
+        "open_nodes           -- Retrieve specific entities by name"
       ]
     },
     "_notes": {

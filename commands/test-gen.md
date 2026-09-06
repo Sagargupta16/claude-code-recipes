@@ -5,7 +5,7 @@ description: Generate comprehensive tests for a specified file with edge cases a
 
 Generate a thorough test suite for the file or module specified in `$ARGUMENTS`.
 
-## Step 1 — Analyze the Target
+## Step 1 -- Analyze the Target
 
 Read the file specified in `$ARGUMENTS`. If a file path is not provided, ask the user which file to test.
 
@@ -18,7 +18,7 @@ Identify:
 - Edge cases (empty inputs, boundary values, null/undefined, concurrency)
 - Dependencies that will need mocking
 
-## Step 2 — Detect the Testing Framework
+## Step 2 -- Detect the Testing Framework
 
 Search the project for testing configuration:
 
@@ -30,7 +30,7 @@ Search the project for testing configuration:
 
 Match the project's existing conventions: import style, describe/it vs test(), assertion library, file naming (`*.test.ts` vs `*.spec.ts` vs `test_*.py`), and directory structure (`__tests__/` vs co-located).
 
-## Step 3 — Plan Test Cases
+## Step 3 -- Plan Test Cases
 
 Organize tests into these categories:
 
@@ -58,7 +58,7 @@ Organize tests into these categories:
 - Verify correct interaction with dependencies (call count, arguments)
 - Test error propagation from dependencies
 
-## Step 4 — Generate the Test File
+## Step 4 -- Generate the Test File
 
 Write the test file following these principles:
 
@@ -71,13 +71,13 @@ Write the test file following these principles:
 
 Place the test file in the correct location following the project's conventions.
 
-## Step 5 — Verify
+## Step 5 -- Verify
 
 Run the test suite to confirm all new tests pass:
 - If tests fail, read the failure output, fix the test or identify a real bug, and re-run.
-- If a test reveals an actual bug in the source code, report it clearly to the user but do not modify the source — only fix the test expectations if the current behavior is intentional.
+- If a test reveals an actual bug in the source code, report it clearly to the user but do not modify the source -- only fix the test expectations if the current behavior is intentional.
 
-## Step 6 — Report
+## Step 6 -- Report
 
 ```
 ## Test Generation Report

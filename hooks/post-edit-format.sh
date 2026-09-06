@@ -12,19 +12,20 @@
 #   C/C++: clang-format
 #   General: prettier
 #
+# Event: PostToolUse, matcher "Edit|Write"
 # Install: Copy to .claude/hooks/ and add to .claude/settings.json
 # ============================================================================
 set -euo pipefail
 
 # --------------------------------------------------------------------------
-# Read the edited file path from stdin payload or environment
+# Read the edited file path from the PostToolUse payload on stdin.
+# The path lives at .tool_input.file_path. There is no $CLAUDE_FILE_PATH.
 # --------------------------------------------------------------------------
 PAYLOAD=$(cat 2>/dev/null || true)
-FILE_PATH="${CLAUDE_FILE_PATH:-}"
+FILE_PATH=""
 
-# Try to extract file path from JSON payload if not set
-if [[ -z "$FILE_PATH" && -n "$PAYLOAD" ]]; then
-  FILE_PATH=$(echo "$PAYLOAD" | jq -r '.file_path // .input.file_path // empty' 2>/dev/null || true)
+if [[ -n "$PAYLOAD" ]]; then
+  FILE_PATH=$(echo "$PAYLOAD" | jq -r '.tool_input.file_path // empty' 2>/dev/null || true)
 fi
 
 if [[ -z "$FILE_PATH" ]]; then

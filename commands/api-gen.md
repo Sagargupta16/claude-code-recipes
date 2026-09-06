@@ -5,7 +5,7 @@ description: Generate REST API endpoints with routes, validation, error handling
 
 Generate production-quality REST API endpoints from a description provided in `$ARGUMENTS`.
 
-## Step 1 — Understand the Requirements
+## Step 1 -- Understand the Requirements
 
 Parse `$ARGUMENTS` to determine:
 - **Resource name** (e.g., "users", "products", "orders")
@@ -16,7 +16,7 @@ Parse `$ARGUMENTS` to determine:
 
 If `$ARGUMENTS` is vague (e.g., just "users"), generate a standard CRUD API with sensible defaults and ask the user to confirm the field list before writing code.
 
-## Step 2 — Detect the Project's Stack
+## Step 2 -- Detect the Project's Stack
 
 Search the project to determine:
 1. **Framework:** Express, Fastify, Koa, NestJS, Django REST Framework, Flask, FastAPI, Gin, Echo, etc.
@@ -28,7 +28,7 @@ Search the project to determine:
 
 If no existing backend framework is found, ask the user which stack to use. Do not assume.
 
-## Step 3 — Design the API
+## Step 3 -- Design the API
 
 Create a specification before writing any code:
 
@@ -51,7 +51,7 @@ Base path: /api/[resource]
 
 Present this design to the user and ask for confirmation before generating code.
 
-## Step 4 — Generate the Code
+## Step 4 -- Generate the Code
 
 Create files following the project's existing structure. Generate:
 
@@ -91,7 +91,7 @@ Create files following the project's existing structure. Generate:
 - Map database constraint violations to user-friendly messages
 - Never leak stack traces or internal details in error responses
 
-## Step 5 — Generate Tests
+## Step 5 -- Generate Tests
 
 Write tests for every endpoint:
 
@@ -104,13 +104,13 @@ Write tests for every endpoint:
 
 Use the project's existing test framework and patterns. Place test files where the project convention dictates.
 
-## Step 6 — Verify
+## Step 6 -- Verify
 
 1. Run the linter/type checker to confirm no errors.
 2. Run the test suite (including new tests).
 3. If tests fail, fix them before reporting.
 
-## Step 7 — Report
+## Step 7 -- Report
 
 ```
 ## API Generation Report
@@ -119,11 +119,11 @@ Use the project's existing test framework and patterns. Place test files where t
 **Endpoints:** [count]
 
 ### Files Created
-- (path) — model/schema
-- (path) — validation
-- (path) — controller/handlers
-- (path) — routes
-- (path) — tests
+- (path) -- model/schema
+- (path) -- validation
+- (path) -- controller/handlers
+- (path) -- routes
+- (path) -- tests
 
 ### Endpoints
 | Method | Path | Description |

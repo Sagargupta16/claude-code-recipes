@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, so a link that rots after merge still gets caught
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  recipes:
+    name: Recipe validity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Validate recipe frontmatter, hook schema, JSON, and counts
+        run: bash scripts/validate-recipes.sh
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run shellcheck on every shell script
+        run: |
+          shellcheck --version
+          shellcheck -S style hooks/*.sh scripts/*.sh
+
+      - name: Check every script parses
+        run: |
+          for f in hooks/*.sh scripts/*.sh; do
+            bash -n "$f"
+            echo "ok $f"
+          done
+
+  links:
+    name: Link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check links in Markdown and JSON
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          # JSON is included because the MCP configs and the settings example
+          # carry Docs and $schema URLs that nothing else would check.
+          #
+          # Accepted non-200 codes:
+          #   401 - the GitHub remote MCP endpoint requires a token
+          #
+          # 403 and 429 are deliberately not accepted: a user-agent block or a
+          # rate limit would otherwise pass as a working link. The action exports
+          # GITHUB_TOKEN from its own `token` input, which defaults to
+          # github.token, so github.com links are not rate limited here.
+          #
+          # Exclusions:
+          #   postgresql:// - example connection strings, not fetchable
+          #   ^https?://$   - bare scheme names quoted in prose
+          #
+          # CLAUDE.md is skipped: its stacking preamble links to workspace files
+          # that live one level above this repo and are not part of it.
+          #
+          # Links in YAML (the issue forms) are not globbed here, because a link
+          # to a file this branch adds cannot resolve on the default branch until
+          # the branch merges. scripts/validate-recipes.sh checks those against
+          # the working tree instead, so a rename still fails a check.
+          args: >-
+            --no-progress
+            --max-retries 2
+            --accept 200,206,401
+            --exclude ^postgresql://
+            --exclude ^https?://$
+            --exclude-path CLAUDE.md
+            "**/*.md"
+            "**/*.json"
+          fail: true

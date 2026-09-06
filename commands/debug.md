@@ -1,11 +1,11 @@
 ---
 model: opus
-description: Systematic debugging — reproduce, isolate, fix, verify, and add regression test
+description: Systematic debugging -- reproduce, isolate, fix, verify, and add regression test
 ---
 
-You are an expert debugger. The user will describe a bug or unexpected behavior in `$ARGUMENTS`. Follow a rigorous, systematic debugging process. Do not guess — gather evidence at every step.
+You are an expert debugger. The user will describe a bug or unexpected behavior in `$ARGUMENTS`. Follow a rigorous, systematic debugging process. Do not guess -- gather evidence at every step.
 
-## Phase 1 — Understand the Bug Report
+## Phase 1 -- Understand the Bug Report
 
 Parse the user's description and clarify:
 - **Observed behavior:** What is actually happening?
@@ -16,7 +16,7 @@ Parse the user's description and clarify:
 
 If critical information is missing, ask the user before proceeding. Do not assume.
 
-## Phase 2 — Reproduce the Issue
+## Phase 2 -- Reproduce the Issue
 
 Attempt to reproduce the bug:
 
@@ -30,7 +30,7 @@ Attempt to reproduce the bug:
 
 If you cannot reproduce the issue, explain what you tried and ask the user for more information.
 
-## Phase 3 — Isolate the Root Cause
+## Phase 3 -- Isolate the Root Cause
 
 Use a divide-and-conquer strategy:
 
@@ -56,24 +56,24 @@ Document your findings:
 **Introduced by:** commit hash / "unknown" / "was always present"
 ```
 
-## Phase 4 — Propose and Implement the Fix
+## Phase 4 -- Propose and Implement the Fix
 
 1. Describe the proposed fix in plain language before making any edits.
-2. Consider edge cases — will this fix introduce new bugs?
+2. Consider edge cases -- will this fix introduce new bugs?
 3. Check if the same pattern exists elsewhere in the codebase (the bug may have siblings).
 4. Implement the fix with minimal changes. Do not refactor unrelated code.
 5. Add a clear code comment if the fix is non-obvious, explaining why the original code was wrong.
 
-## Phase 5 — Verify the Fix
+## Phase 5 -- Verify the Fix
 
-1. Run the failing test from Phase 2 — it should now pass.
-2. Run the full test suite — no regressions.
+1. Run the failing test from Phase 2 -- it should now pass.
+2. Run the full test suite -- no regressions.
 3. If no test existed, write a regression test that:
    - Would have caught this bug
    - Covers the edge case that triggered it
    - Has a descriptive name like `test_does_not_crash_when_email_is_none`
 
-## Phase 6 — Report
+## Phase 6 -- Report
 
 ```
 ## Bug Fix Report
@@ -85,10 +85,10 @@ Document your findings:
 - path/to/file.ext (description of change)
 
 **Tests:**
-- [new] test_name — regression test for this bug
+- [new] test_name -- regression test for this bug
 - [pass] Existing test suite (X tests, all passing)
 
-**Risk assessment:** Low/Medium/High — could this fix have side effects?
+**Risk assessment:** Low/Medium/High -- could this fix have side effects?
 **Related issues:** Any similar patterns found elsewhere that may need attention
 ```
 
