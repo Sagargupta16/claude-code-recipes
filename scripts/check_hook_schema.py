@@ -18,6 +18,7 @@ Usage: python scripts/check_hook_schema.py <file.json> [<file.json> ...]
 from __future__ import annotations
 
 import json
+import pathlib
 import re
 import sys
 
@@ -81,9 +82,25 @@ def check_matcher(event: str, matcher: str, where: str, errors: list[str]) -> No
             )
 
 
+def resolve_in_repo(candidate: str) -> pathlib.Path:
+    """Resolve a CLI argument to a file inside this repository.
+
+    The script only ever inspects files that are checked in here, so anything
+    resolving outside the repository root is rejected rather than opened.
+    """
+    repo_root = pathlib.Path(__file__).resolve().parent.parent
+    resolved = pathlib.Path(candidate).resolve()
+    if not resolved.is_relative_to(repo_root):
+        raise ValueError(f"{candidate}: refusing to read a path outside {repo_root}")
+    if not resolved.is_file():
+        raise ValueError(f"{candidate}: not a file")
+    return resolved
+
+
 def check_file(path: str) -> list[str]:
     errors: list[str] = []
-    with open(path, encoding="utf-8") as handle:
+    target = resolve_in_repo(path)
+    with target.open(encoding="utf-8") as handle:
         data = json.load(handle)
 
     hooks = data.get("hooks")
@@ -142,7 +159,10 @@ def main(argv: list[str]) -> int:
         return 2
     errors: list[str] = []
     for path in argv[1:]:
-        errors.extend(check_file(path))
+        try:
+            errors.extend(check_file(path))
+        except (ValueError, OSError, json.JSONDecodeError) as exc:
+            errors.append(str(exc))
     for error in errors:
         print(error, file=sys.stderr)
     return 1 if errors else 0

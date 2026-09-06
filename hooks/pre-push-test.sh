@@ -53,7 +53,8 @@ if has_file "package.json"; then
     elif [[ -f node_modules/.bin/vitest ]]; then
       node_modules/.bin/vitest run || ERRORS=1
     else
-      npx vitest run || ERRORS=1
+      # --no refuses to download on demand: a push hook should not install packages
+      npx --no vitest run || ERRORS=1
     fi
     TESTS_RAN=true
 
@@ -65,7 +66,8 @@ if has_file "package.json"; then
     elif [[ -f node_modules/.bin/jest ]]; then
       node_modules/.bin/jest --ci || ERRORS=1
     else
-      npx jest --ci || ERRORS=1
+      # --no refuses to download on demand: a push hook should not install packages
+      npx --no jest --ci || ERRORS=1
     fi
     TESTS_RAN=true
 
