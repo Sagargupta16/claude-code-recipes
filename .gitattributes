@@ -1,0 +1,16 @@
+# Normalize line endings so a recipe copied out of this repo actually runs.
+#
+# Without this, a Windows clone with core.autocrlf=true checks the shell scripts
+# out with CRLF. Copy one into .claude/hooks/ and bash reports every line as a
+# literal carriage return, or fails on the shebang.
+
+* text=auto
+
+# Executed as scripts: always LF, on every platform.
+*.sh text eol=lf
+
+# Read by tools that are picky about the shebang line or exact bytes.
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
