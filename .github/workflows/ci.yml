@@ -58,8 +58,11 @@ jobs:
           #
           # Accepted non-200 codes:
           #   401 - the GitHub remote MCP endpoint requires a token
-          #   403 - hosts that block CI user agents
-          #   429 - rate limiting, not a dead link
+          #
+          # 403 and 429 are deliberately not accepted: a user-agent block or a
+          # rate limit would otherwise pass as a working link. The action exports
+          # GITHUB_TOKEN from its own `token` input, which defaults to
+          # github.token, so github.com links are not rate limited here.
           #
           # Exclusions:
           #   postgresql:// - example connection strings, not fetchable
@@ -75,7 +78,7 @@ jobs:
           args: >-
             --no-progress
             --max-retries 2
-            --accept 200,206,401,403,429
+            --accept 200,206,401
             --exclude ^postgresql://
             --exclude ^https?://$
             --exclude-path CLAUDE.md
