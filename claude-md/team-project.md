@@ -1,4 +1,4 @@
-# CLAUDE.md — Team Project Template
+# CLAUDE.md -- Team Project Template
 
 > Copy this file to your project root as `CLAUDE.md` and customize each section.
 
@@ -80,27 +80,27 @@ public/              # Static assets
 
 ### General
 
-- Use TypeScript strict mode — no `any`, no `@ts-ignore`
-- Prefer `const` over `let` — never use `var`
+- Use TypeScript strict mode -- no `any`, no `@ts-ignore`
+- Prefer `const` over `let` -- never use `var`
 - Use early returns to reduce nesting
-- Maximum function length: 40 lines — extract helpers if longer
-- Maximum file length: 300 lines — split into modules if longer
+- Maximum function length: 40 lines -- extract helpers if longer
+- Maximum file length: 300 lines -- split into modules if longer
 
 ### Naming
 
 - **Files**: `kebab-case.ts` for utilities, `PascalCase.tsx` for components
-- **Functions**: `camelCase` — verb prefix: `getUser`, `createOrder`, `isValid`
-- **Types/Interfaces**: `PascalCase` — noun: `User`, `OrderItem`, `ApiResponse`
-- **Constants**: `UPPER_SNAKE_CASE` — `MAX_RETRIES`, `API_BASE_URL`
+- **Functions**: `camelCase` -- verb prefix: `getUser`, `createOrder`, `isValid`
+- **Types/Interfaces**: `PascalCase` -- noun: `User`, `OrderItem`, `ApiResponse`
+- **Constants**: `UPPER_SNAKE_CASE` -- `MAX_RETRIES`, `API_BASE_URL`
 - **Boolean variables**: `is`/`has`/`should` prefix: `isLoading`, `hasPermission`
 
 ### React
 
-- Functional components only — no class components
-- Named exports for components — default exports only for pages
+- Functional components only -- no class components
+- Named exports for components -- default exports only for pages
 - Props interface above the component: `interface ComponentNameProps { ... }`
 - Colocate component, test, and styles in the same directory
-- Use React Server Components by default — add `"use client"` only when needed
+- Use React Server Components by default -- add `"use client"` only when needed
 
 ### API
 
@@ -112,7 +112,7 @@ public/              # Static assets
 
 ### Database
 
-- Use the ORM for all database access — no raw SQL in application code
+- Use the ORM for all database access -- no raw SQL in application code
 - Name migrations descriptively: `add_avatar_url_to_users`
 - Always include `created_at` and `updated_at` timestamps
 - Use soft deletes (`deleted_at`) for user-facing data
@@ -121,14 +121,14 @@ public/              # Static assets
 
 - Test file location: next to the source file (`user.service.test.ts`)
 - Use AAA pattern: Arrange, Act, Assert
-- Minimum 80% line coverage — 100% for critical paths (auth, payments)
-- Mock external services — never call real APIs in tests
-- Use factories for test data — no hardcoded objects in tests
+- Minimum 80% line coverage -- 100% for critical paths (auth, payments)
+- Mock external services -- never call real APIs in tests
+- Use factories for test data -- no hardcoded objects in tests
 
 ## Git Workflow
 
 - **Branch naming**: `feat/PROJ-123-short-description`, `fix/PROJ-456-bug-name`
-- **Commit format**: Conventional Commits — `feat(scope): description`
+- **Commit format**: Conventional Commits -- `feat(scope): description`
 - **PR process**: Create PR -> CI passes -> 1 review required -> squash merge
 - **Protected branches**: `main` requires PR + approval + passing CI
 - **Release**: Tag `main` with `vX.Y.Z` after merge
@@ -137,11 +137,11 @@ public/              # Static assets
 
 The CI pipeline runs on every PR:
 
-1. **Lint** — ESLint + Prettier check
-2. **Type check** — `tsc --noEmit`
-3. **Unit tests** — Vitest with coverage report
-4. **Integration tests** — Against test database
-5. **Build** — Production build must succeed
+1. **Lint** -- ESLint + Prettier check
+2. **Type check** -- `tsc --noEmit`
+3. **Unit tests** -- Vitest with coverage report
+4. **Integration tests** -- Against test database
+5. **Build** -- Production build must succeed
 
 Deployment:
 - `main` branch auto-deploys to **staging**
@@ -152,28 +152,28 @@ Deployment:
 
 Required environment variables (see `.env.example`):
 
-- `DATABASE_URL` — PostgreSQL connection string
-- `NEXTAUTH_SECRET` — Auth session encryption key
-- `NEXTAUTH_URL` — Application URL
-- `[SERVICE]_API_KEY` — External service API keys
+- `DATABASE_URL` -- PostgreSQL connection string
+- `NEXTAUTH_SECRET` -- Auth session encryption key
+- `NEXTAUTH_URL` -- Application URL
+- `[SERVICE]_API_KEY` -- External service API keys
 
 Never commit `.env` files. Use `.env.example` as a template.
 
 ## Do NOT
 
-- Use `any` type — use `unknown` and type guards
-- Commit directly to `main` — always use a branch and PR
-- Skip tests — every feature and bug fix needs tests
-- Use `console.log` for error handling — use the logger service
-- Store secrets in code — use environment variables
-- Write raw SQL — use the ORM
-- Import from barrel files (`index.ts`) in the same package — import directly
-- Use `moment.js` — use `date-fns` instead
-- Nest ternaries — use early returns or `if/else`
+- Use `any` type -- use `unknown` and type guards
+- Commit directly to `main` -- always use a branch and PR
+- Skip tests -- every feature and bug fix needs tests
+- Use `console.log` for error handling -- use the logger service
+- Store secrets in code -- use environment variables
+- Write raw SQL -- use the ORM
+- Import from barrel files (`index.ts`) in the same package -- import directly
+- Use `moment.js` -- use `date-fns` instead
+- Nest ternaries -- use early returns or `if/else`
 
 ## Common Gotchas
 
-- The ORM client is a singleton in `src/lib/db.ts` — import from there, don't create new instances
-- Auth middleware runs before route handlers — `req.user` is always available in protected routes
-- The test database is reset between test suites — don't depend on data from other tests
-- Environment variables are validated at startup — missing vars crash immediately (this is intentional)
+- The ORM client is a singleton in `src/lib/db.ts` -- import from there, don't create new instances
+- Auth middleware runs before route handlers -- `req.user` is always available in protected routes
+- The test database is reset between test suites -- don't depend on data from other tests
+- Environment variables are validated at startup -- missing vars crash immediately (this is intentional)

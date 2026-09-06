@@ -31,10 +31,10 @@ Workflows are reference guides, not scripts. Use them by:
 
 Each workflow uses this format:
 
-- **Step title** — what to do
-- **Mode** — which Claude Code mode to use (Plan, Code, or auto)
-- **Recipes** — which commands, subagents, or tools to use
-- **Example prompts** — copy-paste prompts to get started
+- **Step title** -- what to do
+- **Mode** -- which Claude Code mode to use (Plan, Code, or auto)
+- **Recipes** -- which commands, subagents, or tools to use
+- **Example prompts** -- copy-paste prompts to get started
 
 ---
 
@@ -53,7 +53,7 @@ Workflows can be chained. Common combinations:
 
 ## Tips
 
-- Workflows are guidelines, not rigid scripts — adapt them to your project
+- Workflows are guidelines, not rigid scripts -- adapt them to your project
 - Use Plan mode for analysis and strategy, Code mode for implementation
 - Delegate specialized work to subagents (test runner, code reviewer, etc.)
 - Run hooks automatically instead of remembering manual steps

@@ -1,15 +1,15 @@
 # Claude Code Subagent Recipes
 
-Subagents are specialized AI personas that live in `.claude/agents/` and can be delegated to from the main Claude Code context. Each subagent has a scoped set of tools, a focused persona, and a well-defined output format — making them predictable, safe, and efficient.
+Subagents are specialized AI personas that live in `.claude/agents/` and can be delegated to from the main Claude Code context. Each subagent has a scoped set of tools, a focused persona, and a well-defined output format -- making them predictable, safe, and efficient.
 
 ## What Are Subagents?
 
 A subagent is a markdown file with YAML frontmatter that defines:
 
-- **name** — Identifier used to invoke the agent
-- **model** — Which Claude model to use (`haiku` for fast/cheap, `sonnet` for balanced, `opus` for complex reasoning)
-- **description** — When the orchestrator should delegate to this agent
-- **allowed-tools** — The *only* tools this agent can access (principle of least privilege)
+- **name** -- Identifier used to invoke the agent
+- **model** -- Which Claude model to use (`haiku` for fast/cheap, `sonnet` for balanced, `opus` for complex reasoning)
+- **description** -- When the orchestrator should delegate to this agent
+- **allowed-tools** -- The *only* tools this agent can access (principle of least privilege)
 
 The main Claude Code session acts as an orchestrator, routing tasks to the right subagent based on the description field.
 
@@ -47,10 +47,10 @@ rm .claude/agents/README.md
 
 ## Design Principles
 
-1. **Least privilege** — Each agent only gets the tools it needs. Read-only agents cannot edit files.
-2. **Right-sized models** — Use `haiku` for fast retrieval tasks, `sonnet` for coding and analysis, `opus` for complex architectural reasoning.
-3. **Structured output** — Every agent returns a predictable format so the orchestrator can parse and act on results.
-4. **Single responsibility** — Each agent does one category of work well rather than being a generalist.
+1. **Least privilege** -- Each agent only gets the tools it needs. Read-only agents cannot edit files.
+2. **Right-sized models** -- Use `haiku` for fast retrieval tasks, `sonnet` for coding and analysis, `opus` for complex architectural reasoning.
+3. **Structured output** -- Every agent returns a predictable format so the orchestrator can parse and act on results.
+4. **Single responsibility** -- Each agent does one category of work well rather than being a generalist.
 
 ## Customization
 

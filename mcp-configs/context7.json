@@ -1,6 +1,6 @@
 {
   "_comment": [
-    "Context7 MCP Server — provides up-to-date documentation and code examples for any library.",
+    "Context7 MCP Server -- provides up-to-date documentation and code examples for any library.",
     "No API keys required. Queries the Context7 API for library documentation.",
     "Install: Copy the 'context7' key into .mcp.json under mcpServers.",
     "Docs: https://github.com/upstash/context7"
@@ -13,8 +13,8 @@
     ],
     "tools": {
       "_available": [
-        "resolve-library-id  — Resolve a library name to a Context7-compatible ID",
-        "query-docs           — Query documentation for a specific library by ID"
+        "resolve-library-id  -- Resolve a library name to a Context7-compatible ID",
+        "query-docs           -- Query documentation for a specific library by ID"
       ]
     },
     "_notes": {
@@ -37,7 +37,7 @@
         "Express, Fastify, Hono, NestJS",
         "Prisma, Drizzle, TypeORM",
         "Tailwind CSS, Radix UI, shadcn/ui",
-        "And thousands more — try any library name"
+        "And thousands more -- try any library name"
       ]
     }
   }

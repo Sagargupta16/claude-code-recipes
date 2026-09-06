@@ -5,17 +5,17 @@ description: Generate React or Vue components with prop types, styling, accessib
 
 Generate a production-quality UI component from the description provided in `$ARGUMENTS`.
 
-## Step 1 — Parse the Request
+## Step 1 -- Parse the Request
 
 Extract from `$ARGUMENTS`:
 - **Component name** (e.g., "DataTable", "Modal", "SearchBar")
 - **Feature requirements** (what the component should do)
-- **Framework preference** (React or Vue — detect from project if not stated)
+- **Framework preference** (React or Vue -- detect from project if not stated)
 - **Variants or states** (e.g., "loading, error, empty states")
 
 If the description is minimal (e.g., just "Modal"), generate a fully-featured, accessible version with sensible defaults.
 
-## Step 2 — Detect Project Conventions
+## Step 2 -- Detect Project Conventions
 
 Search the project to determine:
 
@@ -29,7 +29,7 @@ Search the project to determine:
    - Export patterns (default export vs named export)
    - Props definition pattern (interface, type, defineProps)
 
-## Step 3 — Design the Component API
+## Step 3 -- Design the Component API
 
 Before writing code, define the component's public interface:
 
@@ -55,7 +55,7 @@ Before writing code, define the component's public interface:
 - Default, Loading, Error, Empty, Disabled (as applicable)
 ```
 
-## Step 4 — Generate the Component
+## Step 4 -- Generate the Component
 
 Write the component following these quality standards:
 
@@ -99,7 +99,7 @@ Write the component following these quality standards:
 - Lazy-load heavy dependencies if applicable
 - Avoid unnecessary re-renders from inline object/function creation in JSX
 
-## Step 5 — Generate Tests
+## Step 5 -- Generate Tests
 
 Write tests covering:
 
@@ -126,14 +126,14 @@ Write tests covering:
 
 Place the test file adjacent to the component following project conventions.
 
-## Step 6 — Generate a Storybook Story (if applicable)
+## Step 6 -- Generate a Storybook Story (if applicable)
 
 If the project uses Storybook (check for `.storybook/` directory or `@storybook/*` in dependencies), generate a story file with:
 - Default story
 - One story per variant/state
 - Interactive args/controls for key props
 
-## Step 7 — Verify and Report
+## Step 7 -- Verify and Report
 
 1. Run the type checker (if TypeScript).
 2. Run the linter.
@@ -148,10 +148,10 @@ If the project uses Storybook (check for `.storybook/` directory or `@storybook/
 **Styling:** Tailwind / CSS Modules / styled-components / etc.
 
 ### Files Created
-- (path) — component source
-- (path) — test file
-- (path) — story file (if applicable)
-- (path) — style file (if applicable)
+- (path) -- component source
+- (path) -- test file
+- (path) -- story file (if applicable)
+- (path) -- style file (if applicable)
 
 ### Props: (count)
 ### Test Cases: (count)

@@ -13,7 +13,7 @@ Skills are `SKILL.md` files placed in `.claude/skills/` directories. When Claude
 3. The skill content is loaded as additional context
 4. Claude follows the conventions and patterns defined in the skill
 
-Skills are passive — they provide knowledge, not commands. They answer questions like:
+Skills are passive -- they provide knowledge, not commands. They answer questions like:
 - "How should I structure React components in this project?"
 - "What git commit format does this team use?"
 - "What testing patterns should I follow?"
@@ -86,7 +86,7 @@ Create a new skill by adding a `SKILL.md` file in a subdirectory:
 3. **Keep it focused**: One domain per skill (don't mix frontend and database conventions)
 4. **Use imperative mood**: "Use functional components" not "Functional components are preferred"
 5. **Add rationale**: Explain *why* a convention exists, not just *what* it is
-6. **Stay under 200 lines**: Longer skills get diluted — split them up instead
+6. **Stay under 200 lines**: Longer skills get diluted -- split them up instead
 
 ### Template
 
@@ -97,8 +97,8 @@ Create a new skill by adding a `SKILL.md` file in a subdirectory:
 
 ## Rules
 
-1. First convention — with brief rationale
-2. Second convention — with brief rationale
+1. First convention -- with brief rationale
+2. Second convention -- with brief rationale
 
 ## Patterns
 
@@ -116,7 +116,7 @@ code example
 
 ## Anti-patterns
 
-- Thing to avoid — why it's problematic
+- Thing to avoid -- why it's problematic
 ```
 
 ---
@@ -125,5 +125,5 @@ code example
 
 - Skills stack: you can have multiple skills active at once
 - Project-specific skills override general ones if they conflict
-- Review skills periodically — update them as your conventions evolve
+- Review skills periodically -- update them as your conventions evolve
 - Skills work best when they match the technology you actually use

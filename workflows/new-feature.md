@@ -8,7 +8,7 @@
 
 | Phase | Mode | Recipes Used | Time |
 |-------|------|-------------|------|
-| 1. Plan | Plan | — | 5-10 min |
+| 1. Plan | Plan | -- | 5-10 min |
 | 2. Scaffold | Code | `/component-gen`, `/api-gen` | 5-15 min |
 | 3. Implement | Code | Subagents (frontend-dev, backend-dev) | 15-60 min |
 | 4. Test | Code | `/test-gen`, test-runner subagent | 10-20 min |
@@ -21,7 +21,7 @@
 
 **Mode**: Plan (or use `shift+tab` to toggle)
 
-Start by asking Claude to analyze the requirements and propose an implementation plan. Plan mode prevents any code changes — Claude will only think and discuss.
+Start by asking Claude to analyze the requirements and propose an implementation plan. Plan mode prevents any code changes -- Claude will only think and discuss.
 
 **Prompt**:
 ```
@@ -52,7 +52,7 @@ Analyze the existing codebase and propose an implementation plan. Include:
 
 **Mode**: Code
 
-Create the skeleton — empty files, interfaces, type definitions, and API stubs.
+Create the skeleton -- empty files, interfaces, type definitions, and API stubs.
 
 **Prompt**:
 ```
@@ -62,12 +62,12 @@ Let's implement the plan. Start by scaffolding:
 3. Create empty function signatures with TODO comments
 4. Set up the routing/API endpoints (stubs only)
 
-Don't implement business logic yet — just the structure.
+Don't implement business logic yet -- just the structure.
 ```
 
 **Recipes to use**:
-- `/component-gen` — if the feature includes React/Vue components
-- `/api-gen` — if the feature includes REST endpoints
+- `/component-gen` -- if the feature includes React/Vue components
+- `/api-gen` -- if the feature includes REST endpoints
 
 ---
 
@@ -91,7 +91,7 @@ API design conventions (proper status codes, error responses, validation).
 Start with [specific endpoint].
 ```
 
-**For complex features** — delegate to subagents:
+**For complex features** -- delegate to subagents:
 ```
 Use the frontend-dev subagent to implement the UI components,
 then use the backend-dev subagent for the API layer.
@@ -122,8 +122,8 @@ Run the tests and fix any failures.
 ```
 
 **Recipes to use**:
-- `/test-gen` — generate test files
-- Test-runner subagent — run tests and fix failures automatically
+- `/test-gen` -- generate test files
+- Test-runner subagent -- run tests and fix failures automatically
 
 **Coverage check**:
 ```

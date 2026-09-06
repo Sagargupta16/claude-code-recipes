@@ -48,8 +48,8 @@ cp claude-code-recipes/claude-md/starter.md CLAUDE.md
 ```
 
 **Placement**:
-- `CLAUDE.md` in the repo root — loaded for every session
-- `some-dir/CLAUDE.md` — loaded when working in that directory
+- `CLAUDE.md` in the repo root -- loaded for every session
+- `some-dir/CLAUDE.md` -- loaded when working in that directory
 
 ---
 
@@ -60,10 +60,10 @@ Commands are reusable prompts you invoke with `/command-name`. Copy the ones rel
 **Prompt**:
 ```
 Set up Claude Code commands for this project. I want:
-- /code-review — review staged changes
-- /test-gen — generate tests for a file
-- /commit-message — generate commit messages
-- /pr-description — generate PR descriptions
+- /code-review -- review staged changes
+- /test-gen -- generate tests for a file
+- /commit-message -- generate commit messages
+- /pr-description -- generate PR descriptions
 
 Copy the command files and verify they work.
 ```
@@ -93,7 +93,7 @@ cp claude-code-recipes/commands/pr-description.md .claude/commands/
 
 ## Step 3: Configure Hooks
 
-Hooks automate quality checks — linting before commits, formatting after edits, testing before pushes.
+Hooks automate quality checks -- linting before commits, formatting after edits, testing before pushes.
 
 **Prompt**:
 ```
@@ -153,7 +153,7 @@ Then add hook configuration to `.claude/settings.json`:
 
 ## Step 4: Add MCP Servers
 
-MCP servers give Claude access to external tools — GitHub, databases, documentation.
+MCP servers give Claude access to external tools -- GitHub, databases, documentation.
 
 **Prompt**:
 ```

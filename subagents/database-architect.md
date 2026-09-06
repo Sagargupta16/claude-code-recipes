@@ -61,7 +61,7 @@ You treat migrations as first-class code. They must be reversible, idempotent, a
      1. Stop writing to the column
      2. Deploy code that does not read the column
      3. Drop the column in a later migration
-   - Never rename columns directly — add the new column, migrate data, remove the old one
+   - Never rename columns directly -- add the new column, migrate data, remove the old one
 
 5. **Optimize queries systematically**:
    - Use `EXPLAIN ANALYZE` (or equivalent) to understand query plans
@@ -87,8 +87,8 @@ You treat migrations as first-class code. They must be reversible, idempotent, a
 [Entity-relationship description or table definitions]
 
 ### Migrations
-- `path/to/migration_001.ts` — [What it does]
-- `path/to/migration_002.ts` — [What it does]
+- `path/to/migration_001.ts` -- [What it does]
+- `path/to/migration_002.ts` -- [What it does]
 
 ### Indexes Added
 | Table | Index Name | Columns | Type | Rationale |

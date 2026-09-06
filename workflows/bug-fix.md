@@ -10,7 +10,7 @@
 |-------|------|-------------|------|
 | 1. Reproduce | Plan | `/debug` | 5-15 min |
 | 2. Isolate | Plan/Code | Researcher subagent | 5-10 min |
-| 3. Fix | Code | — | 5-30 min |
+| 3. Fix | Code | -- | 5-30 min |
 | 4. Test | Code | `/test-gen`, test-runner subagent | 5-15 min |
 | 5. Commit | Code | `/commit-message` | 2 min |
 
@@ -47,7 +47,7 @@ line where the bug originates (not just where the error is thrown).
 ```
 
 **Tips**:
-- Don't jump to fixing — understand the bug first
+- Don't jump to fixing -- understand the bug first
 - Reproduce it reliably before attempting a fix
 - Check if the bug exists in tests (it probably doesn't, which is why it shipped)
 
@@ -95,7 +95,7 @@ Apply the minimal fix. Don't refactor unrelated code in the same change.
 Fix the bug by [description of the fix based on analysis].
 
 Requirements:
-- Minimal change — only fix the bug, don't refactor
+- Minimal change -- only fix the bug, don't refactor
 - Handle the edge case that caused it
 - Make sure the fix doesn't break existing behavior
 - Add a comment explaining WHY the fix is needed (if not obvious)
@@ -131,10 +131,10 @@ Then run the full test suite to make sure nothing else broke.
 ```
 
 **Recipes to use**:
-- `/test-gen` — generate the regression test
-- Test-runner subagent — run tests and verify everything passes
+- `/test-gen` -- generate the regression test
+- Test-runner subagent -- run tests and verify everything passes
 
-**This step is critical** — a bug fix without a regression test is incomplete. The test proves the fix works and prevents the bug from coming back.
+**This step is critical** -- a bug fix without a regression test is incomplete. The test proves the fix works and prevents the bug from coming back.
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Event-triggered scripts that run automatically during Claude Code sessions.
 
-Hooks let you automate repetitive tasks — linting before commits, formatting after edits, running tests before pushes, and sending notifications when work is done. They run as shell scripts triggered by specific events in your Claude Code workflow.
+Hooks let you automate repetitive tasks -- linting before commits, formatting after edits, running tests before pushes, and sending notifications when work is done. They run as shell scripts triggered by specific events in your Claude Code workflow.
 
 ---
 
@@ -105,7 +105,7 @@ exit 0
 
 ## Tips
 
-- Keep hooks **fast** — they run synchronously and block Claude's workflow
+- Keep hooks **fast** -- they run synchronously and block Claude's workflow
 - Use `set -euo pipefail` to catch errors early
 - Log output goes to the Claude Code console for debugging
 - Test hooks manually before adding them: `echo '{}' | bash .claude/hooks/your-hook.sh`

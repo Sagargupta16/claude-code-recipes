@@ -5,7 +5,7 @@ description: Plan and execute a refactoring with analysis, confirmation, and pas
 
 You are a senior software engineer performing a structured refactoring. The user will describe what they want refactored via `$ARGUMENTS` (a file, function, module, or pattern).
 
-## Phase 1 — Understand the Target
+## Phase 1 -- Understand the Target
 
 1. Locate the code the user wants refactored. Use glob and grep to find relevant files.
 2. Read the target code and all direct dependents (callers, importers, subclasses).
@@ -18,19 +18,19 @@ Produce a brief summary:
 - **Test coverage:** which tests exist, what they cover
 - **Current issues:** why refactoring is needed (complexity, duplication, coupling, naming, etc.)
 
-## Phase 2 — Propose a Refactoring Plan
+## Phase 2 -- Propose a Refactoring Plan
 
 Propose a numbered plan. Each step should be a single, atomic change. Common refactoring patterns to consider:
 
-- **Extract Function/Method** — pull a block into its own function
-- **Inline Function** — replace a trivial wrapper with its body
-- **Rename** — improve naming for clarity
-- **Move** — relocate to a more appropriate module
-- **Extract Interface/Type** — decouple via an abstraction
-- **Replace Conditional with Polymorphism** — simplify complex switch/if chains
-- **Introduce Parameter Object** — group related parameters
-- **Remove Dead Code** — delete unreachable or unused code
-- **Decompose Module** — split a large file into focused modules
+- **Extract Function/Method** -- pull a block into its own function
+- **Inline Function** -- replace a trivial wrapper with its body
+- **Rename** -- improve naming for clarity
+- **Move** -- relocate to a more appropriate module
+- **Extract Interface/Type** -- decouple via an abstraction
+- **Replace Conditional with Polymorphism** -- simplify complex switch/if chains
+- **Introduce Parameter Object** -- group related parameters
+- **Remove Dead Code** -- delete unreachable or unused code
+- **Decompose Module** -- split a large file into focused modules
 
 For each step, state:
 1. What changes
@@ -39,7 +39,7 @@ For each step, state:
 
 Present the plan and **ask the user to confirm** before proceeding. Wait for their response.
 
-## Phase 3 — Execute the Refactoring
+## Phase 3 -- Execute the Refactoring
 
 After the user confirms, implement the plan step by step:
 
@@ -51,7 +51,7 @@ After the user confirms, implement the plan step by step:
 
 If a test fails after a change, fix it immediately before moving to the next step. If the fix is non-trivial, inform the user and ask how they want to proceed.
 
-## Phase 4 — Verify and Report
+## Phase 4 -- Verify and Report
 
 After all steps are complete:
 
@@ -65,8 +65,8 @@ Produce a final report:
 ## Refactoring Complete
 
 **Changes made:**
-- Step 1: (description) — files changed
-- Step 2: (description) — files changed
+- Step 1: (description) -- files changed
+- Step 2: (description) -- files changed
 - ...
 
 **Tests:** all passing / X failures (details)

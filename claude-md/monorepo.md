@@ -1,18 +1,18 @@
-# CLAUDE.md — Monorepo Template
+# CLAUDE.md -- Monorepo Template
 
 > Copy this file to your project root as `CLAUDE.md` and customize. Create package-specific CLAUDE.md files as needed.
 
 ## Project
 
 <!-- Brief description of the monorepo and its packages -->
-[Project name] is a monorepo containing [description of packages — e.g., "a web app, a mobile app, and shared libraries"]. Managed with [Turborepo / Nx / pnpm workspaces / Lerna].
+[Project name] is a monorepo containing [description of packages -- e.g., "a web app, a mobile app, and shared libraries"]. Managed with [Turborepo / Nx / pnpm workspaces / Lerna].
 
 ## Tech Stack
 
 - **Monorepo tool**: [Turborepo / Nx / pnpm workspaces]
 - **Package manager**: [pnpm / npm / yarn]
 - **Language**: [TypeScript 5.x]
-- **Shared config**: [ESLint, Prettier, tsconfig — in root]
+- **Shared config**: [ESLint, Prettier, tsconfig -- in root]
 
 ## Packages
 
@@ -20,12 +20,12 @@
 |---------|------|-------------|:----:|
 | `@project/web` | `apps/web` | Next.js web application | 3000 |
 | `@project/api` | `apps/api` | Express API server | 4000 |
-| `@project/mobile` | `apps/mobile` | React Native mobile app | — |
-| `@project/ui` | `packages/ui` | Shared component library | — |
-| `@project/db` | `packages/db` | Database client and schema | — |
-| `@project/config` | `packages/config` | Shared configuration | — |
-| `@project/utils` | `packages/utils` | Shared utility functions | — |
-| `@project/types` | `packages/types` | Shared TypeScript types | — |
+| `@project/mobile` | `apps/mobile` | React Native mobile app | -- |
+| `@project/ui` | `packages/ui` | Shared component library | -- |
+| `@project/db` | `packages/db` | Database client and schema | -- |
+| `@project/config` | `packages/config` | Shared configuration | -- |
+| `@project/utils` | `packages/utils` | Shared utility functions | -- |
+| `@project/types` | `packages/types` | Shared TypeScript types | -- |
 
 ## Commands
 
@@ -77,7 +77,7 @@ pnpm add -w -D typescript
 
 ```
 project-root/
-  CLAUDE.md                 # This file — root config
+  CLAUDE.md                 # This file -- root config
   turbo.json                # Turborepo pipeline configuration
   pnpm-workspace.yaml       # Workspace package definitions
   package.json              # Root scripts and shared devDependencies
@@ -136,12 +136,12 @@ project-root/
 ### Import conventions
 
 ```typescript
-// Good — import from the package
+// Good -- import from the package
 import { Button } from "@project/ui";
 import { formatDate } from "@project/utils";
 import type { User } from "@project/types";
 
-// Bad — reach into another package's internals
+// Bad -- reach into another package's internals
 import { Button } from "@project/ui/src/components/Button";
 import { helper } from "../../packages/utils/src/helper";
 ```
@@ -152,7 +152,7 @@ import { helper } from "../../packages/utils/src/helper";
 
 - TypeScript strict mode in every package
 - Shared ESLint and Prettier configs (extend from `@project/config`)
-- All packages export from `src/index.ts` — no deep imports
+- All packages export from `src/index.ts` -- no deep imports
 - Semantic versioning for published packages
 - All inter-package deps use `workspace:*`
 
@@ -170,7 +170,7 @@ import { helper } from "../../packages/utils/src/helper";
 Turborepo handles the build order based on the dependency graph:
 
 ```
-packages/types    (no deps — builds first)
+packages/types    (no deps -- builds first)
 packages/utils    (depends on types)
 packages/db       (depends on types)
 packages/ui       (depends on types, utils)
@@ -178,7 +178,7 @@ apps/web          (depends on ui, utils, db, types)
 apps/api          (depends on utils, db, types)
 ```
 
-Never manually specify build order — let Turborepo resolve it.
+Never manually specify build order -- let Turborepo resolve it.
 
 ## Testing
 
@@ -192,19 +192,19 @@ Never manually specify build order — let Turborepo resolve it.
 
 The CI pipeline leverages Turborepo's caching:
 
-1. `pnpm install` — install all dependencies
-2. `turbo lint` — lint changed packages only
-3. `turbo typecheck` — type check changed packages only
-4. `turbo test` — test changed packages and their dependents
-5. `turbo build` — build changed packages in dependency order
+1. `pnpm install` -- install all dependencies
+2. `turbo lint` -- lint changed packages only
+3. `turbo typecheck` -- type check changed packages only
+4. `turbo test` -- test changed packages and their dependents
+5. `turbo build` -- build changed packages in dependency order
 
 Turborepo's remote cache (`--remote-cache`) skips unchanged packages in CI.
 
 ## Do NOT
 
-- Import from another package's `src/` directory — use the package export
+- Import from another package's `src/` directory -- use the package export
 - Add dependencies to the root `package.json` unless they are truly shared dev tools
 - Create circular dependencies between packages
-- Skip `workspace:*` for internal deps — never pin internal packages to a version
+- Skip `workspace:*` for internal deps -- never pin internal packages to a version
 - Put application-specific code in shared packages
 - Modify shared config without team discussion

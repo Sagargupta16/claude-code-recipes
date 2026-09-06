@@ -2,7 +2,7 @@
 
 > PR review workflow: review, request changes, author fixes, re-review, and approve.
 
-This workflow covers both sides — **reviewing someone else's PR** and **responding to review feedback on your own PR**.
+This workflow covers both sides -- **reviewing someone else's PR** and **responding to review feedback on your own PR**.
 
 ---
 
@@ -11,10 +11,10 @@ This workflow covers both sides — **reviewing someone else's PR** and **respon
 | Phase | Role | Mode | Recipes Used | Time |
 |-------|------|------|-------------|------|
 | 1. Initial Review | Reviewer | Plan | `/code-review`, code-reviewer subagent | 10-20 min |
-| 2. Request Changes | Reviewer | — | — | 5 min |
-| 3. Address Feedback | Author | Code | — | 10-60 min |
-| 4. Re-review | Reviewer | Plan | — | 5-10 min |
-| 5. Approve & Merge | Reviewer | — | — | 2 min |
+| 2. Request Changes | Reviewer | -- | -- | 5 min |
+| 3. Address Feedback | Author | Code | -- | 10-60 min |
+| 4. Re-review | Reviewer | Plan | -- | 5-10 min |
+| 5. Approve & Merge | Reviewer | -- | -- | 2 min |
 
 ---
 
@@ -25,7 +25,7 @@ This workflow covers both sides — **reviewing someone else's PR** and **respon
 
 Start by understanding what the PR does, then review the code systematically.
 
-**Prompt — automated review**:
+**Prompt -- automated review**:
 ```
 Review the PR at [URL or branch name]. Check the diff and analyze:
 
@@ -83,11 +83,11 @@ Based on the review findings, draft GitHub PR review comments:
 ```
 
 **Tips for good reviews**:
-- Be specific — "this could be null on line 42" not "handle errors better"
-- Explain *why* — "this causes N+1 queries because..." not just "fix this"
-- Suggest, don't demand — "consider using X" not "you must use X"
-- Acknowledge good work — reviews shouldn't only be negative
-- Separate blockers from nits — make it clear what must change
+- Be specific -- "this could be null on line 42" not "handle errors better"
+- Explain *why* -- "this causes N+1 queries because..." not just "fix this"
+- Suggest, don't demand -- "consider using X" not "you must use X"
+- Acknowledge good work -- reviews shouldn't only be negative
+- Separate blockers from nits -- make it clear what must change
 
 ---
 
@@ -105,9 +105,9 @@ Here are the review comments on my PR:
 [paste comments or provide PR URL]
 
 For each comment:
-1. If it's a valid issue — fix it
-2. If I disagree — explain why in a reply (don't just dismiss it)
-3. If it's a nit — fix it (it's faster than debating)
+1. If it's a valid issue -- fix it
+2. If I disagree -- explain why in a reply (don't just dismiss it)
+3. If it's a nit -- fix it (it's faster than debating)
 
 After fixing everything, summarize what was changed.
 ```
@@ -125,8 +125,8 @@ For each fix, make a separate commit with a clear message like:
 ```
 
 **Tips for authors**:
-- Don't take feedback personally — it's about the code
-- Respond to every comment — even if just "Done" or "Good catch"
+- Don't take feedback personally -- it's about the code
+- Respond to every comment -- even if just "Done" or "Good catch"
 - Ask questions if feedback is unclear
 - Push fixes as new commits (don't force-push during review)
 - Re-request review when ready
@@ -218,9 +218,9 @@ gh pr merge 123 --squash --delete-branch
 
 ## Anti-patterns
 
-- **Rubber stamp reviews** — clicking "Approve" without reading the code
-- **Bikeshedding** — spending review time on naming debates instead of logic
-- **Review pile-up** — letting PRs sit for days; review within 24 hours
-- **Mega PRs** — hard to review well; ask the author to split if over 400 lines
-- **Personal attacks** — review the code, not the person
-- **Blocking on nits** — only block for real issues, not style preferences
+- **Rubber stamp reviews** -- clicking "Approve" without reading the code
+- **Bikeshedding** -- spending review time on naming debates instead of logic
+- **Review pile-up** -- letting PRs sit for days; review within 24 hours
+- **Mega PRs** -- hard to review well; ask the author to split if over 400 lines
+- **Personal attacks** -- review the code, not the person
+- **Blocking on nits** -- only block for real issues, not style preferences

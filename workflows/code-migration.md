@@ -11,8 +11,8 @@ Use this workflow when upgrading framework versions, switching libraries, migrat
 | Phase | Mode | Recipes Used | Time |
 |-------|------|-------------|------|
 | 1. Audit | Plan | Researcher subagent | 10-20 min |
-| 2. Plan | Plan | — | 10-15 min |
-| 3. Prepare | Code | — | 5-15 min |
+| 2. Plan | Plan | -- | 10-15 min |
+| 3. Prepare | Code | -- | 5-15 min |
 | 4. Migrate | Code | `/migrate`, subagents | 30-120 min |
 | 5. Test | Code | test-runner subagent | 10-30 min |
 | 6. Validate | Code | `/code-review`, `/security-audit` | 10-15 min |
@@ -87,7 +87,7 @@ Before starting the migration:
 2. Update package.json / requirements.txt with the new version
 3. Install the new dependencies
 4. Set up any compatibility shims or codemods the new version provides
-5. Run the build to see initial errors (don't fix yet — just inventory them)
+5. Run the build to see initial errors (don't fix yet -- just inventory them)
 ```
 
 **For major version upgrades**:
@@ -152,8 +152,8 @@ Report: total tests, passed, failed (migration), failed (pre-existing).
 ```
 
 **Recipes to use**:
-- Test-runner subagent — run tests and fix failures
-- `/test-gen` — generate tests for newly migrated code if coverage dropped
+- Test-runner subagent -- run tests and fix failures
+- `/test-gen` -- generate tests for newly migrated code if coverage dropped
 
 **Also test manually**:
 ```
@@ -172,10 +172,10 @@ Final validation before merging.
 **Prompt**:
 ```
 Run a final validation:
-1. /code-review — review all migration changes
-2. /security-audit — check for security regressions
+1. /code-review -- review all migration changes
+2. /security-audit -- check for security regressions
 3. Build the project in production mode
-4. Check bundle size (if frontend) — compare before/after
+4. Check bundle size (if frontend) -- compare before/after
 5. Verify all deprecation warnings are resolved
 6. Confirm no old library imports remain
 ```

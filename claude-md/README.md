@@ -2,7 +2,7 @@
 
 > Guide to writing effective CLAUDE.md files and ready-to-use templates for different project types.
 
-`CLAUDE.md` is the single most important file for Claude Code. It gives Claude persistent context about your project — the tech stack, conventions, commands, and how to work effectively in your codebase. A good CLAUDE.md can be the difference between Claude producing generic code and Claude producing code that fits your project perfectly.
+`CLAUDE.md` is the single most important file for Claude Code. It gives Claude persistent context about your project -- the tech stack, conventions, commands, and how to work effectively in your codebase. A good CLAUDE.md can be the difference between Claude producing generic code and Claude producing code that fits your project perfectly.
 
 ---
 
@@ -102,7 +102,7 @@ Do NOT:
 
 - Use headers, bullet points, and code blocks
 - Front-load the most important information
-- Keep it under 150 lines — too long and the signal gets diluted
+- Keep it under 150 lines -- too long and the signal gets diluted
 
 ---
 
@@ -127,7 +127,7 @@ Claude loads the root file plus any CLAUDE.md files in the current working direc
 
 ## Maintenance
 
-- **Review quarterly** — update when your stack or conventions change
-- **Add pain points** — if Claude keeps making the same mistake, add a rule
-- **Remove stale info** — outdated conventions cause confusion
-- **Version control it** — CLAUDE.md should be committed and reviewed like code
+- **Review quarterly** -- update when your stack or conventions change
+- **Add pain points** -- if Claude keeps making the same mistake, add a rule
+- **Remove stale info** -- outdated conventions cause confusion
+- **Version control it** -- CLAUDE.md should be committed and reviewed like code

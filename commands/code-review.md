@@ -10,13 +10,13 @@ allowed-tools:
 
 You are a senior code reviewer. Review the currently staged git changes and produce a structured report.
 
-## Step 1 — Gather the Diff
+## Step 1 -- Gather the Diff
 
 Run `git diff --cached` to get the staged changes. If nothing is staged, fall back to `git diff` for unstaged changes. If both are empty, inform the user there is nothing to review and stop.
 
 Also run `git diff --cached --stat` to get a file-level summary of what changed.
 
-## Step 2 — Analyze Each Changed File
+## Step 2 -- Analyze Each Changed File
 
 For every file in the diff, check for the following categories of issues. Read the full file when surrounding context is needed to understand a change.
 
@@ -56,7 +56,7 @@ For every file in the diff, check for the following categories of issues. Read t
 - New logic paths that lack corresponding tests
 - Modified behavior without updated tests
 
-## Step 3 — Produce the Report
+## Step 3 -- Produce the Report
 
 Output a Markdown report in this exact structure:
 
@@ -67,13 +67,13 @@ Output a Markdown report in this exact structure:
 **Issues found:** (count)
 
 ### Critical (must fix before merge)
-- [ ] **[FILE:LINE]** [Category] — Description of the issue and suggested fix
+- [ ] **[FILE:LINE]** [Category] -- Description of the issue and suggested fix
 
 ### Warning (should fix)
-- [ ] **[FILE:LINE]** [Category] — Description and suggestion
+- [ ] **[FILE:LINE]** [Category] -- Description and suggestion
 
 ### Nit (optional improvement)
-- [ ] **[FILE:LINE]** [Category] — Description and suggestion
+- [ ] **[FILE:LINE]** [Category] -- Description and suggestion
 
 ### Positive Notes
 - Anything done well that is worth calling out
@@ -84,4 +84,4 @@ One-paragraph overall assessment: is this diff safe to merge, or does it need ch
 
 If no issues are found in a severity section, write "None" under that heading. Always include the Summary section.
 
-Be specific: reference exact file names, line numbers, variable names, and function names. Do not make vague observations — every finding must be actionable.
+Be specific: reference exact file names, line numbers, variable names, and function names. Do not make vague observations -- every finding must be actionable.

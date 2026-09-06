@@ -2,7 +2,7 @@
 
 > Model Context Protocol server configurations that extend Claude Code with external tools and data sources.
 
-MCP (Model Context Protocol) lets Claude Code connect to external services — GitHub, databases, file systems, and more. Each config defines an MCP server that exposes tools Claude can use during your session.
+MCP (Model Context Protocol) lets Claude Code connect to external services -- GitHub, databases, file systems, and more. Each config defines an MCP server that exposes tools Claude can use during your session.
 
 ---
 
@@ -11,7 +11,7 @@ MCP (Model Context Protocol) lets Claude Code connect to external services — G
 1. Claude Code reads MCP server configs from `.mcp.json` in your project root
 2. On session start, it launches each configured server as a subprocess
 3. The server exposes tools (functions) that Claude can call
-4. Claude uses these tools naturally during conversation — querying databases, creating GitHub issues, etc.
+4. Claude uses these tools naturally during conversation -- querying databases, creating GitHub issues, etc.
 
 ---
 
@@ -69,7 +69,7 @@ Most MCP servers are published as npm packages. Install them globally or use `np
 
 ```bash
 # npm-based servers run automatically via npx
-# No pre-installation needed — Claude Code handles it
+# No pre-installation needed -- Claude Code handles it
 
 # For servers requiring local setup (like PostgreSQL), ensure the service is running
 ```
@@ -108,9 +108,9 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/mydb
 
 ## Tips
 
-- Start with GitHub and Memory — they're useful for every project
+- Start with GitHub and Memory -- they're useful for every project
 - Add PostgreSQL only if your project uses a database
 - Context7 is valuable when working with unfamiliar libraries
 - Keep API keys in environment variables, never in `.mcp.json`
-- Each server runs as a subprocess — more servers means more memory usage
+- Each server runs as a subprocess -- more servers means more memory usage
 - Restart Claude Code after changing `.mcp.json`

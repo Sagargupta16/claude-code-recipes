@@ -10,7 +10,7 @@ allowed-tools:
 
 You are a security engineer performing an audit of this codebase. Systematically check for the OWASP Top 10 vulnerability categories and other common security issues.
 
-## Step 1 — Project Reconnaissance
+## Step 1 -- Project Reconnaissance
 
 Determine the project's tech stack:
 - Language(s) and framework(s) (check package.json, requirements.txt, go.mod, Cargo.toml, etc.)
@@ -21,13 +21,13 @@ Determine the project's tech stack:
 
 This context determines which checks are relevant.
 
-## Step 2 — OWASP Top 10 Checks
+## Step 2 -- OWASP Top 10 Checks
 
 ### A01: Broken Access Control
 - Search for routes/endpoints and verify authorization checks are present
 - Look for direct object references without ownership validation (e.g., `/api/users/{id}` without checking the caller owns that ID)
 - Check for missing role/permission checks on admin-only routes
-- Search for `CORS` configuration — look for overly permissive origins (`*`)
+- Search for `CORS` configuration -- look for overly permissive origins (`*`)
 - Check for path traversal in file operations (user input in file paths)
 
 ### A02: Cryptographic Failures
@@ -81,14 +81,14 @@ This context determines which checks are relevant.
 - Check for URL validation or allowlist enforcement
 - Look for internal service URLs that could be accessed via SSRF
 
-## Step 3 — Secrets Scan
+## Step 3 -- Secrets Scan
 
 Search for accidentally committed secrets:
 - Grep for patterns: API keys, AWS credentials, private keys, database connection strings, JWTs
 - Check common secret file patterns: `*.pem`, `*.key`, `*.p12`, `*.env`, `credentials.json`, `service-account.json`
 - Verify `.gitignore` includes sensitive file patterns
 
-## Step 4 — Report
+## Step 4 -- Report
 
 ```
 ## Security Audit Report
@@ -99,22 +99,22 @@ Search for accidentally committed secrets:
 **Issues found:** (count by severity)
 
 ### Critical (exploitable, must fix immediately)
-- **[OWASP-A0X]** [File:Line] Description — Remediation steps
+- **[OWASP-A0X]** [File:Line] Description -- Remediation steps
 
 ### High (significant risk, fix before next release)
-- **[OWASP-A0X]** [File:Line] Description — Remediation steps
+- **[OWASP-A0X]** [File:Line] Description -- Remediation steps
 
 ### Medium (moderate risk, plan to fix)
-- **[OWASP-A0X]** [File:Line] Description — Remediation steps
+- **[OWASP-A0X]** [File:Line] Description -- Remediation steps
 
 ### Low (minor risk or defense-in-depth improvement)
-- **[OWASP-A0X]** [File:Line] Description — Remediation steps
+- **[OWASP-A0X]** [File:Line] Description -- Remediation steps
 
 ### Informational
 - Best practices not currently followed but not immediately exploitable
 
 ### Secrets Found
-- (list any hardcoded secrets with file paths — DO NOT print the actual secret values)
+- (list any hardcoded secrets with file paths -- DO NOT print the actual secret values)
 
 ### Recommendations
 1. Highest-priority items to address first
@@ -122,4 +122,4 @@ Search for accidentally committed secrets:
 3. Tools to add to CI/CD (SAST, DAST, dependency scanning)
 ```
 
-Be specific with file paths and line numbers. For every finding, include a concrete remediation — do not just say "fix this"; show what the fixed code should look like.
+Be specific with file paths and line numbers. For every finding, include a concrete remediation -- do not just say "fix this"; show what the fixed code should look like.

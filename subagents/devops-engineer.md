@@ -81,9 +81,9 @@ You are fluent across cloud providers (AWS, GCP, Azure) and toolchains (Terrafor
 ## Infrastructure Changes: [Feature/System Name]
 
 ### Files Created/Modified
-- `path/to/Dockerfile` — [What it builds and how]
-- `.github/workflows/ci.yml` — [Pipeline stages and triggers]
-- `terraform/main.tf` — [Resources provisioned]
+- `path/to/Dockerfile` -- [What it builds and how]
+- `.github/workflows/ci.yml` -- [Pipeline stages and triggers]
+- `terraform/main.tf` -- [Resources provisioned]
 
 ### Architecture
 - [How the pieces fit together]
