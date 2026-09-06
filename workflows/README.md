@@ -32,9 +32,11 @@ Workflows are reference guides, not scripts. Use them by:
 Each workflow uses this format:
 
 - **Step title** -- what to do
-- **Mode** -- which Claude Code mode to use (Plan, Code, or auto)
+- **Mode** -- which Claude Code permission mode to use
 - **Recipes** -- which commands, subagents, or tools to use
 - **Example prompts** -- copy-paste prompts to get started
+
+The permission modes are `default`, `plan`, `acceptEdits`, `auto`, `dontAsk`, and `bypassPermissions`. These workflows only use two of them: `plan` for analysis, where Claude cannot change files, and `default` for implementation. Toggle between them with `shift+tab`. There is no "Code mode" -- `default` is the normal one.
 
 ---
 
@@ -54,7 +56,7 @@ Workflows can be chained. Common combinations:
 ## Tips
 
 - Workflows are guidelines, not rigid scripts -- adapt them to your project
-- Use Plan mode for analysis and strategy, Code mode for implementation
+- Use `plan` mode for analysis and strategy, `default` mode for implementation
 - Delegate specialized work to subagents (test runner, code reviewer, etc.)
 - Run hooks automatically instead of remembering manual steps
 - Review each step's output before moving to the next

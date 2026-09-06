@@ -10,18 +10,18 @@ Use this workflow when upgrading framework versions, switching libraries, migrat
 
 | Phase | Mode | Recipes Used | Time |
 |-------|------|-------------|------|
-| 1. Audit | Plan | Researcher subagent | 10-20 min |
-| 2. Plan | Plan | -- | 10-15 min |
-| 3. Prepare | Code | -- | 5-15 min |
-| 4. Migrate | Code | `/migrate`, subagents | 30-120 min |
-| 5. Test | Code | test-runner subagent | 10-30 min |
-| 6. Validate | Code | `/code-review`, `/security-audit` | 10-15 min |
+| 1. Audit | `plan` | Researcher subagent | 10-20 min |
+| 2. Plan | `plan` | -- | 10-15 min |
+| 3. Prepare | `default` | -- | 5-15 min |
+| 4. Migrate | `default` | `/migrate`, subagents | 30-120 min |
+| 5. Test | `default` | test-runner subagent | 10-30 min |
+| 6. Validate | `default` | `/code-review`, `/security-audit` | 10-15 min |
 
 ---
 
 ## Step 1: Audit
 
-**Mode**: Plan
+**Mode**: `plan`
 
 Understand the current state before changing anything.
 
@@ -50,7 +50,7 @@ Produce a report grouped by: breaking changes, deprecations, and new features we
 
 ## Step 2: Plan
 
-**Mode**: Plan
+**Mode**: `plan`
 
 Create a step-by-step migration plan based on the audit.
 
@@ -76,7 +76,7 @@ Format as a numbered checklist I can track.
 
 ## Step 3: Prepare
 
-**Mode**: Code
+**Mode**: `default`
 
 Set up the migration environment before touching production code.
 
@@ -100,7 +100,7 @@ If so, run it first to handle mechanical changes, then we'll review the output.
 
 ## Step 4: Migrate
 
-**Mode**: Code
+**Mode**: `default`
 
 Execute the migration plan step by step. Do not try to migrate everything at once.
 
@@ -136,7 +136,7 @@ verifying each builds correctly before moving to the next.
 
 ## Step 5: Test
 
-**Mode**: Code
+**Mode**: `default`
 
 Run the full test suite and fix any failures introduced by the migration.
 
@@ -165,7 +165,7 @@ I'll test them manually.
 
 ## Step 6: Validate
 
-**Mode**: Code
+**Mode**: `default`
 
 Final validation before merging.
 

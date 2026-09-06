@@ -10,10 +10,10 @@ This workflow covers both sides -- **reviewing someone else's PR** and **respond
 
 | Phase | Role | Mode | Recipes Used | Time |
 |-------|------|------|-------------|------|
-| 1. Initial Review | Reviewer | Plan | `/code-review`, code-reviewer subagent | 10-20 min |
+| 1. Initial Review | Reviewer | `plan` | `/code-review`, code-reviewer subagent | 10-20 min |
 | 2. Request Changes | Reviewer | -- | -- | 5 min |
-| 3. Address Feedback | Author | Code | -- | 10-60 min |
-| 4. Re-review | Reviewer | Plan | -- | 5-10 min |
+| 3. Address Feedback | Author | `default` | -- | 10-60 min |
+| 4. Re-review | Reviewer | `plan` | -- | 5-10 min |
 | 5. Approve & Merge | Reviewer | -- | -- | 2 min |
 
 ---
@@ -21,7 +21,7 @@ This workflow covers both sides -- **reviewing someone else's PR** and **respond
 ## Step 1: Initial Review
 
 **Role**: Reviewer
-**Mode**: Plan
+**Mode**: `plan`
 
 Start by understanding what the PR does, then review the code systematically.
 
@@ -94,7 +94,7 @@ Based on the review findings, draft GitHub PR review comments:
 ## Step 3: Address Feedback
 
 **Role**: Author
-**Mode**: Code
+**Mode**: `default`
 
 Respond to each review comment systematically.
 
@@ -136,7 +136,7 @@ For each fix, make a separate commit with a clear message like:
 ## Step 4: Re-review
 
 **Role**: Reviewer
-**Mode**: Plan
+**Mode**: `plan`
 
 Check that all feedback was addressed correctly.
 

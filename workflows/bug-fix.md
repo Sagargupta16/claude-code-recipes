@@ -8,17 +8,17 @@
 
 | Phase | Mode | Recipes Used | Time |
 |-------|------|-------------|------|
-| 1. Reproduce | Plan | `/debug` | 5-15 min |
-| 2. Isolate | Plan/Code | Researcher subagent | 5-10 min |
-| 3. Fix | Code | -- | 5-30 min |
-| 4. Test | Code | `/test-gen`, test-runner subagent | 5-15 min |
-| 5. Commit | Code | `/commit-message` | 2 min |
+| 1. Reproduce | `plan` | `/debug` | 5-15 min |
+| 2. Isolate | `plan` / `default` | Researcher subagent | 5-10 min |
+| 3. Fix | `default` | -- | 5-30 min |
+| 4. Test | `default` | `/test-gen`, test-runner subagent | 5-15 min |
+| 5. Commit | `default` | `/commit-message` | 2 min |
 
 ---
 
 ## Step 1: Reproduce
 
-**Mode**: Plan
+**Mode**: `plan`
 
 First, confirm the bug exists and understand the exact conditions that trigger it.
 
@@ -55,7 +55,7 @@ line where the bug originates (not just where the error is thrown).
 
 ## Step 2: Isolate
 
-**Mode**: Plan or Code
+**Mode**: `plan`, then `default`
 
 Narrow down the root cause to a specific function, condition, or data path.
 
@@ -86,7 +86,7 @@ Use the researcher subagent to investigate this bug:
 
 ## Step 3: Fix
 
-**Mode**: Code
+**Mode**: `default`
 
 Apply the minimal fix. Don't refactor unrelated code in the same change.
 
@@ -116,7 +116,7 @@ why this change is correct and what cases it covers.
 
 ## Step 4: Test
 
-**Mode**: Code
+**Mode**: `default`
 
 Write a test that would have caught this bug, then run the full suite.
 
@@ -140,7 +140,7 @@ Then run the full test suite to make sure nothing else broke.
 
 ## Step 5: Commit
 
-**Mode**: Code
+**Mode**: `default`
 
 Create a clean commit with a clear message.
 

@@ -134,9 +134,9 @@ Copy to your project root as `CLAUDE.md`.
 
 | Template | Best For |
 |----------|----------|
-| [Starter](claude-md/starter.md) | Solo projects, ~40 lines |
-| [Team Project](claude-md/team-project.md) | Team conventions, ~100 lines |
-| [Monorepo](claude-md/monorepo.md) | Multi-package workspaces, ~80 lines |
+| [Starter](claude-md/starter.md) | Solo projects, ~60 lines |
+| [Team Project](claude-md/team-project.md) | Team conventions, ~180 lines |
+| [Monorepo](claude-md/monorepo.md) | Multi-package workspaces, ~210 lines |
 
 ---
 

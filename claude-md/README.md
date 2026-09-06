@@ -20,9 +20,9 @@
 
 | Template | Lines | Best For | Link |
 |----------|:-----:|----------|------|
-| Starter | ~40 | Solo projects, quick setup | [starter.md](starter.md) |
-| Team Project | ~100 | Team conventions, CI/CD | [team-project.md](team-project.md) |
-| Monorepo | ~80 | Multi-package workspaces | [monorepo.md](monorepo.md) |
+| Starter | ~60 | Solo projects, quick setup | [starter.md](starter.md) |
+| Team Project | ~180 | Team conventions, CI/CD | [team-project.md](team-project.md) |
+| Monorepo | ~210 | Multi-package workspaces | [monorepo.md](monorepo.md) |
 
 ### How to choose
 
@@ -102,7 +102,7 @@ Do NOT:
 
 - Use headers, bullet points, and code blocks
 - Front-load the most important information
-- Keep it under 150 lines -- too long and the signal gets diluted
+- Keep it under 250 lines -- too long and the signal gets diluted. The templates here run 59 to 210 lines, and the two larger ones are meant to be trimmed to the sections you actually need
 
 ---
 

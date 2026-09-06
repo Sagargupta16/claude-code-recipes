@@ -8,18 +8,18 @@
 
 | Phase | Mode | Recipes Used | Time |
 |-------|------|-------------|------|
-| 1. Plan | Plan | -- | 5-10 min |
-| 2. Scaffold | Code | `/component-gen`, `/api-gen` | 5-15 min |
-| 3. Implement | Code | Subagents (frontend-dev, backend-dev) | 15-60 min |
-| 4. Test | Code | `/test-gen`, test-runner subagent | 10-20 min |
-| 5. Review | Code | `/code-review`, code-reviewer subagent | 5-10 min |
-| 6. Ship | Code | `/pr-description`, `/commit-message` | 5 min |
+| 1. Plan | `plan` | -- | 5-10 min |
+| 2. Scaffold | `default` | `/component-gen`, `/api-gen` | 5-15 min |
+| 3. Implement | `default` | Subagents (frontend-dev, backend-dev) | 15-60 min |
+| 4. Test | `default` | `/test-gen`, test-runner subagent | 10-20 min |
+| 5. Review | `default` | `/code-review`, code-reviewer subagent | 5-10 min |
+| 6. Ship | `default` | `/pr-description`, `/commit-message` | 5 min |
 
 ---
 
 ## Step 1: Plan
 
-**Mode**: Plan (or use `shift+tab` to toggle)
+**Mode**: `plan` (or use `shift+tab` to toggle)
 
 Start by asking Claude to analyze the requirements and propose an implementation plan. Plan mode prevents any code changes -- Claude will only think and discuss.
 
@@ -50,7 +50,7 @@ Analyze the existing codebase and propose an implementation plan. Include:
 
 ## Step 2: Scaffold
 
-**Mode**: Code
+**Mode**: `default`
 
 Create the skeleton -- empty files, interfaces, type definitions, and API stubs.
 
@@ -73,7 +73,7 @@ Don't implement business logic yet -- just the structure.
 
 ## Step 3: Implement
 
-**Mode**: Code
+**Mode**: `default`
 
 Now fill in the business logic. For complex features, delegate to specialized subagents.
 
@@ -106,7 +106,7 @@ then use the backend-dev subagent for the API layer.
 
 ## Step 4: Test
 
-**Mode**: Code
+**Mode**: `default`
 
 Generate and run tests for the new feature.
 
@@ -134,7 +134,7 @@ Check test coverage for the files we changed. We need at least 80% line coverage
 
 ## Step 5: Review
 
-**Mode**: Code
+**Mode**: `default`
 
 Self-review before opening a PR.
 
@@ -156,7 +156,7 @@ Focus on: bugs, security issues, performance, and adherence to our conventions.
 
 ## Step 6: Ship
 
-**Mode**: Code
+**Mode**: `default`
 
 Create a clean commit and PR.
 
