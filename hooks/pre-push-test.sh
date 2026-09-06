@@ -49,16 +49,21 @@ has_file() {
 # A push hook must never install anything, so there is no npx fallback: a
 # missing runner is a skip, not a test failure.
 # --------------------------------------------------------------------------
+# Stopping when dirname stops changing the value covers every root without
+# naming any of them. Testing for "/" alone hangs on a UNC path, because Git
+# Bash resolves `dirname //` to `//` -- a fixed point that is neither "/" nor
+# empty, so the walk-up spins forever and `git push` never returns.
 find_node_bin() {
-  local name="$1" dir="$PWD"
-  while true; do
+  local name="$1" dir="$PWD" prev=""
+  while [[ -n "$dir" && "$dir" != "$prev" ]]; do
     if [[ -f "$dir/node_modules/.bin/$name" ]]; then
       printf '%s\n' "$dir/node_modules/.bin/$name"
       return 0
     fi
-    [[ "$dir" == "/" || -z "$dir" ]] && return 1
+    prev="$dir"
     dir=$(dirname "$dir")
   done
+  return 1
 }
 
 TESTS_RAN=false
