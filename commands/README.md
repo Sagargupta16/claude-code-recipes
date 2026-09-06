@@ -46,7 +46,7 @@ disallowed-tools:             # actually removes tools from the pool
 | Field              | Required | Description                                                                                          |
 |--------------------|----------|------------------------------------------------------------------------------------------------------|
 | `description`      | Yes      | Short description displayed in the slash-command list. Required by this repo; Claude Code falls back to the first paragraph of the body if you omit it. |
-| `model`            | No       | Which Claude model to use. Defaults to your session model if omitted.                                |
+| `model`            | No       | Which Claude model to use. Defaults to your session model if omitted. Optional in Claude Code, but every recipe in this repo sets one so the index tables can list it. |
 | `argument-hint`    | No       | Autocomplete hint for expected arguments, e.g. `[issue-number]` or `[file] [format]`.                |
 | `arguments`        | No       | Named positional arguments, for `$name` substitution in the body.                                    |
 | `allowed-tools`    | No       | Tools Claude may use **without asking permission** during the turn that invokes the command. This does not restrict anything: every other tool stays callable, and the grant clears on your next message. |
@@ -83,8 +83,9 @@ Both tool fields accept a YAML list (as above), or a space- or comma-separated s
 
 `/check-all-prs`, `/audit-repos`, and `/update-status` shell out to the `gh` CLI, so they need [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`). All three are read-only against GitHub: they never push, comment, or merge. `/update-status` writes `STATUS.md` in your repo root and leaves the change uncommitted for review.
 
-- `/audit-repos` covers public repos by default; pass an argument to include private ones. Expect it to take a couple of minutes across a large account, since it makes several API calls per repo.
+- `/audit-repos` covers public repos by default; pass an argument to include private ones. Expect it to take a couple of minutes across a large account, since it makes several API calls per repo. Change its `model` to `haiku` if you would rather trade depth for cost on a routine sweep.
 - `/update-status` is aimed at multi-repo workspaces where a single dashboard file tracks everything. Run it at the start of a session.
+- `/check-all-prs` pairs with `/update-status`: run the check for the live picture, then fold the result into `STATUS.md`.
 
 ## Tips
 

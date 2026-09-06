@@ -64,17 +64,20 @@ jobs:
           # Exclusions:
           #   postgresql:// - example connection strings, not fetchable
           #   ^https?://$   - bare scheme names quoted in prose
-          #   badge.svg     - only resolves once the workflow is on the default branch
           #
           # CLAUDE.md is skipped: its stacking preamble links to workspace files
           # that live one level above this repo and are not part of it.
+          #
+          # Links in YAML (the issue forms) are not globbed here, because a link
+          # to a file this branch adds cannot resolve on the default branch until
+          # the branch merges. scripts/validate-recipes.sh checks those against
+          # the working tree instead, so a rename still fails a check.
           args: >-
             --no-progress
             --max-retries 2
             --accept 200,206,401,403,429
             --exclude ^postgresql://
             --exclude ^https?://$
-            --exclude badge\.svg
             --exclude-path CLAUDE.md
             "**/*.md"
             "**/*.json"

@@ -16,6 +16,24 @@ Repos to cover: the ones already named in `STATUS.md`. If the file is new, use `
 
 ## Step 1 -- Gather
 
+**Profile stats:**
+
+```bash
+gh api user --jq '{login, followers, public_repos}'
+gh repo list --limit 200 --json stargazerCount --jq '[.[].stargazerCount] | add'
+```
+
+**Contribution stats for the last year:**
+
+```bash
+gh api graphql -f query='{ viewer { contributionsCollection {
+  totalCommitContributions
+  totalPullRequestContributions
+  totalPullRequestReviewContributions
+  totalIssueContributions
+} } }'
+```
+
 **Open PRs authored by me:**
 
 ```bash
@@ -45,6 +63,8 @@ gh api repos/{owner}/{repo}/dependabot/alerts --jq '[.[] | select(.state=="open"
 
 Update these sections:
 
+- **Profile** -- followers, public repo count, total stars
+- **Contributions** -- commits, PRs, reviews, issues over the last year
 - **Open PRs** -- table of repo, PR number, title, CI, review state, action needed
 - **CI Health** -- table of repo, latest run conclusion, run date
 - **Security Alerts** -- table of repo and open alert count, or "none open"
@@ -53,7 +73,7 @@ Update these sections:
 
 Rules for the write:
 
-- Use absolute dates (`2026-09-06`), never "yesterday" or "last week"
+- Use absolute `YYYY-MM-DD` dates, never "yesterday" or "last week"
 - Do not delete a section you have no data for. Write "no data (check skipped: 403)" instead
 - Do not invent a number. If an API call fails, say which one and leave the previous value with a note
 - Do not commit or push. Leave the change in the working tree for review

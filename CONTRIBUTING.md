@@ -48,7 +48,7 @@ $ARGUMENTS - if the command accepts input
 ```
 
 - The opening `---` must be the file's first line, or the frontmatter is read as body text
-- Must specify a model (haiku for simple tasks, sonnet for complex, opus for deep analysis)
+- Must specify a model (haiku for simple tasks, sonnet for complex, opus for deep analysis). Claude Code treats `model` as optional, but every recipe here sets one so the index tables can list it, and `scripts/validate-recipes.sh` enforces that
 - Must include `$ARGUMENTS` if the command takes user input
 - Must work without any project-specific setup
 - The body is the prompt itself. Do not wrap it in a nested code fence or add "save this file as ..." instructions: the file *is* the command
@@ -79,7 +79,7 @@ disallowedTools: Write, Edit
 ```
 
 - `name` and `description` are required. A file with a `name` and no `description` is skipped, and the reason only shows under `--debug`
-- The allowlist field is `tools`, a **comma-separated string**. There is no `allowed-tools` field for subagents: it is an unrecognized key, so the agent silently inherits every tool including `Edit` and `Write`
+- The allowlist field is `tools`, a **comma-separated string**. It is optional: omit it and the agent inherits every tool available to subagents. There is no `allowed-tools` field for subagents: it is an unrecognized key, so the agent silently inherits every tool including `Edit` and `Write`
 - Add `disallowedTools: Write, Edit` to any agent whose description promises it is read-only
 - Must define a clear role and specialty
 - Must include structured output format
@@ -150,7 +150,7 @@ set -euo pipefail
 
 - Must include `_comment` with description and requirements
 - Must use environment variables for secrets (never hardcode)
-- Must list available tools in `tools._available`
+- Must list what the server exposes under `tools`, in an `_available` key (or `_available_toolsets_*` for a server that groups its tools into toolsets)
 - Remote servers need `"type": "http"` alongside `url`. An entry with a `url` and no `type` is read as a stdio server and skipped
 - Must not install a package npm marks deprecated. Check with `npm view <package> deprecated` before you submit
 - The `Docs:` URL must return 200
@@ -193,7 +193,7 @@ Run the validator first. It catches the mechanical mistakes, so review time goes
 bash scripts/validate-recipes.sh
 ```
 
-It checks command, subagent, and skill frontmatter, the hook config schema, JSON validity, banned dash characters, and that the recipe counts in `README.md` match the files on disk. CI runs the same script plus `shellcheck` and a link check on every pull request.
+It checks command, subagent, and skill frontmatter, the hook config schema, JSON validity, banned dash characters, that every link back into this repo points at a file that exists, and that the recipe counts in `README.md` match the files on disk. CI runs the same script plus `shellcheck` and a link check on every pull request.
 
 Then verify by hand that:
 

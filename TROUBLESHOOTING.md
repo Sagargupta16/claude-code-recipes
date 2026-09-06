@@ -2,7 +2,7 @@
 
 > A recipe is installed and nothing happens. Start here.
 
-Almost every Claude Code config failure is **silent**. A hook whose matcher never matches, a subagent with an unrecognized frontmatter key, a skill with no description: none of these produce an error. The file loads, or is skipped, and the feature just does not exist. That is why this page is organised by symptom rather than by feature.
+Almost every Claude Code config failure is **silent**. A hook whose matcher never matches, a subagent with an unrecognized frontmatter key, a skill with no description: none of these produce an error. The file loads, or is skipped, and the feature just does not exist. That is why this page is organized by symptom rather than by feature.
 
 The single most useful command when something is quiet:
 
@@ -55,7 +55,7 @@ FILE_PATH=$(echo "$PAYLOAD" | jq -r '.tool_input.file_path // empty')
 COMMAND=$(echo "$PAYLOAD" | jq -r '.tool_input.command // empty')
 ```
 
-The variables that do exist are `CLAUDE_PROJECT_DIR`, `CLAUDE_PLUGIN_ROOT`, `CLAUDE_PLUGIN_DATA`, `CLAUDE_EFFORT`, `CLAUDE_CODE_REMOTE`, and `CLAUDE_CODE_BRIDGE_SESSION_ID`.
+A hook inherits your environment, so `$PATH` and the rest are there. What Claude Code adds on top is `CLAUDE_PROJECT_DIR`, `CLAUDE_PLUGIN_ROOT`, `CLAUDE_PLUGIN_DATA`, `CLAUDE_EFFORT`, `CLAUDE_CODE_REMOTE`, `CLAUDE_CODE_BRIDGE_SESSION_ID`, and `CLAUDE_PLUGIN_OPTION_<KEY>` for plugin options. None of them describe the event.
 
 **5. Test it by hand with a realistic payload.** `echo '{}'` proves nothing, because an empty payload takes the early-exit path in most scripts:
 
@@ -108,7 +108,7 @@ disallowedTools: Write, Edit
 
 Note the format: `tools` and `disallowedTools` take a **comma-separated string**, not a YAML list. (The `--agents` JSON form is the exception and uses an array.)
 
-**Name contains a colon.** `:` is reserved for plugin-scoped identifiers. Claude Code refuses the file and logs an error.
+**Name contains a colon.** `:` is reserved for plugin-scoped identifiers such as `my-plugin:reviewer`. Claude Code does not load a file whose `name` contains one, and writes an error to the debug log. Keep names to lowercase letters and hyphens.
 
 See [subagents/README.md](subagents/README.md).
 
@@ -122,7 +122,9 @@ See [subagents/README.md](subagents/README.md).
 
 **`paths` too narrow.** If you set `paths`, the skill auto-loads only while working on matching files. Drop the field to let it trigger on any task.
 
-**Wrong location or filename.** It has to be `.claude/skills/<kebab-case-dir>/SKILL.md`, uppercase `SKILL.md`, one directory deep.
+**Wrong location or filename.** A project skill is `.claude/skills/<skill-name>/SKILL.md`, and the directory name is what becomes the command name.
+
+**The skill is in a nested `.claude/skills/`.** Skills below your starting directory do not load at startup. They load the first time Claude reads or edits a file in the subdirectory that contains them, so until then they are absent from autocomplete and cannot be invoked by name. Run `/add-dir <subdirectory>` to load them up front.
 
 **A stray `README.md` in `.claude/skills/`.** Copying `skills/*` from this repo drags the directory index in with it. Run `rm -f .claude/skills/README.md` afterwards.
 
@@ -148,7 +150,7 @@ See [commands/README.md](commands/README.md).
 
 **A `url` with no `type`.** Claude Code reads an entry that has no `type` as a stdio server, skips it, and reports `has a "url" but no "type"`. Add `"type": "http"` (or `"sse"` / `"ws"`).
 
-**Wrong file for the scope.** Server definitions never live in a settings file. `~/.claude/settings.json` holds MCP *controls* only (`enabledMcpjsonServers`, `disabledMcpjsonServers`, `enableAllProjectMcpServers`), so an `mcpServers` block pasted there is silently ignored.
+**Wrong file for the scope.** Server definitions never live in a settings file. `~/.claude/settings.json` holds MCP *controls* only (`enabledMcpjsonServers`, `disabledMcpjsonServers`, `enableAllProjectMcpServers`). Put the definition in one of the three files below.
 
 | Scope | File |
 |-------|------|

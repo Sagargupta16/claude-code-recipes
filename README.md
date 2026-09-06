@@ -189,13 +189,13 @@ Ways to contribute:
 
 | Repo | What It Is | Why You'd Want It |
 |------|-----------|-------------------|
-| [claude-cost-optimizer](https://github.com/Sagargupta16/claude-cost-optimizer) | Save 30-60% on Claude Code costs -- proven strategies, real benchmarks, copy-paste configs, and interactive tools | Once the recipes here are installed, this is how you keep the bill down |
+| [claude-cost-optimizer](https://github.com/Sagargupta16/claude-cost-optimizer) | Strategies, benchmarks, copy-paste configs, and interactive tools for cutting Claude Code costs | Once the recipes here are installed, this is how you keep the bill down |
 | [agent-recipes](https://github.com/Sagargupta16/agent-recipes) | Copy-paste AI agent workflows for real-world dev tasks - code review, testing, security scanning, DevOps automation | The same idea one layer up: whole workflows rather than single config files |
 | [claude-skills](https://github.com/Sagargupta16/claude-skills) | Custom Claude Code plugin marketplace with skills for FARM stack, open source contributions, repo maintenance, and portfolio management | Install skills as a versioned plugin instead of copying folders |
 | [awesome-mcp-servers](https://github.com/Sagargupta16/awesome-mcp-servers) | A curated list of MCP (Model Context Protocol) servers, tools, frameworks, and resources | Where to look when the five [MCP configs](mcp-configs/) here are not the server you need |
 | [ai-git-hooks](https://github.com/Sagargupta16/ai-git-hooks) | AI-powered git hooks - auto-review diffs, generate commit messages, scan for secrets. Supports Claude, OpenAI, and Ollama | Git-side counterpart to the [hooks](hooks/) here, which are Claude-Code-side |
 | [skillcheck](https://github.com/Sagargupta16/skillcheck) | Conformance suite for Agent Skills: lint SKILL.md against the spec, run against real agent runtimes, publish a compatibility matrix | Validate a SKILL.md you write from the [skills](skills/) templates |
-| [craftsmanship](https://github.com/Sagargupta16/craftsmanship) | Skills that encode engineering discipline -- plan, guard, verify, review, audit, ship. Compatible with 45+ AI agents via skills.sh | Process skills, where the ones here are stack-specific |
+| [craftsmanship](https://github.com/Sagargupta16/craftsmanship) | Skills that encode engineering discipline -- plan, guard, verify, review, audit, ship | Process skills, where the ones here are stack-specific |
 | [mcp-toolkit](https://github.com/Sagargupta16/mcp-toolkit) | TypeScript middleware toolkit for MCP servers - authentication, caching, rate limiting, CORS, logging (beta) | For when you move from configuring MCP servers to writing one |
 | [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) | Best practices documentation | Third-party reading on how to use Claude Code well |
 

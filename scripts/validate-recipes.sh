@@ -6,8 +6,10 @@
 #
 # Checks:
 #   1. Command files open with YAML frontmatter on line 1 and set a description
+#      and a model, which CONTRIBUTING.md requires so the index tables can list it
 #   2. Command files are prompts, not wrapper docs ("Save as .claude/commands/")
-#   3. Subagent files set name + description + tools, and never allowed-tools
+#   3. Subagent files set name + description, and never allowed-tools. `tools` is
+#      optional, as subagents/README.md and the Claude Code docs both say
 #   4. Subagent tools/disallowedTools are comma-separated strings, not YAML lists
 #   5. Skill files open with frontmatter on line 1 and set a description
 #   6. Hook JSON uses the nested event -> matcher -> hooks schema with a type
@@ -15,6 +17,8 @@
 #   8. No em dash (U+2014) or en dash (U+2013) anywhere
 #   9. Recipe counts and headline total in README.md match the real file counts
 #  10. Every recipe file is linked from the README.md catalog
+#  11. Every link to a file in this repo points at a file that exists, including
+#      the links in YAML that the CI link check does not glob
 #
 # Usage: bash scripts/validate-recipes.sh
 # Exits 1 if any check fails.
@@ -65,6 +69,10 @@ for f in commands/*.md; do
     fail "$f: frontmatter has no description"
     continue
   fi
+  if ! grep -qE '^model:[[:space:]]*(haiku|sonnet|opus)[[:space:]]*$' <<<"$fm"; then
+    fail "$f: frontmatter has no model (haiku, sonnet or opus)"
+    continue
+  fi
   if grep -q 'Save as `.claude/commands/' "$f"; then
     fail "$f: wrapper doc, not an installable command file"
     continue
@@ -85,8 +93,10 @@ for f in subagents/*.md; do
     continue
   fi
 
+  # Only name and description are required. `tools` is optional: omit it and the
+  # agent inherits every tool available to subagents.
   bad=0
-  for key in name description tools; do
+  for key in name description; do
     grep -qE "^${key}:[[:space:]]*[^[:space:]]" <<<"$fm" || { fail "$f: frontmatter has no $key"; bad=1; }
   done
 
@@ -184,6 +194,7 @@ expect_heading README.md "### Hooks" "$N_HOOKS"
 expect_heading README.md "### Skills" "$N_SKILLS"
 expect_heading README.md "### MCP Configs" "$N_MCP"
 expect_heading README.md "### Workflows" "$N_WORKFLOWS"
+expect_heading README.md "### CLAUDE.md Templates" "$N_TEMPLATES"
 
 if grep -qF "**$TOTAL copy-paste recipes**" README.md; then
   pass "README.md headline says $TOTAL recipes"
@@ -201,6 +212,26 @@ done < <(
   find commands subagents workflows claude-md -maxdepth 1 -name '*.md' ! -name 'README.md'
   find hooks -maxdepth 1 \( -name '*.sh' -o -name '*.json' \)
   find mcp-configs -maxdepth 1 -name '*.json'
+)
+
+# --------------------------------------------------------------------------
+# 11. Links back into this repo point at files that exist
+# --------------------------------------------------------------------------
+# The CI link check globs Markdown and JSON only, so the blob/main URLs in the
+# GitHub issue forms are invisible to it. They are also unresolvable there until
+# the branch merges. Check them against the working tree instead, which catches
+# a rename in any file type and needs no network.
+echo "== self links"
+SELF_PREFIX="https://github.com/Sagargupta16/claude-code-recipes/blob/main/"
+while IFS= read -r target; do
+  if [[ -e "$target" ]]; then
+    pass "blob/main/$target exists"
+  else
+    fail "$target is linked as ${SELF_PREFIX}$target but is not in the repo"
+  fi
+done < <(
+  grep -rhoE "${SELF_PREFIX}[A-Za-z0-9._/-]+" . --exclude-dir=.git |
+    sed "s|^${SELF_PREFIX}||" | sort -u
 )
 
 # --------------------------------------------------------------------------

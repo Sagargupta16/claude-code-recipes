@@ -36,28 +36,12 @@ VALID_HANDLER_TYPES = {"command", "http", "mcp_tool", "prompt", "agent"}
 # list of exact strings). Anything else is treated as a regular expression.
 EXACT_MATCHER = re.compile(r"^[A-Za-z0-9_\-, |]+$")
 
-# Known tool names a matcher may name exactly. Anything outside this set that is
-# not a regex is almost certainly a typo or an invented event name.
-KNOWN_TOOLS = {
-    "Agent",
-    "AskUserQuestion",
-    "Bash",
-    "BashOutput",
-    "Edit",
-    "ExitPlanMode",
-    "Glob",
-    "Grep",
-    "KillShell",
-    "NotebookEdit",
-    "Read",
-    "Skill",
-    "SlashCommand",
-    "Task",
-    "TodoWrite",
-    "WebFetch",
-    "WebSearch",
-    "Write",
-}
+# Shape of a tool name, rather than a list of them: built-in tools are
+# PascalCase with no separators (``Bash``, ``Edit``, ``NotebookEdit``) and MCP
+# tools are ``mcp__<server>__<tool>``. Checking the shape catches the mistake
+# this guards against (``git_commit``, ``file_edit``, lowercase ``bash``)
+# without an allowlist that goes stale every time a tool is added.
+TOOL_NAME = re.compile(r"^(?:[A-Z][A-Za-z0-9]*|mcp__[A-Za-z0-9_]+)$")
 
 
 def check_matcher(event: str, matcher: str, where: str, errors: list[str]) -> None:
@@ -74,11 +58,12 @@ def check_matcher(event: str, matcher: str, where: str, errors: list[str]) -> No
         return
     names = [n.strip() for n in re.split(r"[|,]", matcher) if n.strip()]
     for name in names:
-        if name not in KNOWN_TOOLS:
+        if not TOOL_NAME.match(name):
             errors.append(
-                f"{where}: matcher {matcher!r} names {name!r}, which is not a tool. "
-                "On tool events the matcher matches the tool name (Bash, Edit|Write, "
-                "mcp__.*). Use the per-handler 'if' field for command filtering."
+                f"{where}: matcher {matcher!r} names {name!r}, which is not shaped like "
+                "a tool name. On tool events the matcher matches the tool name (Bash, "
+                "Edit|Write, mcp__.*). Use the per-handler 'if' field for command "
+                "filtering."
             )
 
 

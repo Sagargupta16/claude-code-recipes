@@ -18,6 +18,11 @@
 # ============================================================================
 set -euo pipefail
 
+# Send everything this hook and the linters print to stderr. On PreToolUse the
+# message Claude sees is stderr; stdout only reaches the debug log, so leaving
+# the diagnostics there makes "fix the issues above" point at nothing.
+exec 1>&2
+
 # --------------------------------------------------------------------------
 # Detect staged files
 # --------------------------------------------------------------------------

@@ -87,7 +87,7 @@ Hook scripts get everything about the event from the **JSON payload on stdin**. 
 
 ### Environment variables
 
-Only these are exported to a hook process. Everything else comes from stdin.
+A hook process inherits the parent environment, apart from the `OTEL_*` exporter variables Claude Code strips from every subprocess it spawns. On top of that, Claude Code sets:
 
 | Variable | Description |
 |----------|-------------|
@@ -97,6 +97,9 @@ Only these are exported to a hook process. Everything else comes from stdin.
 | `$CLAUDE_EFFORT` | Effort level of the current session |
 | `$CLAUDE_CODE_REMOTE` | `"true"` in remote web environments, unset in the local CLI |
 | `$CLAUDE_CODE_BRIDGE_SESSION_ID` | Remote Control session ID, when one is connected |
+| `$CLAUDE_PLUGIN_OPTION_<KEY>` | Value of a plugin option, e.g. `$CLAUDE_PLUGIN_OPTION_WEBHOOK_URL` for a `webhook_url` option |
+
+None of them carry the event. That data is on stdin.
 
 ### Exit Codes
 
@@ -133,6 +136,7 @@ exit 0
 - Keep hooks **fast** -- they run synchronously and block Claude's workflow
 - Use `set -euo pipefail` to catch errors early
 - Stdout from a hook that exits 0 goes to the debug log, not the transcript. Run `claude --debug` to see it
+- A hook that blocks must put the reason on **stderr**, diagnostics included. `pre-commit-lint.sh` and `pre-push-test.sh` do it with one `exec 1>&2` at the top, so the linter output lands next to the verdict instead of in the debug log
 - Test hooks manually before adding them, feeding a realistic payload rather than `{}`:
   `echo '{"tool_name":"Edit","tool_input":{"file_path":"src/index.ts"}}' | bash .claude/hooks/your-hook.sh`
 - Hooks run from the project root directory

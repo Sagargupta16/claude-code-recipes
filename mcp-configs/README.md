@@ -119,7 +119,7 @@ There are three scopes, and only one of them is a file you hand-edit.
 | Project | `.mcp.json` in the project root | This project only | Yes, via version control |
 | User | `~/.claude.json`, at the top level | All your projects | No |
 
-Server definitions never go in a settings file. `~/.claude/settings.json` and `.claude/settings.json` hold MCP *controls* only -- `enabledMcpjsonServers`, `disabledMcpjsonServers`, `enableAllProjectMcpServers` -- so an `mcpServers` block pasted there is silently ignored.
+Server definitions never go in a settings file. `~/.claude/settings.json` and `.claude/settings.json` hold MCP *controls* only -- `enabledMcpjsonServers`, `disabledMcpjsonServers`, `enableAllProjectMcpServers`. A definition belongs in one of the three files above.
 
 For anything other than the committed project scope, let the CLI write the file:
 

@@ -16,7 +16,7 @@ A subagent is a markdown file with YAML frontmatter. Only `name` and `descriptio
 | `permissionMode` | No | `default`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`, or `plan` |
 | `skills` | No | Skills to preload into the agent's context at startup (YAML list) |
 | `effort` | No | `low`, `medium`, `high`, `xhigh`, or `max` for this agent |
-| `color` | No | Display colour in the task list and transcript |
+| `color` | No | Display color in the task list and transcript |
 
 Two things to get right, because both fail quietly:
 

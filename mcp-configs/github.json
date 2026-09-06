@@ -19,7 +19,9 @@
     "tools": {
       "_comment": [
         "Tools are grouped into toolsets. The default toolsets are enabled unless you",
-        "narrow them with the X-MCP-Toolsets header or the --toolsets flag on a local run."
+        "narrow them with the X-MCP-Toolsets header or the --toolsets flag on a local run.",
+        "'default' selects the baseline below and 'all' turns on every toolset.",
+        "Toolset list checked against github/github-mcp-server README on 2026-09-06."
       ],
       "_available_toolsets_default": [
         "context     -- current user and repository context",
@@ -32,6 +34,8 @@
         "actions",
         "code_quality",
         "code_security",
+        "copilot",
+        "copilot_issue_intents",
         "dependabot",
         "discussions",
         "gists",
@@ -44,6 +48,10 @@
         "secret_protection",
         "security_advisories",
         "stargazers"
+      ],
+      "_available_toolsets_remote_only": [
+        "copilot_spaces",
+        "github_support_docs_search"
       ]
     },
     "_notes": {
