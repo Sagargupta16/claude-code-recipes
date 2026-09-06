@@ -1,6 +1,6 @@
 # Claude Code Recipes - Cheatsheet
 
-> One-page quick reference. For full docs, see the [README](README.md).
+> One-page quick reference. For full docs, see the [README](README.md). If a recipe installs but does nothing, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ---
 

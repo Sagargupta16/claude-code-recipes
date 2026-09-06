@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, so a link that rots after merge still gets caught
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  recipes:
+    name: Recipe validity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate recipe frontmatter, hook schema, JSON, and counts
+        run: bash scripts/validate-recipes.sh
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run shellcheck on every shell script
+        run: |
+          shellcheck --version
+          shellcheck -S style hooks/*.sh scripts/*.sh
+
+      - name: Check every script parses
+        run: |
+          for f in hooks/*.sh scripts/*.sh; do
+            bash -n "$f"
+            echo "ok $f"
+          done
+
+  links:
+    name: Link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check links in Markdown and JSON
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # JSON is included because the MCP configs and the settings example
+          # carry Docs and $schema URLs that nothing else would check.
+          #
+          # Accepted non-200 codes:
+          #   401 - the GitHub remote MCP endpoint requires a token
+          #   403 - hosts that block CI user agents
+          #   429 - rate limiting, not a dead link
+          #
+          # Exclusions:
+          #   postgresql:// - example connection strings, not fetchable
+          #   ^https?://$   - bare scheme names quoted in prose
+          #   badge.svg     - only resolves once the workflow is on the default branch
+          args: >-
+            --no-progress
+            --max-retries 2
+            --accept 200,206,401,403,429
+            --exclude ^postgresql://
+            --exclude ^https?://$
+            --exclude badge\.svg
+            "**/*.md"
+            "**/*.json"
+          fail: true

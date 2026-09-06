@@ -1,0 +1,66 @@
+name: Recipe request
+description: Suggest a new command, subagent, hook, skill, MCP config, or workflow
+title: "[request] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Command (commands/)
+        - Subagent (subagents/)
+        - Hook (hooks/)
+        - Skill (skills/)
+        - MCP config (mcp-configs/)
+        - Workflow (workflows/)
+        - CLAUDE.md template (claude-md/)
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Proposed name
+      description: kebab-case, e.g. dependency-audit
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does it solve
+      description: The task you do repeatedly today that this would replace.
+    validations:
+      required: true
+
+  - type: textarea
+    id: shape
+    attributes:
+      label: Rough shape
+      description: |
+        A sketch is enough: the prompt you would write, the event a hook would fire on,
+        the rules a skill would encode.
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      description: Recipes in this repo have to clear these bars.
+      options:
+        - label: It works out of the box, with no setup beyond copying a file
+          required: true
+        - label: It does not require a paid service to function
+          required: true
+        - label: It is generic, not tied to one project's conventions
+          required: true
+        - label: I searched the existing recipes and this is not already covered
+          required: true
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Would you like to write it?
+      options:
+        - label: I am happy to open a PR for this

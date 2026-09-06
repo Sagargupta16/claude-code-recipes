@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+"""Assert that a settings JSON file uses the real Claude Code hook schema.
+
+The schema is three levels deep:
+
+    {"hooks": {"<Event>": [{"matcher": "Bash",
+                            "hooks": [{"type": "command", "command": "..."}]}]}}
+
+The failure this guards against is the flat ``{"matcher", "command"}`` shape,
+which parses as valid JSON and then never fires. It also rejects matcher values
+that cannot match a tool name, because on tool events the matcher is compared
+against the tool name (``Bash``, ``Edit|Write``, ``mcp__.*``), not against a git
+subcommand.
+
+Usage: python scripts/check_hook_schema.py <file.json> [<file.json> ...]
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+
+TOOL_EVENTS = {
+    "PreToolUse",
+    "PostToolUse",
+    "PostToolUseFailure",
+    "PermissionRequest",
+    "PermissionDenied",
+}
+
+VALID_HANDLER_TYPES = {"command", "http", "mcp_tool", "prompt", "agent"}
+
+# A matcher made only of these characters is compared as an exact string (or a
+# list of exact strings). Anything else is treated as a regular expression.
+EXACT_MATCHER = re.compile(r"^[A-Za-z0-9_\-, |]+$")
+
+# Known tool names a matcher may name exactly. Anything outside this set that is
+# not a regex is almost certainly a typo or an invented event name.
+KNOWN_TOOLS = {
+    "Agent",
+    "AskUserQuestion",
+    "Bash",
+    "BashOutput",
+    "Edit",
+    "ExitPlanMode",
+    "Glob",
+    "Grep",
+    "KillShell",
+    "NotebookEdit",
+    "Read",
+    "Skill",
+    "SlashCommand",
+    "Task",
+    "TodoWrite",
+    "WebFetch",
+    "WebSearch",
+    "Write",
+}
+
+
+def check_matcher(event: str, matcher: str, where: str, errors: list[str]) -> None:
+    if event not in TOOL_EVENTS:
+        return
+    if matcher in ("", "*"):
+        return
+    if not EXACT_MATCHER.match(matcher):
+        # Regex path: nothing to verify beyond it compiling.
+        try:
+            re.compile(matcher)
+        except re.error as exc:
+            errors.append(f"{where}: matcher {matcher!r} is not a valid regex ({exc})")
+        return
+    names = [n.strip() for n in re.split(r"[|,]", matcher) if n.strip()]
+    for name in names:
+        if name not in KNOWN_TOOLS:
+            errors.append(
+                f"{where}: matcher {matcher!r} names {name!r}, which is not a tool. "
+                "On tool events the matcher matches the tool name (Bash, Edit|Write, "
+                "mcp__.*). Use the per-handler 'if' field for command filtering."
+            )
+
+
+def check_file(path: str) -> list[str]:
+    errors: list[str] = []
+    with open(path, encoding="utf-8") as handle:
+        data = json.load(handle)
+
+    hooks = data.get("hooks")
+    if hooks is None:
+        return [f"{path}: no top-level 'hooks' key"]
+    if not isinstance(hooks, dict):
+        return [f"{path}: 'hooks' must be an object keyed by event name"]
+
+    for event, groups in hooks.items():
+        if not isinstance(groups, list):
+            errors.append(f"{path}: hooks.{event} must be an array of matcher groups")
+            continue
+        for index, group in enumerate(groups):
+            where = f"{path}: hooks.{event}[{index}]"
+            if not isinstance(group, dict):
+                errors.append(f"{where} must be an object")
+                continue
+            if "command" in group:
+                errors.append(
+                    f"{where} puts 'command' on the matcher group. Commands belong in a "
+                    "nested 'hooks' array of handlers."
+                )
+            handlers = group.get("hooks")
+            if not isinstance(handlers, list) or not handlers:
+                errors.append(f"{where} has no non-empty 'hooks' handler array")
+                continue
+            matcher = group.get("matcher")
+            if isinstance(matcher, str):
+                check_matcher(event, matcher, where, errors)
+            for handler_index, handler in enumerate(handlers):
+                handler_where = f"{where}.hooks[{handler_index}]"
+                if not isinstance(handler, dict):
+                    errors.append(f"{handler_where} must be an object")
+                    continue
+                handler_type = handler.get("type")
+                if handler_type not in VALID_HANDLER_TYPES:
+                    errors.append(
+                        f"{handler_where} has type {handler_type!r}; expected one of "
+                        + ", ".join(sorted(VALID_HANDLER_TYPES))
+                    )
+                if handler_type == "command" and not handler.get("command"):
+                    errors.append(
+                        f"{handler_where} is a command handler with no 'command'"
+                    )
+                if "if" in handler and event not in TOOL_EVENTS:
+                    errors.append(
+                        f"{handler_where} sets 'if' on {event}, which is not a tool event. "
+                        "A handler with 'if' never runs on a non-tool event."
+                    )
+    return errors
+
+
+def main(argv: list[str]) -> int:
+    if len(argv) < 2:
+        print(__doc__, file=sys.stderr)
+        return 2
+    errors: list[str] = []
+    for path in argv[1:]:
+        errors.extend(check_file(path))
+    for error in errors:
+        print(error, file=sys.stderr)
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

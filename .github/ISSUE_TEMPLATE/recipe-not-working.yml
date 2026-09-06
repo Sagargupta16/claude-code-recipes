@@ -1,0 +1,89 @@
+name: Recipe does not work
+description: A recipe from this repo did not do what it says it does
+title: "[broken] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Most Claude Code config failures are silent: the recipe just does nothing, with no error.
+        [TROUBLESHOOTING.md](https://github.com/Sagargupta16/claude-code-recipes/blob/main/TROUBLESHOOTING.md)
+        covers the usual causes by symptom. If none of them fit, fill this in.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Command (commands/)
+        - Subagent (subagents/)
+        - Hook (hooks/)
+        - Skill (skills/)
+        - MCP config (mcp-configs/)
+        - Workflow (workflows/)
+        - CLAUDE.md template (claude-md/)
+        - Documentation
+    validations:
+      required: true
+
+  - type: input
+    id: file
+    attributes:
+      label: Which file
+      description: Path in this repo, e.g. hooks/post-edit-format.sh
+      placeholder: hooks/post-edit-format.sh
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Claude Code version
+      description: Output of `claude --version`
+      placeholder: "2.1.x"
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      placeholder: macOS 15 / Ubuntu 24.04 / Windows 11 + Git Bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+      description: |
+        Paste any output. If nothing at all happened, run `claude --debug`, reproduce it,
+        and paste the relevant lines: silent failures usually only show up there.
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Your config
+      description: |
+        The relevant part of your `.claude/settings.json`, `.mcp.json`, or the recipe file
+        as you actually installed it. Redact tokens.
+      render: json
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I copied the recipe as-is, or I have described my edits above
+          required: true
+        - label: I checked TROUBLESHOOTING.md for this symptom
+          required: true

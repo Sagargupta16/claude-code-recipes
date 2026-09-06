@@ -11,3 +11,7 @@ Thumbs.db
 .env.local
 .env.*.local
 *.log
+
+# Python bytecode from scripts/
+__pycache__/
+*.py[cod]

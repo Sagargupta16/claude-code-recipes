@@ -187,13 +187,22 @@ Add your recipe to:
 
 ### 4. Test your recipe
 
-Before submitting, verify that:
+Run the validator first. It catches the mechanical mistakes, so review time goes on the content instead:
+
+```bash
+bash scripts/validate-recipes.sh
+```
+
+It checks command, subagent, and skill frontmatter, the hook config schema, JSON validity, banned dash characters, and that the recipe counts in `README.md` match the files on disk. CI runs the same script plus `shellcheck` and a link check on every pull request.
+
+Then verify by hand that:
 
 - [ ] The recipe works out of the box (no extra setup required)
 - [ ] File names use kebab-case
 - [ ] Markdown renders correctly on GitHub
-- [ ] Shell scripts are executable and pass `shellcheck`
+- [ ] Shell scripts are executable and pass `shellcheck -S style`
 - [ ] JSON files are valid (no trailing commas, proper escaping)
+- [ ] Every URL you added returns 200
 - [ ] The recipe doesn't require paid services or specific API keys
 - [ ] Examples are generic (not tied to a specific project)
 
@@ -221,10 +230,11 @@ docs(skills): add error handling examples to typescript-strict
 
 ### PR description
 
-Include:
+Opening a PR gives you [this template](.github/PULL_REQUEST_TEMPLATE.md) pre-filled. It asks for:
+
 - **What**: Which recipe you're adding or changing
 - **Why**: What problem it solves or what it improves
-- **Testing**: How you verified it works
+- **Testing**: How you verified it works, with the command you ran and what you saw
 
 ### Review process
 

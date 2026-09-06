@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Troubleshooting guide
+    url: https://github.com/Sagargupta16/claude-code-recipes/blob/main/TROUBLESHOOTING.md
+    about: A recipe did nothing and gave no error. Most causes are listed here by symptom.
+  - name: Contributing guide
+    url: https://github.com/Sagargupta16/claude-code-recipes/blob/main/CONTRIBUTING.md
+    about: Format requirements and the PR checklist for adding a recipe.

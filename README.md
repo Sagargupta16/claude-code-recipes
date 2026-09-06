@@ -1,8 +1,12 @@
 # Claude Code Recipes
 
+[![CI](https://github.com/Sagargupta16/claude-code-recipes/actions/workflows/ci.yml/badge.svg)](https://github.com/Sagargupta16/claude-code-recipes/actions/workflows/ci.yml)
+
 > **47 copy-paste recipes** for Claude Code - commands, subagents, hooks, skills, and MCP configs that work out of the box.
 
 Stop configuring from scratch. Drop these recipes into your `.claude/` folder and start building.
+
+Something installed but silent? Claude Code config fails quietly, so start at [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ---
 
@@ -122,7 +126,19 @@ Optimized project configuration templates.
 
 ## Quick Reference
 
-See the [cheatsheet](cheatsheet.md) for a one-page summary.
+See the [cheatsheet](cheatsheet.md) for a one-page summary, and [TROUBLESHOOTING.md](TROUBLESHOOTING.md) when a recipe is installed but does nothing.
+
+---
+
+## Verifying a Recipe
+
+Every recipe in this repo is checked on each push and pull request: frontmatter validity, the hook config schema, JSON parsing, `shellcheck`, working links, and that the recipe counts above match the files on disk.
+
+Run the same checks yourself:
+
+```bash
+bash scripts/validate-recipes.sh
+```
 
 ---
 
