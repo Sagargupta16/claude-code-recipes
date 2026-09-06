@@ -28,6 +28,7 @@
 - `scripts/validate-recipes.sh`: asserts command, subagent, and skill frontmatter, the nested hook schema, JSON validity, banned dash characters, and that the advertised recipe counts match the files on disk
 - `TROUBLESHOOTING.md`: symptom-first guide for the silent failures, one section per "installed it and nothing happened"
 - `.github/PULL_REQUEST_TEMPLATE.md`, issue forms for a recipe request and a broken recipe, and `CODEOWNERS`
+- `.gitattributes` with `*.sh text eol=lf`, so a Windows clone no longer checks the hook scripts out with CRLF and break them when copied to a Linux or macOS project
 - Expanded the README "Related" section into a table of the sibling repos
 
 ## [1.1.0] - 2026-07-07
