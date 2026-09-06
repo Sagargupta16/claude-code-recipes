@@ -1,9 +1,15 @@
 {
   "_comment": [
     "PostgreSQL MCP Server -- provides tools for database queries and schema inspection.",
+    "DEPRECATED UPSTREAM (checked 2026-09-06): npm reports @modelcontextprotocol/server-postgres",
+    "as 'Package no longer supported' at 0.6.2, and the server has been moved to the",
+    "modelcontextprotocol/servers-archived repository. It still installs and runs, but it",
+    "gets no fixes. Treat this recipe as a starting point, not a maintained integration.",
+    "For a maintained alternative, browse the Postgres entries in the MCP server registry",
+    "and add it with: claude mcp add --scope project postgres -- <command>",
     "Requires: DATABASE_URL environment variable (or individual PG* variables).",
     "Install: Copy the 'postgres' key into .mcp.json under mcpServers.",
-    "Docs: https://github.com/modelcontextprotocol/servers/tree/main/src/postgres"
+    "Docs: https://github.com/modelcontextprotocol/servers-archived/tree/main/src/postgres"
   ],
   "postgres": {
     "command": "npx",

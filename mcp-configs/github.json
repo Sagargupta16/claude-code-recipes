@@ -1,40 +1,70 @@
 {
   "_comment": [
-    "GitHub MCP Server -- provides tools for issues, PRs, repos, and code search.",
-    "Requires: GITHUB_PERSONAL_ACCESS_TOKEN environment variable.",
+    "GitHub MCP Server -- provides tools for issues, PRs, repos, actions, and code search.",
+    "This is GitHub's own server, hosted remotely. The old npm package",
+    "@modelcontextprotocol/server-github is deprecated on npm and moved out of the",
+    "modelcontextprotocol/servers repository; do not use it.",
+    "Requires: GITHUB_PERSONAL_ACCESS_TOKEN environment variable (a fine-grained token",
+    "scoped to the repositories you want Claude to work with).",
     "Install: Copy the 'github' key into .mcp.json under mcpServers.",
-    "Docs: https://github.com/modelcontextprotocol/servers/tree/main/src/github"
+    "Or run: claude mcp add --transport http github https://api.githubcopilot.com/mcp/ --header \"Authorization: Bearer $GITHUB_PERSONAL_ACCESS_TOKEN\"",
+    "Docs: https://github.com/github/github-mcp-server"
   ],
   "github": {
-    "command": "npx",
-    "args": [
-      "-y",
-      "@modelcontextprotocol/server-github"
-    ],
-    "env": {
-      "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+    "type": "http",
+    "url": "https://api.githubcopilot.com/mcp/",
+    "headers": {
+      "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
     },
     "tools": {
-      "_available": [
-        "create_or_update_file    -- Create or update a file in a repository",
-        "search_repositories      -- Search GitHub repositories",
-        "create_repository         -- Create a new repository",
-        "get_file_contents         -- Read file or directory contents",
-        "push_files                -- Push multiple files in a single commit",
-        "create_issue              -- Create a new issue",
-        "create_pull_request       -- Create a new pull request",
-        "fork_repository           -- Fork a repository",
-        "create_branch             -- Create a new branch",
-        "list_issues               -- List issues with filters",
-        "update_issue              -- Update an existing issue",
-        "add_issue_comment         -- Add a comment to an issue",
-        "search_code               -- Search code across repositories",
-        "search_issues             -- Search issues and PRs",
-        "list_commits              -- List commits on a branch",
-        "get_issue                 -- Get details of a specific issue",
-        "get_pull_request          -- Get details of a specific PR",
-        "list_pull_requests        -- List PRs with filters",
-        "create_pull_request_review -- Create a review on a PR"
+      "_comment": [
+        "Tools are grouped into toolsets. The default toolsets are enabled unless you",
+        "narrow them with the X-MCP-Toolsets header or the --toolsets flag on a local run."
+      ],
+      "_available_toolsets_default": [
+        "context     -- current user and repository context",
+        "repos       -- file contents, branches, commits, tags, releases",
+        "issues      -- read, create, update, comment on issues",
+        "pull_requests -- read, create, review, merge pull requests",
+        "users       -- user lookup and search"
+      ],
+      "_available_toolsets_optional": [
+        "actions",
+        "code_quality",
+        "code_security",
+        "dependabot",
+        "discussions",
+        "gists",
+        "git",
+        "governance",
+        "labels",
+        "notifications",
+        "orgs",
+        "projects",
+        "secret_protection",
+        "security_advisories",
+        "stargazers"
+      ]
+    },
+    "_notes": {
+      "local_alternative": [
+        "Prefer the remote server above. To run the same server locally in a container,",
+        "replace the entry with the stdio form below (requires Docker):",
+        "{",
+        "  \"command\": \"docker\",",
+        "  \"args\": [\"run\", \"-i\", \"--rm\", \"-e\", \"GITHUB_PERSONAL_ACCESS_TOKEN\", \"ghcr.io/github/github-mcp-server\"],",
+        "  \"env\": { \"GITHUB_PERSONAL_ACCESS_TOKEN\": \"${GITHUB_PERSONAL_ACCESS_TOKEN}\" }",
+        "}"
+      ],
+      "security": [
+        "Never put the token literally in this file. ${GITHUB_PERSONAL_ACCESS_TOKEN} is",
+        "expanded from your environment when Claude Code reads .mcp.json.",
+        "Use a fine-grained token limited to the repos Claude needs.",
+        "If the variable is unset, Claude Code warns in /mcp and the server fails to connect."
+      ],
+      "verify": [
+        "Run /mcp in Claude Code and confirm the server shows 'connected'.",
+        "A bad or missing token shows 'failed' with the HTTP status, usually 401."
       ]
     }
   }
