@@ -126,28 +126,47 @@ Then add hook configuration to `.claude/settings.json`:
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "git_commit",
-        "command": "bash .claude/hooks/pre-commit-lint.sh"
-      },
-      {
-        "matcher": "git_push",
-        "command": "bash .claude/hooks/pre-push-test.sh"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit *)",
+            "command": "bash .claude/hooks/pre-commit-lint.sh"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git push *)",
+            "command": "bash .claude/hooks/pre-push-test.sh"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "file_edit|create_file",
-        "command": "bash .claude/hooks/post-edit-format.sh"
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-edit-format.sh"
+          }
+        ]
       }
     ],
     "Notification": [
       {
-        "command": "bash .claude/hooks/notification.sh"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/notification.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
+
+The matcher matches the **tool name** (`Bash`, `Edit|Write`), not a git subcommand. The per-handler `if` field narrows a Bash hook to one command with permission-rule syntax.
 
 ---
 
@@ -172,10 +191,10 @@ cat > .mcp.json << 'EOF'
 {
   "mcpServers": {
     "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
     "memory": {
@@ -186,6 +205,8 @@ cat > .mcp.json << 'EOF'
 }
 EOF
 ```
+
+`type` is required on any entry that has a `url`: Claude Code reads a `url` entry with no `type` as a stdio server and skips it.
 
 **Which servers to add**:
 

@@ -2,7 +2,9 @@
 # ============================================================================
 # Pre-commit Lint Hook
 # Runs the project linter on staged files before git commit.
-# Exits 1 to block the commit if linting errors are found.
+# Exits 2 to block the commit if linting errors are found. Exit 2 is the only
+# code a PreToolUse hook can block with; any other non-zero code lets the
+# commit through and only prints a hook error notice.
 #
 # Supported linters:
 #   JavaScript/TypeScript: eslint, biome
@@ -11,6 +13,7 @@
 #   Rust: cargo clippy
 #   General: prettier --check
 #
+# Event: PreToolUse, matcher "Bash" with if: "Bash(git commit *)"
 # Install: Copy to .claude/hooks/ and add to .claude/settings.json
 # ============================================================================
 set -euo pipefail
@@ -127,9 +130,10 @@ fi
 # --------------------------------------------------------------------------
 if [[ $ERRORS -ne 0 ]]; then
   echo ""
-  echo "[lint-hook] Linting errors found. Commit blocked."
-  echo "[lint-hook] Fix the issues above and try again."
-  exit 1
+  echo "[lint-hook] Linting errors found. Commit blocked." >&2
+  echo "[lint-hook] Fix the issues above and try again." >&2
+  # Exit 2 is the blocking code for PreToolUse. Exit 1 would NOT block.
+  exit 2
 fi
 
 echo "[lint-hook] All checks passed."

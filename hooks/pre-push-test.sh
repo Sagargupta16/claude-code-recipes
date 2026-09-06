@@ -2,7 +2,9 @@
 # ============================================================================
 # Pre-push Test Hook
 # Runs the project test suite before git push.
-# Exits 1 to block the push if any tests fail.
+# Exits 2 to block the push if any tests fail. Exit 2 is the only code a
+# PreToolUse hook can block with; any other non-zero code lets the push
+# through and only prints a hook error notice.
 #
 # Supported test runners:
 #   JavaScript/TypeScript: vitest, jest, mocha, npm test
@@ -13,6 +15,7 @@
 #   Elixir: mix test
 #   PHP: phpunit
 #
+# Event: PreToolUse, matcher "Bash" with if: "Bash(git push *)"
 # Install: Copy to .claude/hooks/ and add to .claude/settings.json
 # ============================================================================
 set -euo pipefail
@@ -163,9 +166,10 @@ fi
 
 if [[ $ERRORS -ne 0 ]]; then
   echo ""
-  echo "[test-hook] Tests failed. Push blocked."
-  echo "[test-hook] Fix the failing tests and try again."
-  exit 1
+  echo "[test-hook] Tests failed. Push blocked." >&2
+  echo "[test-hook] Fix the failing tests and try again." >&2
+  # Exit 2 is the blocking code for PreToolUse. Exit 1 would NOT block.
+  exit 2
 fi
 
 echo "[test-hook] All tests passed."
