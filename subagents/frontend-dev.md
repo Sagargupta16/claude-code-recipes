@@ -2,12 +2,7 @@
 name: frontend-dev
 model: sonnet
 description: Build and modify frontend components, styling, layouts, and client-side logic. Delegate here for React, Vue, Svelte, CSS, animations, accessibility, and responsive design tasks.
-allowed-tools:
-  - Read
-  - Edit
-  - Write
-  - Glob
-  - Bash
+tools: Read, Edit, Write, Glob, Bash
 ---
 
 # Frontend Developer

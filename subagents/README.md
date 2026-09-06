@@ -4,12 +4,24 @@ Subagents are specialized AI personas that live in `.claude/agents/` and can be 
 
 ## What Are Subagents?
 
-A subagent is a markdown file with YAML frontmatter that defines:
+A subagent is a markdown file with YAML frontmatter. Only `name` and `description` are required; everything else is optional.
 
-- **name** -- Identifier used to invoke the agent
-- **model** -- Which Claude model to use (`haiku` for fast/cheap, `sonnet` for balanced, `opus` for complex reasoning)
-- **description** -- When the orchestrator should delegate to this agent
-- **allowed-tools** -- The *only* tools this agent can access (principle of least privilege)
+| Field | Required | What it does |
+|-------|:--------:|--------------|
+| `name` | Yes | Identifier used to invoke the agent. Lowercase and hyphens, no `:` |
+| `description` | Yes | When the orchestrator should delegate to this agent |
+| `tools` | No | Allowlist of tools, as a **comma-separated string**. Omit it and the agent inherits every tool available to subagents |
+| `disallowedTools` | No | Denylist, removed from the inherited or specified list |
+| `model` | No | `haiku` for fast/cheap, `sonnet` for balanced, `opus` for complex reasoning, or `inherit` |
+| `permissionMode` | No | `default`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`, or `plan` |
+| `skills` | No | Skills to preload into the agent's context at startup (YAML list) |
+| `effort` | No | `low`, `medium`, `high`, `xhigh`, or `max` for this agent |
+| `color` | No | Display colour in the task list and transcript |
+
+Two things to get right, because both fail quietly:
+
+- The allowlist field is **`tools`**, not `allowed-tools`. `allowed-tools` is slash-command frontmatter; in a subagent file it is an unrecognized key, so the agent silently inherits every tool, including `Edit` and `Write`.
+- `tools` and `disallowedTools` take a comma-separated string (`tools: Read, Glob, Grep`), not a YAML list. Skip a `description` and Claude Code skips the file, logging the reason only under `--debug`.
 
 The main Claude Code session acts as an orchestrator, routing tasks to the right subagent based on the description field.
 
@@ -47,7 +59,7 @@ rm .claude/agents/README.md
 
 ## Design Principles
 
-1. **Least privilege** -- Each agent only gets the tools it needs. Read-only agents cannot edit files.
+1. **Least privilege** -- Each agent only gets the tools it needs. The three read-only agents (researcher, code-reviewer, security-analyst) set `tools: Read, Glob, Grep` and also `disallowedTools: Write, Edit`, so they cannot edit files even if the allowlist is later widened.
 2. **Right-sized models** -- Use `haiku` for fast retrieval tasks, `sonnet` for coding and analysis, `opus` for complex architectural reasoning.
 3. **Structured output** -- Every agent returns a predictable format so the orchestrator can parse and act on results.
 4. **Single responsibility** -- Each agent does one category of work well rather than being a generalist.
@@ -56,7 +68,7 @@ rm .claude/agents/README.md
 
 These are starting points. Adapt them to your stack:
 
-- Change tool lists to match your project (e.g., add `WebFetch` for agents that need external docs)
+- Change the `tools` list to match your project (e.g., add `WebFetch` for agents that need external docs)
 - Adjust the model tier based on your cost/quality tradeoffs
 - Add project-specific instructions (e.g., "We use Tailwind CSS" in the frontend-dev agent)
 - Create new agents for your domain (e.g., `ml-engineer.md`, `mobile-dev.md`)

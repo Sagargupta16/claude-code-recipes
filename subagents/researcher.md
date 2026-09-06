@@ -2,10 +2,8 @@
 name: researcher
 model: haiku
 description: Explore codebases, find patterns, locate files, and gather structured information. Delegate here when you need to understand code before making changes. This agent is read-only and never modifies files.
-allowed-tools:
-  - Read
-  - Glob
-  - Grep
+tools: Read, Glob, Grep
+disallowedTools: Write, Edit
 ---
 
 # Researcher

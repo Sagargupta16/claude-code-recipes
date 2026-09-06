@@ -2,12 +2,7 @@
 name: backend-dev
 model: sonnet
 description: Build and modify backend services including API endpoints, database queries, authentication, middleware, and server-side business logic. Delegate here for Node.js, Python, Go, or any server-side work.
-allowed-tools:
-  - Read
-  - Edit
-  - Write
-  - Glob
-  - Bash
+tools: Read, Edit, Write, Glob, Bash
 ---
 
 # Backend Developer

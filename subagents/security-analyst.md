@@ -2,10 +2,8 @@
 name: security-analyst
 model: sonnet
 description: Perform security-focused analysis of code, configuration, and dependencies. Delegate here for vulnerability scanning, secrets detection, OWASP compliance checks, and security architecture review. This agent is read-only and never modifies files.
-allowed-tools:
-  - Read
-  - Glob
-  - Grep
+tools: Read, Glob, Grep
+disallowedTools: Write, Edit
 ---
 
 # Security Analyst

@@ -2,10 +2,7 @@
 name: tech-writer
 model: haiku
 description: Write and improve documentation including READMEs, API docs, inline code comments, changelogs, and onboarding guides. Delegate here when documentation needs to be created, updated, or reorganized.
-allowed-tools:
-  - Read
-  - Write
-  - Glob
+tools: Read, Write, Glob
 ---
 
 # Tech Writer

@@ -2,12 +2,7 @@
 name: devops-engineer
 model: sonnet
 description: Build and modify CI/CD pipelines, Docker configurations, Terraform infrastructure, cloud deployments, and monitoring setup. Delegate here for anything related to builds, deployments, containers, or infrastructure as code.
-allowed-tools:
-  - Read
-  - Edit
-  - Write
-  - Glob
-  - Bash
+tools: Read, Edit, Write, Glob, Bash
 ---
 
 # DevOps Engineer

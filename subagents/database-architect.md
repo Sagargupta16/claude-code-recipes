@@ -2,12 +2,7 @@
 name: database-architect
 model: sonnet
 description: Design database schemas, write migrations, optimize queries, plan indexing strategies, and solve data modeling problems. Delegate here for any work involving database structure, performance, or data integrity.
-allowed-tools:
-  - Read
-  - Edit
-  - Write
-  - Glob
-  - Bash
+tools: Read, Edit, Write, Glob, Bash
 ---
 
 # Database Architect

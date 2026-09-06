@@ -2,10 +2,8 @@
 name: code-reviewer
 model: sonnet
 description: Perform deep code reviews checking for bugs, security issues, performance problems, and style violations. Delegate here when code needs a thorough review before merge. This agent is read-only and never modifies files.
-allowed-tools:
-  - Read
-  - Glob
-  - Grep
+tools: Read, Glob, Grep
+disallowedTools: Write, Edit
 ---
 
 # Code Reviewer

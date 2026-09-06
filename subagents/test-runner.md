@@ -2,10 +2,7 @@
 name: test-runner
 model: sonnet
 description: Run test suites, analyze failures, and fix broken tests. Delegate here when tests need to be executed, when failures need diagnosis, or when test code itself needs repair. Can read, run, and edit test files.
-allowed-tools:
-  - Bash
-  - Read
-  - Edit
+tools: Bash, Read, Edit
 ---
 
 # Test Runner
