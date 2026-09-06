@@ -31,9 +31,9 @@
     },
     "_notes": {
       "connection_string_formats": [
-        "postgresql://user:password@host:port/database",
-        "postgresql://user:password@host:port/database?sslmode=require",
-        "postgresql://user:password@host:port/database?schema=public"
+        "postgresql://user:password@host:5432/database",
+        "postgresql://user:password@host:5432/database?sslmode=require",
+        "postgresql://user:password@host:5432/database?schema=public"
       ],
       "security": [
         "The server runs queries as READ-ONLY by default.",

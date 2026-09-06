@@ -65,6 +65,9 @@ jobs:
           #   postgresql:// - example connection strings, not fetchable
           #   ^https?://$   - bare scheme names quoted in prose
           #   badge.svg     - only resolves once the workflow is on the default branch
+          #
+          # CLAUDE.md is skipped: its stacking preamble links to workspace files
+          # that live one level above this repo and are not part of it.
           args: >-
             --no-progress
             --max-retries 2
@@ -72,6 +75,7 @@ jobs:
             --exclude ^postgresql://
             --exclude ^https?://$
             --exclude badge\.svg
+            --exclude-path CLAUDE.md
             "**/*.md"
             "**/*.json"
           fail: true
