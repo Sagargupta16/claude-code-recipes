@@ -14,12 +14,15 @@
     ],
     "tools": {
       "_available": [
-        "read_file          -- Read complete file contents",
+        "read_text_file      -- Read a file as text, optionally only the first or last N lines",
+        "read_media_file     -- Read an image or audio file as base64 with its MIME type",
+        "read_file           -- Deprecated alias for read_text_file",
         "read_multiple_files -- Read multiple files at once",
         "write_file          -- Create or overwrite a file",
         "edit_file           -- Make selective edits with pattern matching",
         "create_directory    -- Create a new directory (recursive)",
         "list_directory      -- List files and subdirectories",
+        "list_directory_with_sizes -- List a directory with file sizes, sortable by name or size",
         "directory_tree      -- Get recursive tree view of a directory",
         "move_file           -- Move or rename a file",
         "search_files        -- Search for files matching a pattern",

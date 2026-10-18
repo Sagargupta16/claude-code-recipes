@@ -1,7 +1,11 @@
 {
   "_comment": [
     "Memory MCP Server -- persistent knowledge graph for storing and retrieving information across sessions.",
-    "No API keys required. Data is stored locally in a JSON file.",
+    "No API keys required. Data is stored locally in a JSON Lines file.",
+    "MEMORY_FILE_PATH must be absolute or start with ~/. The server resolves a relative",
+    "path against its own package directory, which for npx is a cache folder, not your project.",
+    "The default below keeps one graph in ~/.claude for every project. For a per-project graph,",
+    "set MEMORY_FILE_PATH to an absolute path in your environment before you start Claude Code.",
     "Install: Copy the 'memory' key into .mcp.json under mcpServers.",
     "Docs: https://github.com/modelcontextprotocol/servers/tree/main/src/memory"
   ],
@@ -12,7 +16,7 @@
       "@modelcontextprotocol/server-memory"
     ],
     "env": {
-      "MEMORY_FILE_PATH": "${MEMORY_FILE_PATH:-.claude/memory.json}"
+      "MEMORY_FILE_PATH": "${MEMORY_FILE_PATH:-~/.claude/memory.jsonl}"
     },
     "tools": {
       "_available": [
