@@ -24,6 +24,43 @@ Something installed but silent? Claude Code config fails quietly, so start at [T
 
 ---
 
+## Where Each Recipe Plugs In
+
+Every recipe type hooks into a different point of a Claude Code session. Knowing which one fires when is most of the debugging when a recipe stays silent.
+
+```mermaid
+flowchart TD
+    subgraph start["Session start"]
+        CM[CLAUDE.md<br/>templates] --> CTX[Session context]
+        MCP[.mcp.json<br/>MCP configs] --> TOOLS[Extra tools]
+        SK[.claude/skills<br/>skill descriptions] --> CTX
+    end
+    U[You type a prompt<br/>or /command] --> CMD[.claude/commands<br/>prompt + model]
+    CMD --> LOOP((Agent loop))
+    CTX --> LOOP
+    TOOLS --> LOOP
+    LOOP -- delegates --> AG[.claude/agents<br/>subagent with scoped tools]
+    LOOP -- loads on match --> SK
+    LOOP -- tool call --> PRE{PreToolUse hook}
+    PRE -- exit 2 blocks --> LOOP
+    PRE -- allowed --> RUN[Bash / Edit / Write]
+    RUN --> POST[PostToolUse hook<br/>format the edited file]
+    POST --> LOOP
+    LOOP -- waiting on you --> NOTE[Notification hook]
+```
+
+| Recipe type | Loaded | Scope it controls |
+|-------------|--------|-------------------|
+| CLAUDE.md template | Every session start | Project conventions Claude always sees |
+| MCP config | Session start, one process or remote endpoint per server | Extra tools (GitHub, Postgres, docs lookup) |
+| Skill | Description at start, body only when the task matches | Domain knowledge without paying for it on every turn |
+| Command | When you type `/name` | One reusable prompt, pinned to a model |
+| Subagent | When the main loop delegates | A separate context window with its own tool allowlist |
+| Hook | On a lifecycle event (`PreToolUse`, `PostToolUse`, `Notification`, `Stop`) | Deterministic checks that do not depend on the model remembering |
+| Workflow | Read by you | Which of the above to chain, in which permission mode |
+
+---
+
 ## Recipe Catalog
 
 ### Commands (15 recipes)
@@ -97,7 +134,7 @@ Model Context Protocol server configurations for `.mcp.json`.
 | GitHub | Issues, PRs, repos, actions | [github.json](mcp-configs/github.json) |
 | Filesystem | Enhanced file operations | [filesystem.json](mcp-configs/filesystem.json) |
 | PostgreSQL | Database queries and schema | [postgres.json](mcp-configs/postgres.json) |
-| Memory | Persistent key-value memory | [memory.json](mcp-configs/memory.json) |
+| Memory | Persistent knowledge graph | [memory.json](mcp-configs/memory.json) |
 | Context7 | Library documentation lookup | [context7.json](mcp-configs/context7.json) |
 
 ### Workflows (5 recipes)

@@ -30,13 +30,25 @@ send_notification() {
   local title="$1"
   local message="$2"
 
+  # The message comes from the hook payload, and MCP elicitation prompts put
+  # server-supplied text in it. Never splice it into AppleScript or PowerShell
+  # source: a quote would break the script, or run code. osascript gets it as
+  # argv, PowerShell reads it from the environment (WSLENV carries it into
+  # powershell.exe from WSL).
+  export CC_NOTIFY_TITLE="$title" CC_NOTIFY_MESSAGE="$message"
+  export WSLENV="CC_NOTIFY_TITLE:CC_NOTIFY_MESSAGE${WSLENV:+:$WSLENV}"
+
   case "$(uname -s)" in
     # ------------------------------------------------------------------
     # macOS
     # ------------------------------------------------------------------
     Darwin)
       if command -v osascript &>/dev/null; then
-        osascript -e "display notification \"$message\" with title \"$title\" sound name \"Glass\""
+        osascript \
+          -e 'on run argv' \
+          -e 'display notification (item 2 of argv) with title (item 1 of argv) sound name "Glass"' \
+          -e 'end run' \
+          "$title" "$message"
         echo "[notify] macOS notification sent."
         return 0
       fi
@@ -85,7 +97,7 @@ send_notification() {
           \$notify = New-Object System.Windows.Forms.NotifyIcon;
           \$notify.Icon = [System.Drawing.SystemIcons]::Information;
           \$notify.Visible = \$true;
-          \$notify.ShowBalloonTip(5000, '$title', '$message', 'Info');
+          \$notify.ShowBalloonTip(5000, \$env:CC_NOTIFY_TITLE, \$env:CC_NOTIFY_MESSAGE, 'Info');
           Start-Sleep -Seconds 6;
           \$notify.Dispose();
         " &>/dev/null &
@@ -105,7 +117,7 @@ send_notification() {
         \$notify = New-Object System.Windows.Forms.NotifyIcon;
         \$notify.Icon = [System.Drawing.SystemIcons]::Information;
         \$notify.Visible = \$true;
-        \$notify.ShowBalloonTip(5000, '$title', '$message', 'Info');
+        \$notify.ShowBalloonTip(5000, \$env:CC_NOTIFY_TITLE, \$env:CC_NOTIFY_MESSAGE, 'Info');
         Start-Sleep -Seconds 6;
         \$notify.Dispose();
       " &>/dev/null &

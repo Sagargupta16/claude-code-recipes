@@ -114,13 +114,27 @@ fi
 if has_file "pyproject.toml" || has_file "setup.py" || has_file "setup.cfg" || \
    has_file "pytest.ini" || has_file "tox.ini" || has_file "conftest.py"; then
 
+  # pytest exits 5 when it collects no tests. That is a project without tests
+  # yet, not a failing suite, so it must not block the push.
   if has_cmd pytest; then
     echo "[test-hook] Detected pytest. Running tests..."
-    pytest --tb=short -q || ERRORS=1
+    PYTEST_RC=0
+    pytest --tb=short -q || PYTEST_RC=$?
+    if [[ $PYTEST_RC -eq 5 ]]; then
+      echo "[test-hook] pytest collected no tests. Skipping."
+    elif [[ $PYTEST_RC -ne 0 ]]; then
+      ERRORS=1
+    fi
     TESTS_RAN=true
   elif has_cmd python && python -m pytest --version &>/dev/null; then
     echo "[test-hook] Running python -m pytest..."
-    python -m pytest --tb=short -q || ERRORS=1
+    PYTEST_RC=0
+    python -m pytest --tb=short -q || PYTEST_RC=$?
+    if [[ $PYTEST_RC -eq 5 ]]; then
+      echo "[test-hook] pytest collected no tests. Skipping."
+    elif [[ $PYTEST_RC -ne 0 ]]; then
+      ERRORS=1
+    fi
     TESTS_RAN=true
   elif has_cmd python && [[ -d "tests" ]]; then
     echo "[test-hook] Running python -m unittest..."

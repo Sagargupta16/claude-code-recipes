@@ -1,8 +1,22 @@
 # Changelog
 
-## [Unreleased]
+## [1.2.0] - 2026-10-18
 
-No tag or release exists after 1.0.0, so everything below is unreleased.
+### Fixed
+
+- Hooks: `notification.sh` no longer splices the payload message into AppleScript and PowerShell source. A message with a quote broke the notification, and on Windows a crafted one (MCP elicitation prompts carry server-supplied text) ran arbitrary PowerShell. osascript now takes the text as argv, PowerShell reads it from the environment, and `WSLENV` carries it across from WSL
+- Hooks: `pre-push-test.sh` treats pytest exit code 5 (no tests collected) as a skip. A Python project with a `pyproject.toml` and no tests yet had every push blocked as a test failure
+- MCP: `memory.json` defaulted `MEMORY_FILE_PATH` to the relative `.claude/memory.json`, which the server resolves against its own package directory, so under `npx` the graph landed in the npx cache instead of the project. The default is now `~/.claude/memory.jsonl`, and the comment explains how to get a per-project graph
+- MCP: `postgres.json` claimed queries run read-only. The published 0.6.2 build lets `COMMIT; <write>` escape the read-only transaction and the fix was never released, so the security notes now say so, link the write-up, and make a `SELECT`-only database user the guard
+- MCP: `postgres.json` listed `list_tables`, `describe_table`, and `list_schemas`, which the server does not have. It exposes one `query` tool and a schema resource per table. The connection-string default moved into `args`, the only place the server reads it, and the false "or individual PG* variables" and `?schema=public` lines are gone
+- MCP: `filesystem.json` tool list now matches the published server (`read_text_file`, `read_media_file`, `list_directory_with_sizes`, and `read_file` marked deprecated)
+- Docs: the README catalog called the Memory server key-value storage; it is a knowledge graph
+
+### Added
+
+- README "Where Each Recipe Plugs In" section: a Mermaid diagram of which recipe type fires at which point of a session, and a table of when each one loads
+
+## [1.1.0] - 2026-10-10
 
 ### Fixed
 
