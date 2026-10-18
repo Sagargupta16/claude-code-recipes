@@ -98,6 +98,7 @@ is_dangerous_target() {
     /bin/ | /boot/ | /dev/ | /etc/ | /home/ | /lib/ | /lib64/ | /opt/ | /root/ | /sbin/ | /srv/ | /sys/ | /usr/ | /var/) return 0 ;;
     /Users | /Users/ | /System | /System/ | /Applications | /Applications/) return 0 ;;
     [A-Za-z]: | [A-Za-z]:/ | [A-Za-z]:\\ | [A-Za-z]:/\* | /[a-z] | /[a-z]/ | /[a-z]/\*) return 0 ;;
+    *) ;;
   esac
   return 1
 }
@@ -132,6 +133,7 @@ while IFS= read -r segment; do
           --recursive) recursive=true ;;
           --*) ;;
           -*[rR]*) recursive=true ;;
+          *) ;;
         esac
       done
       if [[ "$recursive" == "true" ]]; then
@@ -154,6 +156,7 @@ while IFS= read -r segment; do
         case "$w" in
           of=/dev/null | of=/dev/zero) ;;
           of=/dev/*) block "dd writing to a block device ($w)" ;;
+          *) ;;
         esac
       done
       ;;
@@ -169,6 +172,7 @@ while IFS= read -r segment; do
       for w in ${rest[@]+"${rest[@]}"}; do
         case "$w" in
           -R | --recursive | -*R*) recursive=true ;;
+          *) ;;
         esac
       done
       if [[ "$recursive" == "true" ]]; then
@@ -205,12 +209,15 @@ while IFS= read -r segment; do
           +*) force=true ;;
           :main | :master) block "git push deleting ${w#:}" ;;
           main | master) [[ "$delete" == "true" ]] && block "git push --delete $w" ;;
+          *) ;;
         esac
       done
       if [[ "$force" == "true" && "$lease" == "false" ]]; then
         block "git push --force. Use --force-with-lease so you cannot overwrite commits you have not seen"
       fi
       ;;
+
+    *) ;;
   esac
 done <<<"$SEGMENTS"
 

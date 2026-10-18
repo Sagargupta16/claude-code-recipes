@@ -39,15 +39,19 @@ PASSES=0
 RC=0
 OUT=""
 ERR=""
+COMMIT_CMD='git commit -m "x"'
+PUSH_CMD='git push origin feat/x'
 
 pass() {
   echo "ok    $*"
   PASSES=$((PASSES + 1))
+  return 0
 }
 
 fail() {
   echo "FAIL  $*" >&2
   FAILURES=$((FAILURES + 1))
+  return 0
 }
 
 # stub NAME EXIT_CODE [STDOUT_TEXT]
@@ -67,11 +71,13 @@ stub() {
 exit $code
 EOF
   chmod +x "$STUBS/$name"
+  return 0
 }
 
 reset_stubs() {
   rm -f "$STUBS"/* "$CALLS"
   : >"$CALLS"
+  return 0
 }
 
 # run_hook HOOK DIR PAYLOAD
@@ -103,26 +109,31 @@ expect() {
 }
 
 called() {
-  grep -qF -- "$1" "$CALLS"
+  local needle="$1"
+  grep -qF -- "$needle" "$CALLS"
+  return $?
 }
 
 bash_payload() {
-  jq -cn --arg c "$1" '{hook_event_name:"PreToolUse", tool_name:"Bash", tool_input:{command:$c}, cwd:"/repo", session_id:"test"}'
+  local cmd="$1"
+  jq -cn --arg c "$cmd" '{hook_event_name:"PreToolUse", tool_name:"Bash", tool_input:{command:$c}, cwd:"/repo", session_id:"test"}'
 }
 
 write_payload() {
-  jq -cn --arg p "$1" --arg c "$2" '{hook_event_name:"PreToolUse", tool_name:"Write", tool_input:{file_path:$p, content:$c}, cwd:"/repo", session_id:"test"}'
+  local path="$1" content="$2"
+  jq -cn --arg p "$path" --arg c "$content" '{hook_event_name:"PreToolUse", tool_name:"Write", tool_input:{file_path:$p, content:$c}, cwd:"/repo", session_id:"test"}'
 }
 
 edit_payload() {
-  local event="${3:-PreToolUse}"
-  jq -cn --arg p "$1" --arg n "$2" --arg e "$event" '{hook_event_name:$e, tool_name:"Edit", tool_input:{file_path:$p, old_string:"old", new_string:$n}, cwd:"/repo", session_id:"test"}'
+  local path="$1" new_string="$2" event="${3:-PreToolUse}"
+  jq -cn --arg p "$path" --arg n "$new_string" --arg e "$event" '{hook_event_name:$e, tool_name:"Edit", tool_input:{file_path:$p, old_string:"old", new_string:$n}, cwd:"/repo", session_id:"test"}'
 }
 
 new_dir() {
   local d
   d=$(mktemp -d "$WORK/case.XXXXXX")
   echo "$d"
+  return 0
 }
 
 new_repo() {
@@ -131,6 +142,7 @@ new_repo() {
   git -C "$d" init -q
   git -C "$d" config core.autocrlf false
   echo "$d"
+  return 0
 }
 
 # ----------------------------------------------------------------------------
@@ -138,7 +150,7 @@ echo "== pre-commit-lint.sh"
 # ----------------------------------------------------------------------------
 reset_stubs
 REPO=$(new_repo)
-run_hook pre-commit-lint.sh "$REPO" "$(bash_payload 'git commit -m "x"')"
+run_hook pre-commit-lint.sh "$REPO" "$(bash_payload "$COMMIT_CMD")"
 expect "nothing staged: allows the commit" 0
 
 echo 'print("hi")' >"$REPO/app.py"
@@ -147,14 +159,14 @@ git -C "$REPO" add app.py
 reset_stubs
 stub ruff 0
 stub black 0
-run_hook pre-commit-lint.sh "$REPO" "$(bash_payload 'git commit -m "x"')"
+run_hook pre-commit-lint.sh "$REPO" "$(bash_payload "$COMMIT_CMD")"
 expect "clean Python: allows the commit" 0
 if called "ruff [check] [app.py]"; then pass "clean Python: ran ruff on the staged file"; else fail "clean Python: ruff was not run on app.py"; fi
 
 reset_stubs
 stub ruff 1 "app.py:1:1: F401 unused import"
 stub black 0
-run_hook pre-commit-lint.sh "$REPO" "$(bash_payload 'git commit -m "x"')"
+run_hook pre-commit-lint.sh "$REPO" "$(bash_payload "$COMMIT_CMD")"
 expect "lint errors: blocks with exit 2" 2 "Commit blocked"
 # The linter printed to stdout. Claude only sees stderr, so the hook must have
 # moved it there, or "fix the issues above" points at nothing.
@@ -169,22 +181,22 @@ echo 'name = "x"' >>"$PY/pyproject.toml"
 
 reset_stubs
 stub pytest 0
-run_hook pre-push-test.sh "$PY" "$(bash_payload 'git push origin feat/x')"
+run_hook pre-push-test.sh "$PY" "$(bash_payload "$PUSH_CMD")"
 expect "passing suite: allows the push" 0
 
 reset_stubs
 stub pytest 1 "FAILED tests/test_app.py::test_add"
-run_hook pre-push-test.sh "$PY" "$(bash_payload 'git push origin feat/x')"
+run_hook pre-push-test.sh "$PY" "$(bash_payload "$PUSH_CMD")"
 expect "failing suite: blocks with exit 2" 2 "Push blocked"
 expect "failing suite: test output reaches stderr" 2 "FAILED tests/test_app.py::test_add"
 
 reset_stubs
 stub pytest 5
-run_hook pre-push-test.sh "$PY" "$(bash_payload 'git push origin feat/x')"
+run_hook pre-push-test.sh "$PY" "$(bash_payload "$PUSH_CMD")"
 expect "pytest exit 5 (no tests collected): allows the push" 0 "collected no tests"
 
 reset_stubs
-run_hook pre-push-test.sh "$(new_dir)" "$(bash_payload 'git push origin feat/x')"
+run_hook pre-push-test.sh "$(new_dir)" "$(bash_payload "$PUSH_CMD")"
 expect "no test runner: allows the push" 0 "No test runner detected"
 
 # ----------------------------------------------------------------------------
@@ -338,6 +350,7 @@ fill() {
   local ch="$1" n="$2" s=""
   while [[ ${#s} -lt $n ]]; do s="$s$ch"; done
   printf '%s' "$s"
+  return 0
 }
 SCAN_DIR=$(new_dir)
 # Split so this file does not hold a literal PEM header
@@ -425,9 +438,11 @@ echo "== plugin hook commands"
 # with CLAUDE_PLUGIN_ROOT set to the plugin root (hooks/) the way Claude Code
 # sets it, so a wrong path or bad quoting in the plugin entry fails here.
 plugin_hook() {
-  jq -r --arg p "$1" --arg e "$2" --arg m "$3" \
+  local plugin="$1" event="$2" matcher="$3"
+  jq -r --arg p "$plugin" --arg e "$event" --arg m "$matcher" \
     '.plugins[] | select(.name == $p) | .hooks[$e][] | select((.matcher // "") == $m) | .hooks[0].command' \
     .claude-plugin/marketplace.json
+  return $?
 }
 
 run_plugin_hook() {
@@ -451,7 +466,7 @@ expect "recipe-guards: edit hook blocks an AWS key" 2 "AWS access key ID"
 reset_stubs
 stub ruff 1 "app.py:1:1: F401 unused import"
 stub black 0
-run_plugin_hook "$(plugin_hook recipe-hooks PreToolUse Bash | head -n 1)" "$REPO" "$(bash_payload 'git commit -m "x"')"
+run_plugin_hook "$(plugin_hook recipe-hooks PreToolUse Bash | head -n 1)" "$REPO" "$(bash_payload "$COMMIT_CMD")"
 expect "recipe-hooks: commit hook blocks on lint errors" 2 "Commit blocked"
 
 reset_stubs

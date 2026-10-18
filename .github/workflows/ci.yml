@@ -53,9 +53,18 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # The linux-x64 package is the bare native binary. Installing it directly
+      # with --ignore-scripts runs no package's lifecycle scripts, which the
+      # wrapper package needs (its postinstall copies this same binary).
+      - name: Install claude
+        working-directory: ${{ runner.temp }}
+        run: npm install --ignore-scripts --no-save --no-package-lock @anthropic-ai/claude-code-linux-x64@2.1.302
+
       # validate needs no login. --strict turns warnings into failures.
       - name: claude plugin validate
-        run: npx -y @anthropic-ai/claude-code@2.1.302 plugin validate --strict .
+        run: |
+          "$RUNNER_TEMP/node_modules/@anthropic-ai/claude-code-linux-x64/claude" --version
+          "$RUNNER_TEMP/node_modules/@anthropic-ai/claude-code-linux-x64/claude" plugin validate --strict .
 
   shellcheck:
     name: Shellcheck
