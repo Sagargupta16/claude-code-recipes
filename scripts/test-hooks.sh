@@ -117,16 +117,19 @@ called() {
 bash_payload() {
   local cmd="$1"
   jq -cn --arg c "$cmd" '{hook_event_name:"PreToolUse", tool_name:"Bash", tool_input:{command:$c}, cwd:"/repo", session_id:"test"}'
+  return $?
 }
 
 write_payload() {
   local path="$1" content="$2"
   jq -cn --arg p "$path" --arg c "$content" '{hook_event_name:"PreToolUse", tool_name:"Write", tool_input:{file_path:$p, content:$c}, cwd:"/repo", session_id:"test"}'
+  return $?
 }
 
 edit_payload() {
   local path="$1" new_string="$2" event="${3:-PreToolUse}"
   jq -cn --arg p "$path" --arg n "$new_string" --arg e "$event" '{hook_event_name:$e, tool_name:"Edit", tool_input:{file_path:$p, old_string:"old", new_string:$n}, cwd:"/repo", session_id:"test"}'
+  return $?
 }
 
 new_dir() {
