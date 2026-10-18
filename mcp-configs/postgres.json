@@ -1,30 +1,40 @@
 {
   "_comment": [
-    "PostgreSQL MCP Server -- runs SQL queries and exposes each table's schema as a resource.",
-    "DEPRECATED UPSTREAM (checked 2026-09-06): npm reports @modelcontextprotocol/server-postgres",
-    "as 'Package no longer supported' at 0.6.2, and the server has been moved to the",
-    "modelcontextprotocol/servers-archived repository. It still installs and runs, but it",
-    "gets no fixes. Treat this recipe as a starting point, not a maintained integration.",
-    "For a maintained alternative, browse the Postgres entries in the MCP server registry",
-    "and add it with: claude mcp add --scope project postgres -- <command>",
-    "Requires: DATABASE_URL environment variable. The server reads the connection string",
-    "from its first argument only and ignores PG* variables, so the URL goes in args.",
+    "PostgreSQL MCP Server -- Postgres MCP Pro (crystaldba/postgres-mcp), run in restricted mode.",
+    "Restricted mode parses every statement before it runs and refuses anything that is not",
+    "read-only, so the 'COMMIT; DROP TABLE users;' escape that breaks a plain read-only",
+    "transaction is rejected. Measured 2026-10-18 against a real Postgres with",
+    "scripts/probe_postgres_mcp.py: restricted mode refused all 5 write payloads and the table",
+    "kept its row; the unrestricted control run dropped it on the first payload.",
+    "Requires: uv (uvx) and DATABASE_URL. Linux and macOS: pglast, a dependency, has no Windows",
+    "wheel, so on Windows run it inside WSL or use the upstream Docker image.",
+    "'--with mcp<2' is required: postgres-mcp 0.3.0 declares mcp>=1.5.0 with no upper bound, and",
+    "mcp 2.x renamed FastMCP, so an unpinned uvx install crashes on import (checked 2026-10-18).",
     "Install: Copy the 'postgres' key into .mcp.json under mcpServers.",
-    "Docs: https://github.com/modelcontextprotocol/servers-archived/tree/main/src/postgres"
+    "Docs: https://github.com/crystaldba/postgres-mcp"
   ],
   "postgres": {
-    "command": "npx",
+    "command": "uvx",
     "args": [
-      "-y",
-      "@modelcontextprotocol/server-postgres",
-      "${DATABASE_URL:-postgresql://localhost:5432/mydb}"
+      "--with",
+      "mcp<2",
+      "postgres-mcp",
+      "--access-mode=restricted"
     ],
+    "env": {
+      "DATABASE_URI": "${DATABASE_URL:-postgresql://localhost:5432/mydb}"
+    },
     "tools": {
       "_available": [
-        "query  -- Run a SQL query inside a read-only transaction and return the rows as JSON"
-      ],
-      "_resources": [
-        "postgres://<host>/<table>/schema  -- column names and data types for each table in the public schema"
+        "list_schemas              -- List the schemas in the database",
+        "list_objects              -- List tables, views, sequences and extensions in a schema",
+        "get_object_details        -- Columns, constraints and indexes of one object",
+        "execute_sql               -- Run SQL; read-only statements only in restricted mode",
+        "explain_query             -- Execution plan, optionally with hypothetical indexes",
+        "get_top_queries           -- Slowest queries from pg_stat_statements",
+        "analyze_workload_indexes  -- Index recommendations for the heaviest queries",
+        "analyze_query_indexes     -- Index recommendations for up to 10 given queries",
+        "analyze_db_health         -- Buffer cache, connections, vacuum, invalid and unused indexes"
       ]
     },
     "_notes": {
@@ -33,14 +43,19 @@
         "postgresql://user:password@host:5432/database?sslmode=require"
       ],
       "security": [
-        "The read-only transaction is NOT a security boundary. The published 0.6.2 build passes",
-        "multi-statement SQL straight to the driver, so 'COMMIT; DROP TABLE users;' ends the",
-        "read-only transaction and the write runs. The upstream fix was merged but never released.",
-        "See: https://securitylabs.datadoghq.com/articles/mcp-vulnerability-case-study-SQL-injection-in-the-postgresql-mcp-server/",
-        "Connect as a database user that only has SELECT grants. That is the real guard.",
+        "Keep --access-mode=restricted. unrestricted allows writes and schema changes.",
+        "Restricted mode is a second guard, not the only one: connect as a database user that only",
+        "has SELECT grants, so a parser gap cannot become a write.",
         "Never point this server at a production database with a write-capable user.",
         "Never put credentials directly in this file -- use environment variables.",
         "Consider using connection pooling (PgBouncer) for shared environments."
+      ],
+      "replaced_server": [
+        "This recipe used @modelcontextprotocol/server-postgres up to 1.2.0. npm marks it",
+        "'Package no longer supported' at 0.6.2 and its source moved to servers-archived. Its",
+        "read-only transaction is bypassed by 'COMMIT; <write>', and the fix was never released.",
+        "See: https://securitylabs.datadoghq.com/articles/mcp-vulnerability-case-study-SQL-injection-in-the-postgresql-mcp-server/",
+        "Do not install it."
       ]
     }
   }
