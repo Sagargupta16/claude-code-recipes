@@ -68,7 +68,10 @@ Private key|-----BEGIN ([A-Z0-9]+ )?PRIVATE KEY( BLOCK)?-----'
 FOUND=""
 while IFS='|' read -r name regex; do
   [[ -n "$name" ]] || continue
-  if printf '%s' "$CONTENT" | grep -qE -- "$regex"; then
+  # A here-string, not `printf | grep -q`: grep -q exits on the first match,
+  # printf then dies of SIGPIPE on a write bigger than the pipe buffer, and
+  # pipefail would turn the hit into a miss.
+  if grep -qE -- "$regex" <<<"$CONTENT"; then
     FOUND="${FOUND}  - ${name}"$'\n'
   fi
 done <<<"$RULES"

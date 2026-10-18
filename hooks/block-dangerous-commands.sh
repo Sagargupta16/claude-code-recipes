@@ -40,6 +40,9 @@ fi
 
 PAYLOAD=$(cat 2>/dev/null || true)
 COMMAND=$(printf '%s' "$PAYLOAD" | jq -r '.tool_input.command // empty' 2>/dev/null || true)
+# Native Windows jq prints CRLF, and $( ) strips only the last newline, so
+# every line but the last would end in \r and `rm -rf /\r` would slip past.
+COMMAND=${COMMAND//$'\r'/}
 
 if [[ -z "$COMMAND" ]]; then
   exit 0

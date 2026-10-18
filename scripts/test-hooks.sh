@@ -317,6 +317,15 @@ while IFS= read -r line; do
   fi
 done <<<"$GUARD_CASES"
 
+# Multi-line commands. Native Windows jq prints CRLF, so without the guard
+# stripping \r every line but the last would end in one and slip past.
+for cmd in $'rm -rf /\necho done' $'rm -rf ~\necho done' $'chmod -R 777 /\necho done'; do
+  run_hook block-dangerous-commands.sh "$GUARD_DIR" "$(bash_payload "$cmd")"
+  expect "blocks on a non-final line: ${cmd%%$'\n'*}" 2 "[guard] Blocked"
+done
+run_hook block-dangerous-commands.sh "$GUARD_DIR" "$(bash_payload $'rm -rf ./build\nls /')"
+expect "allows a multi-line command with a safe rm" 0
+
 run_hook block-dangerous-commands.sh "$GUARD_DIR" '{"hook_event_name":"PreToolUse","tool_name":"Read","tool_input":{"file_path":"a"}}'
 expect "payload with no command: allows" 0
 
@@ -357,6 +366,17 @@ expect "blocks an Edit whose new_string has a token" 2 "GitHub token"
 
 run_hook secret-scan.sh "$SCAN_DIR" "$(jq -cn --arg s "key=ASIA$(fill X 16)" '{tool_name:"NotebookEdit", tool_input:{notebook_path:"n.ipynb", new_source:$s}}')"
 expect "blocks a NotebookEdit whose new_source has a key" 2 "n.ipynb"
+
+# A write far bigger than the pipe buffer, with the key on its first line.
+# grep -q stops reading at the match, so a pipe into it would SIGPIPE the
+# writer and pipefail would report a miss.
+BIG="$WORK/big.py"
+{
+  echo "KEY = \"AKIA$(fill R 16)\""
+  for _ in $(seq 1 5000); do echo "padding = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'"; done
+} >"$BIG"
+run_hook secret-scan.sh "$SCAN_DIR" "$(jq -cn --rawfile c "$BIG" '{tool_name:"Write", tool_input:{file_path:"big.py", content:$c}}')"
+expect "blocks a 300KB Write with the key on its first line" 2 "AWS access key ID"
 
 run_hook secret-scan.sh "$SCAN_DIR" "$(write_payload "docs/setup.md" 'aws_access_key_id = AKIAIOSFODNN7EXAMPLE')"
 expect "allows the AWS documentation example key" 0

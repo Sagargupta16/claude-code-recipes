@@ -202,7 +202,7 @@ See the [cheatsheet](cheatsheet.md) for a one-page summary, and [TROUBLESHOOTING
 
 Every recipe in this repo is checked on each push and pull request: frontmatter validity, the hook config schema, JSON parsing, `shellcheck`, working links, that the recipe counts above match the files on disk, and that the plugin marketplace matches the recipes.
 
-The hooks are also tested for what they do, not only for how they are written. [scripts/test-hooks.sh](scripts/test-hooks.sh) replays hook payloads against every script and asserts the exit code and stderr Claude would see: 72 checks, run on Ubuntu, macOS and Windows. Linters, test runners and notifiers are stubbed on `PATH`, so a case can force a lint failure or a hostile notification message without installing anything. Restore the 1.1.0 `notification.sh` or `pre-push-test.sh` and the suite fails on the injection case and the pytest-exit-5 case.
+The hooks are also tested for what they do, not only for how they are written. [scripts/test-hooks.sh](scripts/test-hooks.sh) replays hook payloads against every script and asserts the exit code and stderr Claude would see: 77 checks, run on Ubuntu, macOS and Windows. Linters, test runners and notifiers are stubbed on `PATH`, so a case can force a lint failure or a hostile notification message without installing anything. Restore the 1.1.0 `notification.sh` or `pre-push-test.sh` and the suite fails on the injection case and the pytest-exit-5 case.
 
 Run the same checks yourself:
 
