@@ -26,7 +26,17 @@ When the event fires and the matcher matches, Claude Code runs your handler. Blo
 | Post-edit Format | `PostToolUse` | `Edit\|Write` | Auto-formats files after Claude edits | [post-edit-format.sh](post-edit-format.sh) |
 | Pre-push Test | `PreToolUse` | `Bash` + `if: Bash(git push *)` | Runs test suite, blocks push on failures | [pre-push-test.sh](pre-push-test.sh) |
 | Notification | `Notification` | (none) | Desktop notification when tasks complete | [notification.sh](notification.sh) |
+| Dangerous Command Guard | `PreToolUse` | `Bash` | Blocks `rm -rf /` and `~`, `mkfs`, `dd` onto a disk, `git push --force` without a lease, `curl \| sh`, and `DROP` / `TRUNCATE` sent to a SQL client | [block-dangerous-commands.sh](block-dangerous-commands.sh) |
+| Secret Scan | `PreToolUse` | `Edit\|Write\|NotebookEdit` | Blocks an edit that would write an AWS, GitHub, Slack, Stripe, Google, Anthropic or OpenAI key, or a private key, to disk | [secret-scan.sh](secret-scan.sh) |
 | Settings Example | -- | -- | Complete settings.json with all hooks | [settings-hook-examples.json](settings-hook-examples.json) |
+
+All of them except the settings example also install as two plugins, `recipe-hooks` (lint, format, test, notify) and `recipe-guards` (the two security hooks). See [Install as plugins](../README.md#install-as-plugins).
+
+### The two guard hooks
+
+`block-dangerous-commands.sh` splits a command on `;`, `&&`, `||` and `|` before judging it, so `rm -rf build && ls /` is two harmless commands, not one `rm` aimed at `/`. It only treats `DROP TABLE` as dangerous when a SQL client (`psql`, `mysql`, `sqlite3`, ...) is on the line, so a commit message that mentions it is not blocked. It is a seatbelt against a model mistake, not a sandbox: pair it with `permissions.deny` rules for anything that must never run.
+
+`secret-scan.sh` reads the text the tool is about to write (`content` on Write, `new_string` on Edit, `new_source` on NotebookEdit) and runs before the file changes, so a key never reaches the disk or a later commit. Its block message names the rule and the file but never the matched value, because stderr goes back into the conversation. The AWS documentation key `AKIAIOSFODNN7EXAMPLE` is allowed.
 
 ---
 
@@ -140,3 +150,17 @@ exit 0
 - Test hooks manually before adding them, feeding a realistic payload rather than `{}`:
   `echo '{"tool_name":"Edit","tool_input":{"file_path":"src/index.ts"}}' | bash .claude/hooks/your-hook.sh`
 - Hooks run from the project root directory
+
+---
+
+## How These Hooks Are Tested
+
+[scripts/test-hooks.sh](../scripts/test-hooks.sh) replays payloads in the shape Claude Code sends on stdin against every script here, and asserts the exit code and the stderr text Claude would see. CI runs it on Ubuntu, macOS (bash 3.2) and Windows (Git Bash).
+
+The linters, test runners and notifiers a hook calls are replaced by stubs on `PATH`, so a case can force "ruff found errors" or "pytest collected no tests" without installing either. Each stub records its arguments, which is how the notification case proves a hostile message reached `notify-send`, `osascript` or PowerShell as data rather than as script source. The suite also runs the plugin hook commands from `.claude-plugin/marketplace.json` exactly as written, with `CLAUDE_PLUGIN_ROOT` set, so a wrong path in a plugin entry fails too.
+
+```bash
+bash scripts/test-hooks.sh
+```
+
+Put back the pre-fix `notification.sh` or `pre-push-test.sh` from 1.1.0 and the suite fails on the injection case and the pytest exit 5 case.

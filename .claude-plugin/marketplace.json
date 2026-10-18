@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "claude-code-recipes",
+  "description": "Copy-paste Claude Code recipes as installable plugins: commands, subagents, skills, workflow hooks and security guard hooks",
+  "version": "1.3.0",
+  "owner": {
+    "name": "Sagar Gupta",
+    "url": "https://github.com/Sagargupta16"
+  },
+  "plugins": [
+    {
+      "name": "recipe-commands",
+      "source": "./commands",
+      "version": "1.3.0",
+      "author": {
+        "name": "Sagar Gupta",
+        "url": "https://github.com/Sagargupta16"
+      },
+      "homepage": "https://github.com/Sagargupta16/claude-code-recipes",
+      "repository": "https://github.com/Sagargupta16/claude-code-recipes",
+      "license": "MIT",
+      "description": "15 slash commands: code review, commit and PR text, test and doc generation, debugging, migration, security and performance audits",
+      "category": "development",
+      "keywords": [
+        "commands",
+        "code-review",
+        "testing",
+        "git"
+      ],
+      "commands": [
+        "./api-gen.md",
+        "./audit-repos.md",
+        "./check-all-prs.md",
+        "./code-review.md",
+        "./commit-message.md",
+        "./component-gen.md",
+        "./debug.md",
+        "./doc-gen.md",
+        "./migrate.md",
+        "./performance-audit.md",
+        "./pr-description.md",
+        "./refactor.md",
+        "./security-audit.md",
+        "./test-gen.md",
+        "./update-status.md"
+      ]
+    },
+    {
+      "name": "recipe-agents",
+      "source": "./subagents",
+      "version": "1.3.0",
+      "author": {
+        "name": "Sagar Gupta",
+        "url": "https://github.com/Sagargupta16"
+      },
+      "homepage": "https://github.com/Sagargupta16/claude-code-recipes",
+      "repository": "https://github.com/Sagargupta16/claude-code-recipes",
+      "license": "MIT",
+      "description": "9 subagents with scoped tool lists: researcher, test runner, code reviewer, frontend, backend, DevOps, security, docs and database specialists",
+      "category": "development",
+      "keywords": [
+        "subagents",
+        "agents",
+        "delegation"
+      ],
+      "agents": [
+        "./backend-dev.md",
+        "./code-reviewer.md",
+        "./database-architect.md",
+        "./devops-engineer.md",
+        "./frontend-dev.md",
+        "./researcher.md",
+        "./security-analyst.md",
+        "./tech-writer.md",
+        "./test-runner.md"
+      ]
+    },
+    {
+      "name": "recipe-skills",
+      "source": "./skills",
+      "version": "1.3.0",
+      "author": {
+        "name": "Sagar Gupta",
+        "url": "https://github.com/Sagargupta16"
+      },
+      "homepage": "https://github.com/Sagargupta16/claude-code-recipes",
+      "repository": "https://github.com/Sagargupta16/claude-code-recipes",
+      "license": "MIT",
+      "description": "5 skills that load on demand: React patterns, API design, git workflow, testing strategy, strict TypeScript",
+      "category": "development",
+      "keywords": [
+        "skills",
+        "react",
+        "typescript",
+        "api-design"
+      ],
+      "skills": [
+        "./api-design",
+        "./git-workflow",
+        "./react-patterns",
+        "./testing-strategy",
+        "./typescript-strict"
+      ]
+    },
+    {
+      "name": "recipe-hooks",
+      "source": "./hooks",
+      "version": "1.3.0",
+      "author": {
+        "name": "Sagar Gupta",
+        "url": "https://github.com/Sagargupta16"
+      },
+      "homepage": "https://github.com/Sagargupta16/claude-code-recipes",
+      "repository": "https://github.com/Sagargupta16/claude-code-recipes",
+      "license": "MIT",
+      "description": "Lint before git commit and run tests before git push (both block with exit 2), format every file Claude edits, and a desktop notification when Claude is waiting on you. Needs jq",
+      "category": "automation",
+      "keywords": [
+        "hooks",
+        "lint",
+        "format",
+        "pre-commit",
+        "notification"
+      ],
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Bash",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}/pre-commit-lint.sh\"",
+                "if": "Bash(git commit *)",
+                "statusMessage": "Linting staged files before commit"
+              },
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}/pre-push-test.sh\"",
+                "if": "Bash(git push *)",
+                "statusMessage": "Running tests before push"
+              }
+            ]
+          }
+        ],
+        "PostToolUse": [
+          {
+            "matcher": "Edit|Write",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}/post-edit-format.sh\"",
+                "statusMessage": "Formatting the edited file"
+              }
+            ]
+          }
+        ],
+        "Notification": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}/notification.sh\""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "recipe-guards",
+      "source": "./hooks",
+      "version": "1.3.0",
+      "author": {
+        "name": "Sagar Gupta",
+        "url": "https://github.com/Sagargupta16"
+      },
+      "homepage": "https://github.com/Sagargupta16/claude-code-recipes",
+      "repository": "https://github.com/Sagargupta16/claude-code-recipes",
+      "license": "MIT",
+      "description": "Security hooks: block destructive shell commands (rm -rf /, force push, curl | sh, DROP TABLE) and block any edit that would write a cloud key, API token or private key to disk. Needs jq",
+      "category": "security",
+      "keywords": [
+        "security",
+        "hooks",
+        "secrets",
+        "guardrails"
+      ],
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Bash",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}/block-dangerous-commands.sh\""
+              }
+            ]
+          },
+          {
+            "matcher": "Edit|Write|NotebookEdit",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "bash \"${CLAUDE_PLUGIN_ROOT}/secret-scan.sh\""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

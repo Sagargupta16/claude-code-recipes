@@ -19,6 +19,13 @@
 #  10. Every recipe file is linked from the README.md catalog
 #  11. Every link to a file in this repo points at a file that exists, including
 #      the links in YAML that the CI link check does not glob
+#  12. Every hook script the settings example runs exists in hooks/
+#  13. .claude-plugin/marketplace.json matches what scripts/build_marketplace.py
+#      generates from the files on disk, so a new recipe cannot be left out
+#      of the installable plugins
+#
+# Hook behavior (exit codes and stderr on replayed payloads) is tested
+# separately by scripts/test-hooks.sh.
 #
 # Usage: bash scripts/validate-recipes.sh
 # Exits 1 if any check fails.
@@ -133,7 +140,7 @@ done
 # 6 + 7. JSON validity and hook schema
 # --------------------------------------------------------------------------
 echo "== json"
-for f in mcp-configs/*.json hooks/*.json settings/*.json renovate.json; do
+for f in mcp-configs/*.json hooks/*.json settings/*.json .claude-plugin/*.json renovate.json; do
   [[ -e "$f" ]] || continue
   if "$PYTHON" -c "import json,sys; json.load(open(sys.argv[1], encoding='utf-8'))" "$f"; then
     pass "$f parses"
@@ -233,6 +240,28 @@ done < <(
   grep -rhoE "${SELF_PREFIX}[A-Za-z0-9._/-]+" . --exclude-dir=.git |
     sed "s|^${SELF_PREFIX}||" | sort -u
 )
+
+# --------------------------------------------------------------------------
+# 12. Hook scripts named in the settings example exist
+# --------------------------------------------------------------------------
+echo "== hook wiring"
+while IFS= read -r script; do
+  if [[ -f "hooks/$script" ]]; then
+    pass "settings example runs hooks/$script, which exists"
+  else
+    fail "hooks/settings-hook-examples.json runs .claude/hooks/$script, but hooks/$script is not in the repo"
+  fi
+done < <(grep -oE '\.claude/hooks/[A-Za-z0-9._-]+\.sh' hooks/settings-hook-examples.json | sed 's|^\.claude/hooks/||' | sort -u)
+
+# --------------------------------------------------------------------------
+# 13. Plugin marketplace is in sync with the recipes
+# --------------------------------------------------------------------------
+echo "== marketplace"
+if "$PYTHON" scripts/build_marketplace.py --check; then
+  pass ".claude-plugin/marketplace.json is up to date"
+else
+  fail ".claude-plugin/marketplace.json is stale: run python scripts/build_marketplace.py"
+fi
 
 # --------------------------------------------------------------------------
 echo ""

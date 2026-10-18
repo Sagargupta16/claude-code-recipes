@@ -21,11 +21,16 @@ MCP (Model Context Protocol) lets Claude Code connect to external services -- Gi
 |--------|---------|-----------|---------------|------|
 | GitHub | GitHub API | Remote (`http`) | Issues, PRs, repos, actions, code search | [github.json](github.json) |
 | Filesystem | Local filesystem | Local (`npx`) | Read, write, search, directory operations | [filesystem.json](filesystem.json) |
-| PostgreSQL | PostgreSQL DB | Local (`npx`) | One `query` tool, plus each table's schema as a resource | [postgres.json](postgres.json) |
+| PostgreSQL | PostgreSQL DB | Local (`uvx`) | Read-only SQL, schema browsing, query plans, index and health analysis | [postgres.json](postgres.json) |
 | Memory | Knowledge graph | Local (`npx`) | Store, retrieve, search persistent memory | [memory.json](memory.json) |
 | Context7 | Documentation | Local (`npx`) | Library docs lookup, code examples | [context7.json](context7.json) |
 
-> **PostgreSQL is upstream-deprecated.** As of 2026-09-06 npm marks `@modelcontextprotocol/server-postgres` as no longer supported and the source now lives in the archived servers repository. The recipe still works, but it is a starting point rather than a maintained integration. Its read-only transaction can be escaped with multi-statement SQL (`COMMIT; DROP TABLE ...`), and the fix was never published, so connect it as a database user that only has `SELECT` grants. See the `_comment` and `_notes.security` blocks in [postgres.json](postgres.json).
+> **PostgreSQL runs [Postgres MCP Pro](https://github.com/crystaldba/postgres-mcp) in restricted mode.** Up to 1.2.0 this recipe used `@modelcontextprotocol/server-postgres`, which npm marks as no longer supported and whose read-only transaction is escaped by `COMMIT; DROP TABLE ...` (the fix was never published). Restricted mode parses each statement and refuses anything that writes. [scripts/probe_postgres_mcp.py](../scripts/probe_postgres_mcp.py) sends the escape payloads to a real Postgres: on 2026-10-18 restricted mode refused all 5 and the table kept its row, while the unrestricted control run dropped the table on the first one. Two things to know before you install it:
+>
+> - Keep `--with mcp<2` in `args`. postgres-mcp 0.3.0 accepts any `mcp>=1.5.0`, and under mcp 2.x it crashes on import (`No module named 'mcp.server.fastmcp'`).
+> - It needs Linux or macOS. Its `pglast` dependency has no Windows wheel, so `uvx` fails to build it on Windows; run it inside WSL or use the upstream Docker image there.
+>
+> Still connect it as a database user that only has `SELECT` grants. See the `_comment` and `_notes` blocks in [postgres.json](postgres.json).
 
 An entry with a `url` **must** also carry a `type` (`http`, `sse`, or `ws`). Claude Code reads a `url` entry with no `type` as a stdio server, skips it, and reports `has a "url" but no "type"`.
 
@@ -69,7 +74,7 @@ Merge multiple configs into a single `.mcp.json`:
 
 ### 4. Install dependencies
 
-Remote servers (`"type": "http"`) need nothing installed. Local servers are published as npm packages and run through `npx`:
+Remote servers (`"type": "http"`) need nothing installed. Most local servers are published as npm packages and run through `npx`. PostgreSQL is a Python package and runs through `uvx`, so it needs [uv](https://docs.astral.sh/uv/) installed:
 
 ```bash
 # npm-based servers run automatically via npx

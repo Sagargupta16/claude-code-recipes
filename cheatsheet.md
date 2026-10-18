@@ -72,6 +72,8 @@ chmod +x .claude/hooks/*.sh
 | `post-edit-format.sh` | After file edit | Auto-format edited files |
 | `pre-push-test.sh` | Before push | Run tests, block on failures |
 | `notification.sh` | Task complete | Desktop notification |
+| `block-dangerous-commands.sh` | Before any Bash command | Block `rm -rf /`, force push, `curl \| sh`, `DROP TABLE` |
+| `secret-scan.sh` | Before Edit / Write | Block writing an API key, token or private key to a file |
 
 Settings config: see [settings-hook-examples.json](hooks/settings-hook-examples.json)
 
@@ -108,7 +110,7 @@ Add to `.mcp.json` in your project root.
 |--------|---------|
 | `github` | GitHub issues, PRs, repos |
 | `filesystem` | Enhanced file operations |
-| `postgres` | PostgreSQL database queries |
+| `postgres` | Read-only PostgreSQL queries and index tuning |
 | `memory` | Persistent knowledge graph |
 | `context7` | Library documentation lookup |
 
@@ -137,6 +139,23 @@ Copy to your project root as `CLAUDE.md`.
 | [Starter](claude-md/starter.md) | Solo projects, ~60 lines |
 | [Team Project](claude-md/team-project.md) | Team conventions, ~180 lines |
 | [Monorepo](claude-md/monorepo.md) | Multi-package workspaces, ~210 lines |
+
+---
+
+## Install as Plugins
+
+Inside Claude Code:
+
+```text
+/plugin marketplace add Sagargupta16/claude-code-recipes
+/plugin install recipe-commands@claude-code-recipes
+/plugin install recipe-agents@claude-code-recipes
+/plugin install recipe-skills@claude-code-recipes
+/plugin install recipe-hooks@claude-code-recipes
+/plugin install recipe-guards@claude-code-recipes
+```
+
+Plugin components are namespaced: `/code-review` becomes `/recipe-commands:code-review`.
 
 ---
 

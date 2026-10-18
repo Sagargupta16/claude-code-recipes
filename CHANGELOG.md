@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.3.0] - 2026-10-18
+
+### Added
+
+- Plugin marketplace: `.claude-plugin/marketplace.json` ships the recipes as five plugins (`recipe-commands`, `recipe-agents`, `recipe-skills`, `recipe-hooks`, `recipe-guards`), installed with `/plugin marketplace add Sagargupta16/claude-code-recipes`. Each plugin's source is one recipe directory and lists its files by name. A root-level source was tried first and dropped: the `--debug-file` load log showed every plugin also scanning the root `skills/` folder. With the per-directory layout the log shows 15 commands, 9 agents and 5 skills loaded, and no README
+- `scripts/build_marketplace.py` generates the marketplace from the files on disk and takes its version from this changelog. `validate-recipes.sh` fails when the committed file is stale
+- Hooks: `block-dangerous-commands.sh`, a `PreToolUse` Bash guard against recursive `rm` on `/`, `~` or a system directory, `mkfs`, `dd` onto a device, the fork bomb, recursive `chmod` on `/`, `git push --force` without a lease, deleting `main`, `curl | sh`, and `DROP` / `TRUNCATE` sent to a SQL client. It splits on `;`, `&&`, `||` and `|` first, so `rm -rf build && ls /` is allowed. It strips the `\r` that native Windows `jq` leaves on every line of a multi-line command, which would otherwise let `rm -rf /` on a non-final line through. It replaces the one-line `PreToolUse_block_dangerous_commands` example, which grepped the whole command string: it let `rm -fr /` and `rm -rf ~` through, and blocked `rm -rf /tmp/build-cache` and a commit message that mentions `DROP TABLE`
+- Hooks: `secret-scan.sh`, a `PreToolUse` Edit / Write / NotebookEdit hook that blocks writing an AWS, GitHub, Slack, Stripe, Google, Anthropic or OpenAI key, or a PEM private key, before it reaches the disk. The block message names the rule, never the value. It matches with a here-string, not a pipe into `grep -q`: under `pipefail` the pipe reported a miss on any write bigger than the pipe buffer, and a 315 KB write with a key on line 1 got through
+- `scripts/test-hooks.sh`: 77 behavior checks that replay hook payloads and assert exit codes and stderr, with linters, test runners and notifiers stubbed on `PATH`. It fails on the 1.1.0 `notification.sh` (the injection) and `pre-push-test.sh` (pytest exit 5). It also runs the plugin hook commands as written in the marketplace
+- CI: the hook tests run on Ubuntu, macOS and Windows, and a new job runs `claude plugin validate --strict` on the marketplace
+- `validate-recipes.sh` checks that every hook script the settings example runs exists
+- `scripts/probe_postgres_mcp.py`: sends the read-only escape payloads to a real Postgres through the PostgreSQL MCP recipe and reports whether the table survived
+- `TROUBLESHOOTING.md`: a section for plugins that install but seem empty (namespaced names, and why `claude plugin details` shows 0 commands)
+
+### Changed
+
+- MCP: `postgres.json` now runs Postgres MCP Pro (`uvx postgres-mcp --access-mode=restricted`) instead of the archived `@modelcontextprotocol/server-postgres`. Restricted mode parses each statement first: the probe saw it refuse all 5 write payloads, including `COMMIT; DROP TABLE users;`, and the table kept its row, while the unrestricted control run dropped the table. The config pins `mcp<2`, because postgres-mcp 0.3.0 crashes on import under mcp 2.x. It needs Linux or macOS (or WSL), since its `pglast` dependency has no Windows wheel
+- Hooks: the two guard hooks exit 1 with a visible notice when `jq` is missing, instead of passing every command in silence
+- Recipe count is 49 (7 hooks)
+
 ## [1.2.0] - 2026-10-18
 
 ### Fixed

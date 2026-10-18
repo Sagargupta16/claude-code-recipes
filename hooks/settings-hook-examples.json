@@ -22,6 +22,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash .claude/hooks/block-dangerous-commands.sh"
+          },
+          {
+            "type": "command",
             "if": "Bash(git commit *)",
             "command": "bash .claude/hooks/pre-commit-lint.sh",
             "statusMessage": "Linting staged files before commit"
@@ -31,6 +35,15 @@
             "if": "Bash(git push *)",
             "command": "bash .claude/hooks/pre-push-test.sh",
             "statusMessage": "Running tests before push"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/secret-scan.sh"
           }
         ]
       }
@@ -77,16 +90,6 @@
       "Additional hook patterns you can mix in. Each block is a matcher group:",
       "paste it into the array for the event named in the key."
     ],
-
-    "PreToolUse_block_dangerous_commands": {
-      "matcher": "Bash",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash -c 'INPUT=$(cat); if echo \"$INPUT\" | jq -r \".tool_input.command\" | grep -qE \"rm -rf /|DROP TABLE|format c:\"; then echo \"Blocked dangerous command\" >&2; exit 2; fi'"
-        }
-      ]
-    },
 
     "PreToolUse_require_branch_for_push": {
       "matcher": "Bash",

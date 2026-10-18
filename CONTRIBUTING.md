@@ -134,6 +134,9 @@ set -euo pipefail
 - Must exit 0 on success and **2** to block. Exit 1 does not block: the action proceeds and the transcript just shows a hook error notice
 - Must read event data from the JSON payload on stdin (`.tool_name`, `.tool_input.file_path`, `.tool_input.command`), not from invented `CLAUDE_*` variables
 - Must handle missing tools gracefully (skip, don't crash)
+- Must run on bash 3.2, the bash macOS ships: no `mapfile`, no associative arrays, no `${var,,}`
+- Must come with cases in `scripts/test-hooks.sh`: one payload it should block or act on, and one it should let through
+- To ship it as a plugin, add it to a `recipe-hooks` or `recipe-guards` entry in `scripts/build_marketplace.py`
 
 #### MCP Configs (`mcp-configs/*.json`)
 
@@ -185,15 +188,22 @@ Add your recipe to:
 - The root `README.md` recipe catalog table
 - The `cheatsheet.md` quick reference
 
+Then regenerate the plugin marketplace, which picks up new commands, subagents and skills on its own:
+
+```bash
+python scripts/build_marketplace.py
+```
+
 ### 4. Test your recipe
 
 Run the validator first. It catches the mechanical mistakes, so review time goes on the content instead:
 
 ```bash
 bash scripts/validate-recipes.sh
+bash scripts/test-hooks.sh
 ```
 
-It checks command, subagent, and skill frontmatter, the hook config schema, JSON validity, banned dash characters, that every link back into this repo points at a file that exists, and that the recipe counts in `README.md` match the files on disk. CI runs the same script plus `shellcheck` and a link check on every pull request.
+The validator checks command, subagent, and skill frontmatter, the hook config schema, JSON validity, banned dash characters, that every link back into this repo points at a file that exists, that every hook script the settings example runs exists, that the recipe counts in `README.md` match the files on disk, and that `.claude-plugin/marketplace.json` is up to date. `test-hooks.sh` replays payloads against every hook and asserts its exit code and stderr. CI runs both, plus `shellcheck`, `claude plugin validate --strict` and a link check, on every pull request; the hook tests run on Ubuntu, macOS and Windows.
 
 Then verify by hand that:
 
