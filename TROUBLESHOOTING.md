@@ -178,15 +178,26 @@ See [mcp-configs/README.md](mcp-configs/README.md).
 
 ---
 
+## I installed a plugin and `/code-review` is not there
+
+**Plugin components are namespaced.** A command from the `recipe-commands` plugin is `/recipe-commands:code-review`, not `/code-review`, and the same goes for subagents and skills. Type `/recipe-commands:` to see them all.
+
+**`claude plugin details` shows 0 commands or agents.** That is expected for these plugins. On Claude Code 2.1.295 the inventory counts only the default `commands/` and `agents/` folders, and these plugins list their files by name instead. To see what really loaded, start a session with `claude --debug-file debug.log` and look for `Loaded command from plugin recipe-commands` and `Loaded agent from plugin recipe-agents`: there should be 15 and 9 of them.
+
+**A guard or workflow hook does nothing.** Both hook plugins need `jq` on `PATH` to read the payload. Without it the two guards exit 1 with `jq is not installed`, which shows as a hook error notice and lets the action through, and the format hook skips every file.
+
+---
+
 ## How do I check a recipe actually works before I trust it?
 
-Run the repo's own validator. It checks command and subagent and skill frontmatter, the hook JSON schema, JSON validity, and that the advertised recipe counts match the files on disk:
+Run the repo's own validator and the hook behavior tests. The validator checks command and subagent and skill frontmatter, the hook JSON schema, JSON validity, that the advertised recipe counts match the files on disk, and that the plugin marketplace is up to date. The hook tests replay payloads against every hook and assert the exit code and stderr:
 
 ```bash
 bash scripts/validate-recipes.sh
+bash scripts/test-hooks.sh
 ```
 
-It runs on every push and pull request via [CI](.github/workflows/ci.yml), alongside shellcheck and a link check.
+Both run on every push and pull request via [CI](.github/workflows/ci.yml), alongside shellcheck, `claude plugin validate --strict` and a link check.
 
 Beyond that, the per-feature smoke tests:
 

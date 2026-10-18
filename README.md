@@ -2,11 +2,40 @@
 
 [![CI](https://github.com/Sagargupta16/claude-code-recipes/actions/workflows/ci.yml/badge.svg)](https://github.com/Sagargupta16/claude-code-recipes/actions/workflows/ci.yml)
 
-> **47 copy-paste recipes** for Claude Code - commands, subagents, hooks, skills, and MCP configs that work out of the box.
+> **49 copy-paste recipes** for Claude Code - commands, subagents, hooks, skills, and MCP configs that work out of the box. Install them as plugins in two commands, or copy the files you want.
 
 Stop configuring from scratch. Drop these recipes into your `.claude/` folder and start building.
 
 Something installed but silent? Claude Code config fails quietly, so start at [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
+---
+
+## Install as Plugins
+
+The repo is also a Claude Code plugin marketplace. Inside Claude Code:
+
+```text
+/plugin marketplace add Sagargupta16/claude-code-recipes
+/plugin install recipe-commands@claude-code-recipes
+```
+
+On Claude Code 2.1.275 or later, one line does both:
+
+```text
+/plugin install recipe-commands --marketplace Sagargupta16/claude-code-recipes
+```
+
+Each plugin is one recipe type, so you take only what fits:
+
+| Plugin | Installs | Know before you install |
+|--------|----------|-------------------------|
+| `recipe-commands` | The 15 [commands](#commands-15-recipes), as `/recipe-commands:code-review` and so on | `/check-all-prs`, `/audit-repos` and `/update-status` assume the `gh` CLI |
+| `recipe-agents` | The 9 [subagents](#subagents-9-recipes) | Generic, no stack assumptions |
+| `recipe-skills` | The 5 [skills](#skills-5-recipes) | Stack-specific: React, TypeScript, REST. Skip it if that is not your stack |
+| `recipe-hooks` | Lint on `git commit`, tests on `git push`, format on edit, desktop notification | Needs `jq`. Blocks a commit or push when your own linter or test suite fails |
+| `recipe-guards` | [Dangerous command guard](hooks/block-dangerous-commands.sh) and [secret scan](hooks/secret-scan.sh) | Needs `jq`. Safe to add to any project |
+
+[scripts/build_marketplace.py](scripts/build_marketplace.py) generates [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) from the files on disk, and CI fails if the two drift, so a new recipe cannot miss the plugins. CI also runs `claude plugin validate --strict` on it. MCP configs and CLAUDE.md templates stay copy-paste: they need your own connection strings and project details.
 
 ---
 
@@ -101,7 +130,7 @@ Drop these into `.claude/agents/` for specialized delegation.
 | Tech Writer | Documentation, README, API docs | haiku | [tech-writer.md](subagents/tech-writer.md) |
 | Database Architect | Schema design, migrations, query optimization | sonnet | [database-architect.md](subagents/database-architect.md) |
 
-### Hooks (5 recipes)
+### Hooks (7 recipes)
 
 Event-triggered scripts for automation.
 
@@ -111,6 +140,8 @@ Event-triggered scripts for automation.
 | Post-edit Format | After Claude edits a file | Auto-format with Prettier/Black | [post-edit-format.sh](hooks/post-edit-format.sh) |
 | Pre-push Test | Before `git push` | Run test suite and block if failing | [pre-push-test.sh](hooks/pre-push-test.sh) |
 | Notification | On task completion | Desktop notification when done | [notification.sh](hooks/notification.sh) |
+| Dangerous Command Guard | Before any Bash command | Block `rm -rf /`, force push, `curl \| sh`, `DROP TABLE` | [block-dangerous-commands.sh](hooks/block-dangerous-commands.sh) |
+| Secret Scan | Before Claude edits a file | Block writing an API key, token or private key | [secret-scan.sh](hooks/secret-scan.sh) |
 | Settings Example | -- | Hook configuration for settings.json | [settings-hook-examples.json](hooks/settings-hook-examples.json) |
 
 ### Skills (5 recipes)
@@ -133,7 +164,7 @@ Model Context Protocol server configurations for `.mcp.json`.
 |--------|-----------------|------|
 | GitHub | Issues, PRs, repos, actions | [github.json](mcp-configs/github.json) |
 | Filesystem | Enhanced file operations | [filesystem.json](mcp-configs/filesystem.json) |
-| PostgreSQL | Database queries and schema | [postgres.json](mcp-configs/postgres.json) |
+| PostgreSQL | Read-only queries, schema, query plans, index tuning | [postgres.json](mcp-configs/postgres.json) |
 | Memory | Persistent knowledge graph | [memory.json](mcp-configs/memory.json) |
 | Context7 | Library documentation lookup | [context7.json](mcp-configs/context7.json) |
 
@@ -169,12 +200,15 @@ See the [cheatsheet](cheatsheet.md) for a one-page summary, and [TROUBLESHOOTING
 
 ## Verifying a Recipe
 
-Every recipe in this repo is checked on each push and pull request: frontmatter validity, the hook config schema, JSON parsing, `shellcheck`, working links, and that the recipe counts above match the files on disk.
+Every recipe in this repo is checked on each push and pull request: frontmatter validity, the hook config schema, JSON parsing, `shellcheck`, working links, that the recipe counts above match the files on disk, and that the plugin marketplace matches the recipes.
+
+The hooks are also tested for what they do, not only for how they are written. [scripts/test-hooks.sh](scripts/test-hooks.sh) replays hook payloads against every script and asserts the exit code and stderr Claude would see: 72 checks, run on Ubuntu, macOS and Windows. Linters, test runners and notifiers are stubbed on `PATH`, so a case can force a lint failure or a hostile notification message without installing anything. Restore the 1.1.0 `notification.sh` or `pre-push-test.sh` and the suite fails on the injection case and the pytest-exit-5 case.
 
 Run the same checks yourself:
 
 ```bash
 bash scripts/validate-recipes.sh
+bash scripts/test-hooks.sh
 ```
 
 ---
