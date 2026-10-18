@@ -23,8 +23,39 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Validate recipe frontmatter, hook schema, JSON, and counts
+      - name: Validate recipe frontmatter, hook schema, JSON, counts, and the marketplace
         run: bash scripts/validate-recipes.sh
+
+  hooks:
+    name: Hook behavior (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # The hooks run on users' machines, so test where they run: GNU bash on
+        # Linux, bash 3.2 on macOS, Git Bash on Windows
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Replay hook payloads and assert exit codes and stderr
+        run: |
+          bash --version | head -n 1
+          jq --version
+          bash scripts/test-hooks.sh
+
+  plugin:
+    name: Plugin marketplace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # validate needs no login. --strict turns warnings into failures.
+      - name: claude plugin validate
+        run: npx -y @anthropic-ai/claude-code@2.1.302 plugin validate --strict .
 
   shellcheck:
     name: Shellcheck
